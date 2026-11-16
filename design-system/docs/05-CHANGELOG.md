@@ -2,6 +2,13 @@
 
 Semver per [03-governance-workflow.md](03-governance-workflow.md) §6.
 
+## 1.15.4 — 2026-11-16 · Vercel deployment config
+
+### Added
+-   `vercel.json` — static deploy (no framework, output `.`): the build command writes `assets/js/env.js` from the `API_BASE_URL` env var; `cleanUrls` like nginx; the same security and cache headers as `nginx.conf` (CSS/JS `no-cache`, images 7 days).
+-   `.vercelignore` — Docker/nginx/serve files and local `env.js` / `.env` stay out of the deployment.
+-   `docs/10-session-handoff.md` §1 — how to deploy on Vercel (env var, redeploy, CORS).
+
 ## 1.15.3 — 2026-11-16 · Topbar account: avatar only on mobile
 
 ### Fixed

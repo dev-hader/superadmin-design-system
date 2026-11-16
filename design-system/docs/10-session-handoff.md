@@ -21,6 +21,19 @@ content (1.13.0).
 
 ---
 
+### Deploying on Vercel
+
+`vercel.json` makes the repo deployable as a plain static site (Framework Preset
+**Other**, no install step). Its `buildCommand` writes `assets/js/env.js` from the
+`API_BASE_URL` environment variable — the Vercel twin of the Dockerfile's `envsubst` step.
+Set `API_BASE_URL` in Project → Settings → Environment Variables and **redeploy** after
+changing it (the value is baked in at build time). `cleanUrls` mirrors nginx
+(`/bookings` → `bookings.html`); `.vercelignore` drops the Docker/nginx files. The backend
+must allow the Vercel origin in CORS (and the `Authorization` header), or sign-in fails
+even with a correct `env.js`.
+
+---
+
 ## 2. Two login pages — on purpose
 
 | Page | What it is |
