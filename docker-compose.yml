@@ -1,0 +1,10 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        API_BASE_URL: ${API_BASE_URL:-https://api-dev.hfive.com}
+    image: superadmin-web-design-system:local
+    ports:
+      - "8080:80"
+    restart: unless-stopped

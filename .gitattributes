@@ -1,0 +1,4 @@
+# Shell scripts must keep LF endings regardless of the checkout platform's
+# core.autocrlf — a CRLF shebang breaks docker-entrypoint-env.sh inside the
+# Alpine container at deploy time.
+*.sh text eol=lf

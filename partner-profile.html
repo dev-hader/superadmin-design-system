@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>partner profile · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="ppHero"></div>
+      <div id="ppTabs"></div>
+      <div id="ppBody"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/sa-translation.js"></script>
+<script src="assets/js/sa-services.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/pp/pp-info.js"></script>
+<script src="assets/js/pp/pp-catalog.js"></script>
+<script src="assets/js/pp/pp-ops.js"></script>
+<script src="assets/js/pp/pp-people.js"></script>
+<script>
+(() => {
+  /* Partner profile — mirrors pages/partners/profile (ProfilePage.js +
+     header/ProfileHeader.js): title "partner profile", Login as Partner +
+     back, hero card (photo · name · ID · bio · status block) and the 22-tab
+     bar (10 on the bar, 12 always under "More"). Each tab body is rendered
+     by assets/js/pp/*.js, registered on window.PP.tabs[key].
+     URL: partner-profile.html?id=<partnerId>&tab=<key>[&page=…] */
+  RD.boot({ activeId: "partners", title: "partner profile" });
+  if (!document.getElementById("ppBody")) return;
+  const { L, esc, ic, badge } = SA;
+  const qs = new URLSearchParams(location.search);
+  const partner = HF.SA.partners.find((p) => String(p.id) === qs.get("id")) || HF.SA.partners[0];
+  PP.partner = partner;
+  PP.extend(partner);
+
+  /* ---------------- page head ---------------- */
+  SA.head(document.getElementById("pageHead"), {
+    title: ["partner profile", "ملف الشريك"],
+    crumbs: [["Partners", "الشركاء", "partners.html"]],
+    actions: `<button type="button" class="btn btn--sm" id="loginAs">${ic("lock")}<span>${L("Login as Partner", "تسجيل الدخول كشريك")}</span></button>
+      <a class="btn btn--sm btn--secondary" href="partners.html${qs.get("redirect_to_page") ? "?page=" + qs.get("redirect_to_page") : ""}">${ic(document.documentElement.dir === "rtl" ? "chevronRight" : "chevronLeft")}<span>${L("back", "رجوع")}</span></a>`,
+  });
+  document.getElementById("loginAs").onclick = (e) => {
+    /* POST /partners/{id}/login-as-partner → opens {PARTNER_URL}/impersonate?token=… in a new tab */
+    const b = e.currentTarget;
+    b.disabled = true;
+    b.querySelector("span").textContent = L("Logged in in another tab", "تم تسجيل الدخول في تبويب آخر");
+    setTimeout(() => { b.disabled = false; b.querySelector("span").textContent = L("Login as Partner", "تسجيل الدخول كشريك"); }, 3000);
+  };
+
+  /* ---------------- hero ---------------- */
+  const statusBadge = (v) =>
+    v === -1 || v === "waiting" ? badge("warning", L("Pending", "معلق"))
+      : v === 1 || v === "active" ? badge("primary", L("active", "نشط"))
+        : badge("danger", v === "inactive" ? L("inactive", "غير نشط") : String(v));
+  const initials = (s) => (s || "?").trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+  function hero() {
+    const p = partner;
+    document.getElementById("ppHero").innerHTML = `<section class="card card--pad animate-in sa-hero">
+      <div class="row gap-5" style="align-items:flex-start;flex-wrap:wrap;flex:1;min-width:280px">
+        <span class="avatar avatar--xl" style="width:112px;height:112px;font-size:var(--text-h3)">${esc(initials(p.company_name))}</span>
+        <div class="stack gap-2" style="flex:1;min-width:200px">
+          <div class="row gap-2" style="align-items:center;flex-wrap:wrap">
+            <h2 class="t-h3">${esc(p.company_name)}</h2>
+            <a class="icon-btn" href="${href("translation")}" aria-label="${L("translation", "ترجمة")}" title="${L("translation", "ترجمة")}">${ic("globe")}</a>
+            <button type="button" class="icon-btn" id="editProfile" aria-label="${L("edit partner profile", "تعديل ملف الشريك")}" title="${L("edit partner profile", "تعديل ملف الشريك")}">${ic("edit")}</button>
+          </div>
+          <span class="t-sm text-tertiary">ID-${p.id}</span>
+          <p class="t-sm text-secondary" style="max-width:560px">${p.bio ? esc(p.bio) : "---"}</p>
+        </div>
+      </div>
+      <div class="sa-hero__status">
+        <div class="row between gap-3" style="align-items:center;margin-bottom:var(--space-3)">
+          <b>${L("partner Status", "حالة الشريك")}:</b>
+          <button type="button" class="icon-btn" id="editStatus" aria-label="${L("update status", "تحديث الحالة")}" title="${L("update status", "تحديث الحالة")}">${ic("edit")}</button>
+        </div>
+        <dl class="sa-kv" style="grid-template-columns:auto minmax(0,1fr)">
+          <dt>${L("Status", "الحالة")}</dt><dd>${statusBadge(p.active)}</dd>
+          <dt>${L("Action By", "تم الإجراء بواسطة")}</dt><dd>${p.activated_by ? esc(p.activated_by.name) : "---"}</dd>
+          <dt>${L("Action On", "تاريخ الإجراء")}</dt><dd>${p.activated_at ? esc(p.activated_at) : "---"}</dd>
+        </dl>
+      </div>
+    </section>`;
+    document.getElementById("editProfile").onclick = editProfile;
+    document.getElementById("editStatus").onclick = editStatus;
+  }
+  function editProfile() {
+    const p = partner;
+    const el = SA.modal({ id: "ppEditProfile", title: L("edit partner profile", "تعديل ملف الشريك"),
+      body: `<div class="stack gap-4">
+        ${SA.field(["Image", "صورة"], `<div class="row gap-3" style="align-items:center"><span class="avatar avatar--lg">${esc(initials(p.company_name))}</span>
+          <label class="btn btn--sm btn--secondary">${ic("upload")}<span>${L("Image", "صورة")}</span><input type="file" accept=".png,.jpg,.jpeg" style="display:none"></label></div>`, { hint: ["Max size 1MB for images", "الحد الأقصى للصور 1 ميجابايت"] })}
+        ${SA.field(["name", "الاسم"], `<input class="input" data-f="company_name" value="${esc(p.company_name)}" placeholder="${L("enter company name", "أدخل اسم الشركة")}">`)}
+        ${SA.field(["bio", "نبذة"], `<textarea class="input" rows="5" data-f="bio" placeholder="${L("enter bio", "أدخل نبذة")}">${esc(p.bio || "")}</textarea>`)}
+      </div>`,
+      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${L("update", "تحديث")}</button>` });
+    el.querySelector("[data-ok]").onclick = () => {
+      /* POST /partners/{id}/update-company-info (multipart: photo?, bio, company_name) */
+      p.company_name = el.querySelector('[data-f="company_name"]').value;
+      p.bio = el.querySelector('[data-f="bio"]').value;
+      SA.close(el); hero();
+    };
+  }
+  function editStatus() {
+    const p = partner;
+    const cur = p.active === 1 || p.active === "active" ? "1" : "0";
+    const el = SA.modal({ id: "ppEditStatus", title: L("update status", "تحديث الحالة"),
+      body: SA.field(["Status", "الحالة"], SA.select([["1", L("active", "نشط"), cur === "1"], ["0", L("inactive", "غير نشط"), cur === "0"]], 'id="ppStatusSel"')),
+      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${L("update", "تحديث")}</button>` });
+    el.querySelector("[data-ok]").onclick = () => {
+      /* POST /partners/{id}/update-company-status {active: 1|0} */
+      p.active = el.querySelector("#ppStatusSel").value === "1" ? "active" : "inactive";
+      p.activated_by = { name: "Super Admin" };
+      p.activated_at = new Date().toISOString().slice(0, 19).replace("T", " ");
+      SA.close(el); hero();
+    };
+  }
+
+  /* ---------------- tabs ---------------- */
+  const BAR = [
+    ["owner", "owner", "مالك"], ["location", "location", "الموقع"], ["bookings", "bookings", "الحجوزات"],
+    ["branches", "Branches", "الفروع"], ["units", "units", "الوحدات"], ["settings", "Settings", "الإعدادات"],
+    ["packages", "Packages", "الباقات"], ["multi-bookings", "Multi-Booking Sessions", "جلسات الحجز المتعدد"],
+    ["public-events", "public events", "الأحداث العامة"], ["activity-log", "activity log", "سجل النشاط"],
+  ];
+  const MORE = [
+    ["documents", "Documents", "مستندات"], ["gallery", "gallery", "معرض"], ["services", "Lists and Services", "القوائم والخدمات"],
+    ["policies", "Policies", "السياسات"], ["employees", "employees", "الموظفين"], ["contacts", "contacts", "جهات الاتصال"],
+    ["qr-settings", "QR Code Settings and Assignment", "إعدادات رمز QR والتعيين"], ["customers", "customers", "العملاء"],
+    ["memberships", "memberships", "عضوية"], ["financials", "financials", "المالية"], ["coupons", "Coupons", "كوبونات"], ["notes", "notes", "ملحوظات"],
+  ];
+  function href(key, extra) {
+    const u = new URLSearchParams(location.search);
+    u.set("id", partner.id); u.set("tab", key);
+    [...u.keys()].filter((k) => !["id", "tab", "redirect_to_page"].includes(k)).forEach((k) => u.delete(k));
+    Object.entries(extra || {}).forEach(([k, v]) => u.set(k, v));
+    return "?" + u.toString();
+  }
+  PP.href = href;
+  function tabsBar(active) {
+    const inMore = MORE.some((t) => t[0] === active);
+    /* the bar scrolls; "More" stays pinned at the end so it is always reachable */
+    document.getElementById("ppTabs").innerHTML = `<nav class="row" style="align-items:flex-end;margin-bottom:var(--space-6)" aria-label="${L("Partner sections", "أقسام الشريك")}">
+      <div class="sa-tabbar" style="flex:1;min-width:0;margin:0"><div class="tabs">
+        ${BAR.map((t) => `<a href="${href(t[0])}" data-tab="${t[0]}" class="${t[0] === active ? "is-active" : ""}" ${t[0] === active ? 'aria-current="page"' : ""}>${esc(L(t[1], t[2]))}</a>`).join("")}
+      </div></div>
+      <div class="tabs" style="flex-shrink:0"><button type="button" id="ppMore" style="display:inline-flex;align-items:center;gap:var(--space-1);white-space:nowrap" class="${inMore ? "is-active" : ""}" aria-haspopup="true">${inMore ? esc(L(...MORE.find((t) => t[0] === active).slice(1))) : L("More", "المزيد")} ${ic("chevronDown")}</button></div>
+    </nav>
+      <div class="menu" id="ppMoreMenu" style="min-width:300px;max-height:300px;overflow:auto">
+        ${MORE.map((t) => `<a class="menu__item" href="${href(t[0])}" data-tab="${t[0]}" ${t[0] === active ? 'aria-current="page" style="color:var(--color-primary-ink);font-weight:var(--weight-semibold)"' : ""}>${esc(L(t[1], t[2]))}</a>`).join("")}
+      </div>`;
+    /* like the dashboard: bar tabs that do not fit move into "More" (active tab always stays visible) */
+    const scroller = document.querySelector("#ppTabs .sa-tabbar"), barTabs = scroller.querySelector(".tabs"), menuEl = document.getElementById("ppMoreMenu");
+    while (barTabs.scrollWidth > scroller.clientWidth + 1 && barTabs.children.length > 1) {
+      const last = [...barTabs.children].reverse().find((a) => a.dataset.tab !== active) || barTabs.lastElementChild;
+      last.className = "menu__item";
+      menuEl.prepend(last);
+    }
+    const btn = document.getElementById("ppMore"), menu = menuEl;
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      if (menu.classList.contains("is-open")) return menu.classList.remove("is-open");
+      RD.portalMenu(menu); RD.positionMenu(menu, btn, "end"); menu.classList.add("is-open");
+    };
+    document.addEventListener("click", () => menu.classList.remove("is-open"));
+  }
+
+  /* ---------------- router ---------------- */
+  function render() {
+    const u = new URLSearchParams(location.search);
+    const tab = u.get("tab") || "owner";
+    /* translation is a page of its own in the dashboard: no hero, no tab bar */
+    const solo = tab === "translation";
+    document.getElementById("ppHero").hidden = solo;
+    document.getElementById("ppTabs").hidden = solo;
+    document.getElementById("pageHead").hidden = solo;
+    if (!solo) tabsBar(tab);
+    /* a fresh mount per render, so a tab's listeners die with it */
+    const body = document.createElement("div");
+    body.className = "stack gap-6";
+    document.getElementById("ppBody").replaceChildren(body);
+    const fn = PP.tabs[tab];
+    if (fn) fn(body, { partner, params: u, L, esc, ic, badge, rerender: render });
+    window.scrollTo({ top: 0 });
+  }
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("a[href^='?']");
+    if (!a || e.metaKey || e.ctrlKey || e.button) return;
+    e.preventDefault();
+    history.pushState(null, "", a.getAttribute("href"));
+    render();
+  });
+  window.addEventListener("popstate", render);
+  let rz;
+  window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => tabsBar(new URLSearchParams(location.search).get("tab") || "owner"), 150); });
+  PP.go = (key, extra) => { history.pushState(null, "", href(key, extra)); render(); };
+  hero();
+  render();
+})();
+</script>
+</body>
+</html>

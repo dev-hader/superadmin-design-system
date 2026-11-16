@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Multi-Booking Sessions · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/pp/pp-ops.js"></script>
+<script src="assets/js/sa-ops.js"></script>
+<script>
+(() => {
+  /* Multi-Booking Sessions — mirrors pages/multi-booking:
+       list            (/multi-booking)               multi-booking.html
+       session view    (/multi-booking/:id)           ?id=<sessionId>[&redirect_to_page&from&unit_id|user_id]
+       booking details (/multi-booking/details/:bid)  ?details=<bookingId>
+     All read-only in the dashboard (only the two price Break Down modals). */
+  const qs = new URLSearchParams(location.search);
+  RD.boot({ activeId: "multi-booking", title: "Multi-Booking Sessions" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic, badge, fmt } = SA;
+  const { card, kv, yesNo } = PP;
+  const D = OPS.all();
+  const mount = document.getElementById("listMount");
+  const dash = (v) => (v == null || v === "" ? "---" : esc(v));
+  const cur = (m) => esc((m.currency && m.currency.code) || "SAR");
+  const link = (href, t) => `<a href="${href}" style="color:var(--color-text-link);font-weight:var(--weight-semibold)">${esc(t)}</a>`;
+  const checkCount = (a, b) => `<span style="font-weight:var(--weight-semibold);white-space:nowrap">${L(`${a}/${b} checked in`, `${a}/${b} سجّلوا الحضور`)}</span>`;
+  const head = (title, extra) => `<div class="row between gap-3" style="align-items:center;flex-wrap:wrap"><h3 class="t-title">${title}</h3>${extra || ""}</div>`;
+  const bd = (id, rows) => SA.modal({ id, title: L("Break Down", "التفصيل"), body: kv(rows), foot: "" });
+  const unitOf = (m) => HF.SA.units.find((u) => u.name === m.unit_name) || null;
+  const priceOf = (m) => { const base = +m.price_per_user, tax = +(base * 0.15).toFixed(2); return { base, discount: 0, after: base, tax, subtotal: +(base + tax).toFixed(2) }; };
+
+  /* ================= booking details (/multi-booking/details/:bookingId) ================= */
+  if (qs.get("details")) {
+    document.getElementById("pageHead").hidden = true;
+    const { m, b } = OPS.bookingInMulti(qs.get("details")), u = unitOf(m), pr = priceOf(m);
+    const st = b.status === "cancelled" ? "canceled" : b.status;
+    const chk = b.tickets_list.filter((t) => t.check_in_at).length;
+    const METHOD = { qr: L("QR Scan", "مسح رمز QR"), manual: L("Manual", "يدوي") };
+    const sub = +(pr.subtotal * b.tickets).toFixed(2);
+    mount.className = "stack gap-6";
+    mount.innerHTML = head(`${L("Booking ID", "رقم الحجز")} ${b.id}`) /* no back — commented out in the dashboard */
+      + card(L("general Information", "المعلومات العامة"), "", kv([u ? [L("unit", "الوحدة"), link(`unit-profile.html?id=${u.id}&tab=details`, u.name)] : null]))
+      + card(`${L("Session Information", "معلومات الجلسة")} ${b.is_time_edited ? badge("info", L("edited", "محرر")) : ""} ${u && u.attendance_type === "online" ? badge("success", `${L("Attendance", "الحضور")} : ${L("online", "عبر الإنترنت")}`) : ""}`, "", kv([
+        [L("Session ID", "معرف الجلسة"), m.id], [L("type", "النوع"), `${esc(m.session_type)} - Multi-Booking Session`], [L("Session status", "حالة الجلسة"), esc(m.status)], [L("Date", "التاريخ"), m.date],
+        [L("Start", "البداية"), m.start_time], [L("end", "النهاية"), m.end_time], [L("overnight", "طوال الليل"), yesNo(m.overnight)], [L("gender", "الجنس"), esc(m.session_gender)],
+        [L("price", "السعر"), `${fmt(sub)} ${cur(m)} <button type="button" class="icon-btn" data-bd style="color:var(--color-danger)" aria-label="${L("Break Down", "التفصيل")}" title="${L("Break Down", "التفصيل")}">${ic("info")}</button>`]]))
+      + card(L("booking", "الحجز"), "", kv([[L("booking Id", "معرف الحجز"), b.id], [L("type", "النوع"), L("Online Multi Booking", "الحجز المتعدد عبر الإنترنت")], [L("Booking Status", "حالة الحجز"), esc(b.status)],
+        [L("Booked for", "محجوز لـ"), `<span class="row gap-3" style="align-items:center;padding:var(--space-2) var(--space-3);border:var(--border-thin) solid var(--color-border);border-radius:var(--radius-md);display:inline-flex">${PP.avatar(b.user.name)}<span><b>${esc(b.user.name)}</b><div class="t-xs text-tertiary">@vie_${b.user.id % 900} · ${L("High Five user", "مستخدم هاي فايف")}</div></span></span>`],
+        [L("Booked By", "محجوز بواسطة"), esc(b.user.name)], [L("Booked At", "تم الحجز في"), `${b.booking_date} ${b.booking_time}`]]
+        .concat(st === "canceled" ? [[L("Cancelled By", "ألغي بواسطة"), esc(b.user.name)], [L("Cancelled At", "ألغي في"), m.date]] : [])))
+      + card(`${L("Tickets check-in", "تسجيل حضور التذاكر")} <span class="t-sm" style="margin-inline-start:var(--space-2)">${checkCount(chk, b.tickets)}</span>`, "", SA.table({ rows: b.tickets_list, empty: ["—", "—"], columns: [
+        { head: ["Ticket", "التذكرة"], cell: (t) => `<b>${esc(t.ticket_number)}</b><div class="t-xs text-tertiary">${esc(t.holder_name)}</div>` },
+        { head: ["Check-in Status", "حالة تسجيل الحضور"], cell: (t) => (t.check_in_at ? badge("success", L("Checked-in", "تم تسجيل الحضور")) : badge("", L("Not checked-in", "لم يسجّل الحضور"))) },
+        { head: ["Checked-in At", "وقت تسجيل الحضور"], cell: (t) => (t.check_in_at ? esc(t.check_in_at) : "") },
+        { head: ["Checked-in By", "سجّله"], cell: (t) => (t.check_in_at ? esc(t.checked_by) : "") },
+        { head: ["Method", "الطريقة"], cell: (t) => (t.check_in_at ? METHOD[t.checked_in_type] || esc(t.checked_in_type) : "") },
+      ] }))
+      + card(L("Payment", "الدفع"), "", kv([[L("payment method", "طريقة الدفع"), esc(m.payment_method)], [L("Payment status", "حالة الدفع"), m.payment_method === "online" ? L("paid", "مدفوع") : L("unpaid", "غير مدفوع")]]
+        .concat(st === "canceled" ? [[L("Cancelation Fee", "رسوم الإلغاء"), `50%( ${fmt(sub / 2)} ${cur(m)})`]] : [])))
+      + card(L("Payment History", "سجل الدفع"), "", SA.table({ rows: [{ type: L("payment", "دفع"), amount: sub, code: m.id % 2 ? "SUMMER10" : null, partner: m.id % 4 === 1, discount: m.id % 2 ? +(sub * 0.1).toFixed(2) : 0, wallet: 0, at: `${b.booking_date} ${b.booking_time}:00` }], empty: ["no data", "لا توجد بيانات"], columns: [
+        { head: ["Type", "النوع"], cell: (x) => x.type },
+        { head: ["Total Amount", "إجمالي المبلغ"], cell: (x) => `${fmt(x.amount)} ${cur(m)}` },
+        { hidden: m.payment_method === "cash", head: ["Coupon code", "كود الكوبون"], cell: (x) => (x.code ? `${x.code} ${x.partner ? badge("primary", L("Partner Coupon", "كوبون الشريك")) : badge("info", L("Super Admin Coupon", "كوبون المشرف العام"))}` : "---") },
+        { hidden: m.payment_method === "cash", head: ["Paid from Coupon", "المدفوع من الكوبون"], cell: (x) => fmt(x.discount) },
+        { hidden: m.payment_method === "cash", head: ["Paid From High Five Wallet", "المدفوع من محفظة هاي فايف"], cell: (x) => fmt(x.wallet) },
+        { hidden: m.payment_method === "cash", head: ["Paid from Bank", "المدفوع من البنك"], cell: (x) => (x.amount - x.discount - x.wallet).toFixed(2) },
+        { head: ["Date and Time", "التاريخ والوقت"], cell: (x) => x.at },
+      ] }));
+    mount.querySelector("[data-bd]").onclick = () => bd("mbBd1", [[L("Base Price :", "السعر الأساسي :"), `${pr.base} ${cur(m)}`], [L("Tickets", "تذاكر") + ":", b.tickets], [`${L("Discount", "الخصم")} (0%)`, `0 ${cur(m)}`],
+      [L("Total Session Price :", "إجمالي سعر الجلسة :"), `${(pr.after * b.tickets).toFixed(2)} ${cur(m)}`], [L("Tax For", "الضريبة لـ") + " :", `VAT (15%) ${(pr.tax * b.tickets).toFixed(2)} ${cur(m)}`],
+      [`${L("total Tax", "إجمالي الضريبة")} (15%):`, `${(pr.tax * b.tickets).toFixed(2)} ${cur(m)}`], [L("total", "الإجمالي") + " :", `<b>${fmt(sub)} ${cur(m)}</b>`]]);
+    return;
+  }
+
+  /* ================= session view (/multi-booking/:id) ================= */
+  if (qs.get("id")) {
+    document.getElementById("pageHead").hidden = true;
+    const m = D.multi.find((x) => String(x.id) === qs.get("id")) || D.multi[0], p = OPS.partnerOf(m), u = unitOf(m), pr = priceOf(m), list = OPS.bookers(m);
+    const pg = qs.get("redirect_to_page") || 1, from = qs.get("from");
+    const back = from === "units-profile" && qs.get("unit_id") ? `unit-profile.html?id=${qs.get("unit_id")}&tab=multi-bookings`
+      : from === "partners-profile" && qs.get("user_id") ? `partner-profile.html?id=${qs.get("user_id")}&tab=multi-bookings` : `multi-booking.html?page=${pg}`;
+    const PILL = { booked: "success", coming: "success", ended: "primary", pending: "warning", cancelled: "danger", canceled: "danger" };
+    const booked = list.reduce((a, b) => a + b.tickets, 0);
+    mount.className = "stack gap-6";
+    mount.innerHTML = head(`${L("Multi-Booking Session", "جلسة الحجز المتعدد")} #${m.id}`, PP.backBtn(back))
+      + card(L("general Information", "المعلومات العامة"), "", kv([[L("partner", "الشريك"), link(`partner-profile.html?id=${p.id}&tab=owner`, p.company_name)], u ? [L("unit", "الوحدة"), link(`unit-profile.html?id=${u.id}&tab=details`, u.name)] : [L("unit", "الوحدة"), esc(m.unit_name)],
+        [L("category", "الفئة"), esc(m.activity_category_name)], [L("Activity", "النشاط"), esc(m.activity_name)]]))
+      + card(`${L("Session Information", "معلومات الجلسة")} (# ${m.id}) ${u && u.attendance_type === "online" ? badge("success", `${L("Attendance", "الحضور")} : ${L("online", "عبر الإنترنت")}`) : ""}`, "", kv([
+        [L("Start At", "يبدأ في"), m.start_time], [L("End At", "ينتهي في"), m.end_time], [L("Date", "التاريخ"), m.date], [L("overnight", "طوال الليل"), yesNo(m.overnight)], [L("gender", "الجنس"), esc(m.session_gender)],
+        [L("Session Type", "نوع الجلسة"), `<span style="color:var(--color-primary-ink)">${esc(m.session_type)} - Multi-Booking Session</span>`], [L("status", "الحالة"), esc(m.status)],
+        [L("price", "السعر"), `${fmt(pr.subtotal)} ${cur(m)} <button type="button" class="icon-btn" data-bd style="color:var(--color-danger)" aria-label="${L("Break Down", "التفصيل")}" title="${L("Break Down", "التفصيل")}">${ic("info")}</button>`],
+        [L("Max Capacity", "الحد الأقصى للسعة"), m.max_capacity], [L("Max Tickets per User", "الحد الأقصى للتذاكر لكل مستخدم"), m.max_tickets_per_user], [L("Booked", "محجوز"), booked],
+        [L("Remaining Capacity", "السعة المتبقية"), Math.max(0, m.max_capacity - booked)], [L("Payment Type", "نوع الدفع"), `<span style="color:var(--color-primary-ink)">${esc(m.payment_method)}</span>`]]))
+      + `<section class="card card--pad stack gap-4"><div class="row between gap-3" style="align-items:center;flex-wrap:wrap"><h3 class="t-title">${L("User Bookings", "حجوزات المستخدمين")} (${booked}/${m.max_capacity})</h3>
+          ${SA.search(["search by booking id, user name, or email", "البحث برقم الحجز أو اسم المستخدم أو البريد الإلكتروني"])}</div><div data-ub></div></section>`;
+    const paintUB = (q) => (mount.querySelector("[data-ub]").innerHTML = SA.table({ rows: list.filter((b) => !q || String(b.id).includes(q) || b.user.name.toLowerCase().includes(q) || (b.user.email || "").toLowerCase().includes(q)), empty: ["There is no data to display.", "لا توجد بيانات للعرض."], columns: [
+      { head: ["booking", "الحجز"], cell: (b) => `<b>#${b.id}</b>` },
+      { head: ["Users", "المستخدمون"], cell: (b) => `<div class="cell-user">${PP.avatar(b.user.name)}<div><b>${esc(b.user.name)}</b> ${b.is_time_edited ? badge("info", L("edited", "محرر")) : ""}<div class="t-xs text-tertiary">${dash(b.user.email)}</div></div></div>` },
+      { head: ["Tickets", "تذاكر"], cell: (b) => b.tickets },
+      { head: ["Booked At", "تم الحجز في"], cell: (b) => `${b.booking_time} - ${b.booking_date}` },
+      { head: ["Total Price", "السعر الإجمالي"], cell: (b) => `${fmt(b.total)} ${cur(m)}` },
+      { head: ["status", "الحالة"], cell: (b) => `<span class="badge badge--${PILL[b.status] || ""}" style="border-radius:999px">${esc(b.status)}</span>` },
+      { head: ["Check-in", "تسجيل الحضور"], cell: (b) => `${b.tickets_list.filter((t) => t.check_in_at).length}/${b.tickets}` },
+      { head: ["Actions", "الإجراءات"], cell: (b) => `<a class="btn btn--sm" href="multi-booking.html?details=${b.id}">${L("View", "عرض")}</a>` },
+    ] }));
+    paintUB("");
+    mount.querySelector("[data-search]").oninput = (e) => paintUB(e.target.value.trim().toLowerCase());
+    mount.querySelector("[data-bd]").onclick = () => bd("mbBd", [[L("Base Price :", "السعر الأساسي :"), `${pr.base} ${cur(m)}`], [`${L("Discount", "الخصم")} (0%)`, `0 ${cur(m)}`], [L("Total Session Price :", "إجمالي سعر الجلسة :"), `${pr.after} ${cur(m)}`],
+      [`${L("total Tax", "إجمالي الضريبة")} (15%):`, `<b>${pr.tax} ${cur(m)}</b>`], [L("total", "الإجمالي") + " :", `<b>${fmt(pr.subtotal)} ${cur(m)}</b>`]]);
+    return;
+  }
+
+  /* ================= list (/multi-booking) ================= */
+  SA.head(document.getElementById("pageHead"), { title: ["Multi-Booking Sessions", "جلسات الحجز المتعدد"] });
+  let ctl = null;
+  ctl = SA.list({
+    mount, data: D.multi,
+    pills: [["all", "all", "الكل"], ["coming", "Coming", "قادم"], ["ended", "ended", "انتهى"], ["canceled", "cancelled", "ملغي"]].map((p) => ({ key: p[0], label: [p[1], p[2]] })),
+    pillMatch: (r, k) => k === "all" || r.status === k,
+    search: ["search by unit name or session id", "البحث باسم الوحدة أو رقم الجلسة"],
+    searchMatch: (r, q) => r.unit_name.toLowerCase().includes(q) || String(r.id).includes(q),
+    toolbarExtra: PP.filterBtn(),
+    extraMatch: (r, f) => OPS.inRange(r.date, f.session_from, f.session_to) && (!f.category || r.activity_category_name === f.category) && (!f.activity || r.activity_name === f.activity) && (!f.gender || r.session_gender === f.gender),
+    empty: ["There is no data to display.", "لا توجد بيانات للعرض."],
+    columns: [
+      { head: ["#", "#"], cell: (r) => `<b>#${r.id}</b><div class="t-xs text-tertiary">${esc(r.created_at)}</div>` },
+      { head: ["company", "الشركة"], align: "center", cell: (r) => dash(r.company_name) },
+      { head: ["unit", "الوحدة"], align: "center", cell: (r) => dash(r.unit_name) },
+      { head: ["session time", "وقت الجلسة"], align: "center", cell: (r) => `${esc(r.date)}<div class="t-xs text-tertiary">${esc(r.start_time)}</div><div class="t-xs text-tertiary">${esc(r.end_time)}</div>` },
+      { head: ["Activity", "النشاط"], align: "center", cell: (r) => `${esc(r.activity_category_name)}<div class="t-xs text-tertiary">${esc(r.activity_name)}</div>` },
+      { head: ["session gender", "جنس الجلسة"], align: "center", cell: (r) => dash(r.session_gender) },
+      { head: ["Booked / Max Capacity", "محجوز / الحد الأقصى للسعة"], align: "center", cell: (r) => `${r.booked_tickets || 0} / ${r.max_capacity || 0}` },
+      { head: ["Price Per User", "السعر لكل مستخدم"], align: "center", cell: (r) => `<b>${r.price_per_user}</b> ${cur(r)}<div class="t-xs text-tertiary">${dash(r.payment_method)}</div>` },
+      { head: ["App Type", "نوع التطبيق"], align: "center", cell: (r) => r.app_type.map((t) => (t === "highFive" ? L("High Five App", "تطبيق هاي فايف") : L("Partner App", "تطبيق الشريك"))).join(" - ") },
+      { head: ["status", "الحالة"], align: "center", cell: (r) => OPS.sessionBadge(r.status) },
+      { head: ["Check-in", "تسجيل الحضور"], align: "center", cell: (r) => checkCount(r.check_in_summary.checked_in, r.check_in_summary.total) },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<a class="icon-btn" href="multi-booking.html?id=${r.id}&redirect_to_page=${ctl ? ctl.state.page : 1}" aria-label="${L("View", "عرض")}" title="${L("View", "عرض")}">${ic("eye")}</a>` },
+    ],
+  });
+  if (+qs.get("page") > 1) { ctl.state.page = +qs.get("page"); ctl.paint(); }
+  mount.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-filter]");
+    if (b) PP.filterPop(b, { width: 300, value: ctl.state.extra, cascade: { category: ["activity"] },
+      fields: [{ key: "session", type: "range", label: ["session date :", "تاريخ الجلسة :"] }].concat(OPS.catFields(), [OPS.genderField()]),
+      onApply: (d) => { ctl.state.extra = d; ctl.paint(); } });
+  });
+})();
+</script>
+</body>
+</html>

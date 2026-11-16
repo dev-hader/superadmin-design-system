@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Languages · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/sa-translation.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/sa-crud.js"></script>
+<script>
+(() => {
+  /* Setup Files — Types · Capacities · Services · Age Groups (pages/setup-files/*).
+     One script, picked by file name; every page is a CRUD.page config. Labels on
+     Capacities / Services / Age Groups reuse the dashboard's TYPES.* strings
+     (e.g. "enter type name"), kept 1:1. */
+  const file = location.pathname.split("/").pop().replace(/^_preview-/, "").replace(".html", "");
+  const ID = { "setup-types": "sf-types", "setup-capacities": "sf-capacities", "setup-services": "sf-services", "setup-age-groups": "sf-age-groups", "setup-languages": "sf-languages", "setup-banks": "sf-banks", "setup-support-categories": "sf-support-categories" }[file] || "sf-types";
+  RD.boot({ activeId: ID, title: "setup files" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic } = SA;
+  const R = CRUD.rules, S = HF.SA;
+  const MIN3 = ["Minimum 3 symbols", "الحد الأدنى 3 رموز"], MAX50 = ["Maximum 50 symbols", "الحد الأقصى 50 رمز"], MAX10 = ["Maximum 10 symbols", "الحد الأقصى 10 رموز"], NUM = ["number is not valid", "الرقم غير صحيح"];
+  const thumb = (r, withDate) => `<div class="cell-user"><span class="cell-thumb">${ic("layers")}</span><div><b>${esc(r.name)}</b>${withDate ? `<div class="t-xs text-tertiary">${esc(r.created_at)}</div>` : ""}</div></div>`;
+  const statusField = { key: "active", label: ["status", "الحالة"], type: "select", placeholder: ["select status", "اختر الحالة"], options: () => [["1", L("active", "نشط")], ["0", L("inactive", "غير نشط")]], rules: [R.req], get: (r) => String(r.active) };
+  const imageField = (warn) => ({ key: "image", label: ["Image", "صورة"], type: "image", accept: ".png,.jpg,.jpeg", hint: ["Max size 1MB for images", "الحد الأقصى للصور 1 ميجابايت"], warn: warn ? ["The image should be an icon with a transparent background.", "يجب أن تكون الصورة أيقونة ذات خلفية شفافة."] : null,
+    rules: [(f) => (f && f.size > 1024 * 1024 ? L("Max size 1MB for images", "الحد الأقصى للصور 1 ميجابايت") : "")] });
+  const nameRules = (minMsg) => [R.req, R.min(2, minMsg || MIN3), R.max(50, MAX50)];
+  const orderRules = (withLen) => [R.req].concat(withLen ? [R.max(10, MAX10)] : [], [R.num(NUM)]);
+  const seed = (names) => names.map((n, i) => ({ id: i + 1, name: n, image: null, created_at: `2026-0${1 + (i % 9)}-1${i % 10} 10:00:00`, order: i + 1, active: i % 5 === 4 ? 0 : 1 }));
+
+  /* ---- data (shared with the rest of the system: types/capacities/services already exist as option lists) ---- */
+  S._setup = S._setup || {
+    types: seed(S.TYPES.concat(["Hall", "Track"])),
+    capacities: seed(S.CAPS.concat(["31 - 50"])),
+    services: seed(["Changing rooms", "Parking", "Lighting", "Coach", "Equipment", "Lockers", "Showers"]),
+    ages: [{ id: 1, name: "All ages", starting_age: null, ending_age: null, description: "Default group — open to everyone", active: 1 }]
+      .concat([["Kids", 4, 12], ["Teens", 13, 17], ["Adults", 18, 59], ["Seniors", 60, 90]].map((a, i) => ({ id: 2 + i, name: a[0], starting_age: a[1], ending_age: a[2], description: `${a[0]} sessions and packages`, active: i === 3 ? 0 : 1 }))),
+  };
+  const D = S._setup;
+  const common = (kind, plural, data) => ({
+    data, pills: true, search: ["search by name", "البحث بالاسم"], add: ["add new", "إضافة جديد"], translation: { key: kind, cols: [["name", ["name", "الاسم"]]] },
+    columns: [
+      { head: ["name", "الاسم"], cell: (r) => thumb(r, true) },
+      { head: ["order", "الترتيب"], align: "center", cell: (r) => r.order },
+      { head: ["states", "الحالات"], align: "center", cell: (r) => CRUD.statusBadge(r.active) },
+    ],
+  });
+
+  const CFG = {
+    "setup-types": Object.assign(common("type", "types", D.types), {
+      title: ["types", "الأنواع"],
+      form: { labelCols: true, createTitle: ["create new type", "إنشاء نوع جديد"], editTitle: ["edit type", "تعديل النوع"], creatingText: ["create ...", "جاري الإنشاء ..."], updatingText: ["update ...", "جاري التحديث ..."],
+        fields: [imageField(false), { key: "name", label: ["name", "الاسم"], placeholder: ["enter type name", "أدخل اسم النوع"], rules: nameRules() }, { key: "order", type: "number", label: ["order", "الترتيب"], placeholder: ["enter type order", "أدخل ترتيب النوع"], rules: orderRules(true) }, statusField] },
+      del: { body: ["Please confirm that you want to delete this type", "يرجى تأكيد أنك تريد حذف هذا النوع"], warn: ["You Can Not Delete Any type That Is Linked To Any unit", "لا يمكنك حذف أي نوع مرتبط بأي وحدة"], feedback: "alert" },
+    }),
+    "setup-capacities": Object.assign(common("capacity", "capacities", D.capacities), {
+      title: ["capacities", "السعة"],
+      form: { labelCols: true, createTitle: ["create new capacity", "إنشاء سعة جديدة"], editTitle: ["edit capacity", "تعديل السعة"], creatingText: ["create ...", "جاري الإنشاء ..."], updatingText: ["update ...", "جاري التحديث ..."],
+        fields: [imageField(false), { key: "name", label: ["name", "الاسم"], placeholder: ["enter capacity name", "أدخل اسم السعة"], rules: nameRules() }, { key: "order", type: "number", label: ["order", "الترتيب"], placeholder: ["enter order", "أدخل الترتيب"], rules: orderRules(true) }, statusField] },
+      del: { body: ["Please confirm that you want to delete this capacity", "يرجى تأكيد أنك تريد حذف هذه السعة"], warn: ["You Can Not Delete Any capacity That Is Linked To Any unit", "لا يمكنك حذف أي سعة مرتبطة بأي وحدة"], feedback: "alert" },
+    }),
+    "setup-services": Object.assign(common("service", "services", D.services), {
+      title: ["services", "الخدمات"],
+      /* create and edit validate differently in the dashboard (create: "Minimum 2", no order length) */
+      form: { labelCols: true, createTitle: ["Create New Service", "إنشاء خدمة جديدة"], editTitle: ["edit service", "تعديل الخدمة"], creatingText: ["create ...", "جاري الإنشاء ..."], updatingText: ["update ...", "جاري التحديث ..."],
+        fields: (row) => [imageField(true), { key: "name", label: ["name", "الاسم"], placeholder: ["Enter type name", "أدخل اسم الخدمة"], rules: nameRules(row ? MIN3 : ["Minimum 2 symbols", "الحد الأدنى رمزان"]) },
+          { key: "order", type: "number", label: ["order", "الترتيب"], placeholder: ["Enter type order", "أدخل ترتيب الخدمة"], rules: orderRules(!!row) }, statusField] },
+      del: { body: ["Please confirm that you want to delete this service", "يرجى تأكيد أنك تريد حذف هذه الخدمة"] },
+    }),
+    "setup-age-groups": {
+      title: ["age groups", "الفئات العمرية"], data: D.ages, pills: true, search: ["search by name", "البحث بالاسم"], add: ["add new", "إضافة جديد"], translation: { key: "age-group", cols: [["name", ["name", "الاسم"]], ["description", ["description", "الوصف"]]] },
+      columns: [
+        { head: ["name", "الاسم"], cell: (r) => thumb(r, false) },
+        { head: ["starting age", "العمر الابتدائي"], align: "center", cell: (r) => (r.id === 1 ? `<b style="font-size:var(--text-xl)">∞</b>` : `${r.starting_age} ${L("year", "سنة")}`) },
+        { head: ["ending age", "العمر النهائي"], align: "center", cell: (r) => (r.id === 1 ? `<b style="font-size:var(--text-xl)">∞</b>` : `${r.ending_age} ${L("year", "سنة")}`) },
+        { head: ["description", "الوصف"], align: "center", cell: (r) => esc(r.description || "") },
+        { head: ["states", "الحالات"], align: "center", cell: (r) => CRUD.statusBadge(r.active) },
+      ],
+      canDel: (r) => r.id !== 1,
+      form: { labelCols: true, createTitle: ["create new age group", "إنشاء فئة عمرية جديدة"], editTitle: ["edit age group", "تعديل الفئة العمرية"], creatingText: ["create ...", "جاري الإنشاء ..."], updatingText: ["update ...", "جاري التحديث ..."],
+        fields: (row) => [imageField(false), { key: "name", label: ["name", "الاسم"], placeholder: ["enter name", "أدخل الاسم"], rules: nameRules() },
+          { key: "description", type: "textarea", label: ["description", "الوصف"], placeholder: ["enter description", "أدخل الوصف"], rules: [R.max(150, MAX50)] }]
+          /* age range is hidden for the default group (#1) in Edit */
+          .concat(row && row.id === 1 ? [] : [
+            { key: "starting_age", type: "number", min: 1, label: ["age range · start", "الفئة العمرية · البداية"], placeholder: ["start", "البداية"], rules: [R.req, R.max(10, MAX50), R.num(NUM)] },
+            { key: "ending_age", type: "number", min: 1, label: ["age range · end", "الفئة العمرية · النهاية"], placeholder: ["end", "النهاية"], rules: [R.req, R.max(10, MAX50), R.num(NUM)] }], [statusField]) },
+      del: {},
+    },
+  };
+  /* ---------- Languages (no pills, no search; en / ar can't be deleted) ---------- */
+  D.langs = D.langs || [["English", "Default interface language", "en"], ["العربية", "لغة الواجهة العربية", "ar"], ["Français", "French", "fr"], ["Türkçe", "Turkish", "tr"]].map((l, i) => ({ id: i + 1, name: l[0], image: null, description: l[1], order: i + 1, code: l[2], active: i === 3 ? 0 : 1 }));
+  CFG["setup-languages"] = {
+    title: ["Languages", "اللغات"], data: D.langs, add: ["add new", "إضافة جديد"], translation: { key: "language", cols: [["name", ["name", "الاسم"]], ["description", ["description", "الوصف"]]] },
+    empty: ["there is no data to display", "لا توجد بيانات لعرضها"],
+    columns: [
+      { head: ["name (display name)", "الاسم (الاسم المعروض)"], cell: (r) => `<div class="cell-user"><span class="cell-thumb">${ic("globe")}</span><b>${esc(r.name)}</b></div>` },
+      { head: ["description", "الوصف"], align: "center", cell: (r) => esc(r.description || "---") },
+      { head: ["order", "الترتيب"], align: "center", cell: (r) => r.order || "---" },
+      { head: ["iso", "الرمز"], align: "center", cell: (r) => esc(r.code || "---") },
+      { head: ["status", "الحالة"], align: "center", cell: (r) => CRUD.statusBadge(r.active) },
+    ],
+    canDel: (r) => !["en", "ar"].includes(r.code),
+    form: { labelCols: true, createTitle: ["create language", "إنشاء لغة"], editTitle: ["edit language", "تعديل اللغة"], creatingText: ["create ...", "جاري الإنشاء ..."], updatingText: ["update ...", "جاري التحديث ..."],
+      fields: [imageField(false), { key: "name", label: ["name", "الاسم"], placeholder: ["enter name", "أدخل الاسم"], rules: [R.req, R.min(3, MIN3), R.max(50, MAX50)] },
+        { key: "description", label: ["description", "الوصف"], placeholder: ["enter description", "أدخل الوصف"], rules: [R.req, R.min(3, MIN3), R.max(50, MAX50)] },
+        { key: "code", label: ["code", "الرمز"], placeholder: ["enter code", "أدخل الرمز"], rules: [R.req, R.min(2, ["Minimum 2 symbols", "الحد الأدنى رمزان"]), R.max(50, MAX50)] },
+        { key: "order", type: "number", label: ["order", "الترتيب"], placeholder: ["enter order", "أدخل الترتيب"], rules: orderRules(true) }, Object.assign({}, statusField, { default: "1" })] },
+    del: {},
+  };
+
+  /* ---------- Banks (/banks/list — listed under Setup Files; every save reloads in the dashboard) ---------- */
+  D.banks = D.banks || ["Al Rajhi Bank", "Saudi National Bank", "Riyad Bank", "Alinma Bank", "Banque Misr", "Emirates NBD"].map((n, i) => ({ id: i + 1, name: n, order: i + 1, active: i === 5 ? 0 : 1 }));
+  CFG["setup-banks"] = {
+    title: ["Banks", "البنوك"], data: D.banks, pills: true, search: ["search by name", "البحث بالاسم"], add: ["add new", "إضافة جديد"], translation: { key: "bank", cols: [["name", ["name", "الاسم"]]] },
+    empty: ["there is no data to display", "لا توجد بيانات لعرضها"],
+    columns: [
+      { head: ["name", "الاسم"], cell: (r) => esc(r.name) },
+      { head: ["order", "الترتيب"], align: "center", cell: (r) => r.order },
+      { head: ["states", "الحالات"], align: "center", cell: (r) => CRUD.statusBadge(r.active) },
+    ],
+    form: { labelCols: true, createTitle: ["create Bank", "إنشاء بنك"], editTitle: ["Edit Bank", "تعديل البنك"], feedback: "alert", delay: 700,
+      fields: (row) => [{ key: "name", label: ["name", "الاسم"], placeholder: ["Enter bank name", "أدخل اسم البنك"], rules: row ? [R.req] : [R.req, R.min(2, ["Minimum 2 symbols", "الحد الأدنى رمزان"]), R.max(50, MAX50)] },
+        { key: "order", label: ["order", "الترتيب"], placeholder: ["Enter bank order", "أدخل ترتيب البنك"], rules: [R.req] },
+        { key: "active", label: ["status", "الحالة"], type: "select", placeholder: ["select status", "اختر الحالة"], options: () => [["1", L("active", "نشط")], ["0", L("inactive", "غير نشط")]], rules: [R.req], get: (r) => String(r.active) }] },
+    del: {},
+  };
+
+  /* ---------- Support categories (+ subcategories via ?parent=<id>) ---------- */
+  const STYPE = [["partner", ["Partner support", "دعم الشريك"]], ["user", ["user Support", "دعم المستخدم"]], ["booking", ["booking support", "دعم الحجز"]], ["public_event", ["public event support", "دعم الحدث العام"]]];
+  D.support = D.support || [["Payments", "partner"], ["Account access", "user"], ["Refunds", "booking"], ["Cancellations", "booking"], ["Event changes", "public_event"], ["App issues", "user"], ["Onboarding", "partner"]].map((s, i) => ({ id: i + 1, name: s[0], type: s[1], order: i + 1, tickets_count: 3 + ((i * 7) % 23), active: i === 6 ? 0 : 1,
+    subs: ["General", "Urgent", "Other"].slice(0, 1 + (i % 3)).map((n, j) => ({ id: (i + 1) * 10 + j, name: n, order: j + 1, tickets_count: (i + j) % 6, active: 1 })) }));
+  D.support.forEach((s) => (s.subcategories_count = s.subs.length));
+  const SUPREQ = { name: [(v) => (!v ? L("Please Enter category name", "الرجاء إدخال اسم الفئة") : ""), R.min(3, ["Name should be 3 letters at least", "يجب أن يتكون الاسم من 3 أحرف على الأقل"])],
+    order: [(v) => (v === "" ? L("Please Enter Order", "الرجاء إدخال الترتيب") : ""), (v) => (!/^-?\d+$/.test(v) ? L("accepts integer only", "يقبل أرقام صحيحة فقط") : ""), (v) => (+v < 1 ? L("accepts positive numbers only", "يقبل أرقام موجبة فقط") : "")] };
+  const supFields = (withType) => [{ key: "name", label: ["Name", "الاسم"], placeholder: ["Enter type name", "أدخل اسم الخدمة"], rules: SUPREQ.name }, { key: "order", type: "number", label: ["order", "الترتيب"], placeholder: ["Enter type order", "أدخل ترتيب الخدمة"], rules: SUPREQ.order }, Object.assign({}, statusField, { default: "1" })]
+    .concat(withType ? [{ key: "type", label: ["Type", "النوع"], type: "select", placeholder: ["Select Type...", "اختر النوع..."], options: () => STYPE.map((t) => [t[0], L(...t[1])]), rules: [R.req] }] : []);
+  const parentId = new URLSearchParams(location.search).get("parent");
+  const parent = parentId && D.support.find((s) => String(s.id) === parentId);
+  CFG["setup-support-categories"] = parent ? {
+    title: [`${parent.name} / ${L(...STYPE.find((t) => t[0] === parent.type)[1])}`, `${parent.name} / ${L(...STYPE.find((t) => t[0] === parent.type)[1])}`], crumbs: [["Support Categories", "فئات الدعم", "setup-support-categories.html"]],
+    baseQuery: "parent=" + parent.id, data: parent.subs, search: ["search by name", "البحث بالاسم"], minSearch: 3, add: ["add new", "إضافة جديد"], translation: { key: "support-department", cols: [["name", ["Name", "الاسم"]]] },
+    empty: ["There is no data yet", "لا توجد بيانات بعد"],
+    columns: [{ head: ["Name", "الاسم"], cell: (r) => `<b>${esc(r.name)}</b>` }, { head: ["order", "الترتيب"], align: "center", cell: (r) => r.order }, { head: ["tickets count", "عدد التذاكر"], align: "center", cell: (r) => r.tickets_count }, { head: ["states", "الحالات"], align: "center", cell: (r) => CRUD.statusBadge(r.active) }],
+    form: { labelCols: true, createTitle: ["Create New Subcategory", "إنشاء فئة فرعية جديدة"], editTitle: ["Edit Subcategory", "تعديل الفئة الفرعية"], creatingText: ["create ...", "جاري الإنشاء ..."], updatingText: ["update ...", "جاري التحديث ..."], fields: supFields(false) },
+    onSave: (v, r) => { if (r) Object.assign(r, v); else { parent.subs.unshift(Object.assign({ id: Date.now() % 100000, tickets_count: 0 }, v)); parent.subcategories_count = parent.subs.length; } },
+    del: { title: ["delete category", "حذف الفئة"], body: ["Are you sure you want to delete this category?", "هل أنت متأكد أنك تريد حذف هذه الفئة؟"] },
+  } : {
+    title: ["Support Categories", "فئات الدعم"], data: D.support, add: ["add new", "إضافة جديد"], search: ["search by category name", "البحث باسم الفئة"], minSearch: 3, translation: { key: "support-department", cols: [["name", ["Name", "الاسم"]]] },
+    pills: [{ key: "all", label: ["all", "الكل"] }].concat(STYPE.map((t) => ({ key: t[0], label: t[1], match: (r) => r.type === t[0] }))),
+    empty: ["There is no data yet", "لا توجد بيانات بعد"],
+    columns: [
+      { head: ["Name", "الاسم"], cell: (r) => `<b>${esc(r.name)}</b>` },
+      { head: ["Type", "النوع"], cell: (r) => L(...STYPE.find((t) => t[0] === r.type)[1]) },
+      { head: ["order", "الترتيب"], align: "center", cell: (r) => r.order },
+      { head: ["tickets count", "عدد التذاكر"], align: "center", cell: (r) => r.tickets_count },
+      { head: ["subcategories", "الفئات الفرعية"], align: "center", cell: (r) => `<a href="setup-support-categories.html?parent=${r.id}" style="color:var(--color-text-link);font-weight:var(--weight-semibold)">${r.subcategories_count} ${L("Subcategories", "فئات الفرعية")}</a>` },
+      { head: ["states", "الحالات"], align: "center", cell: (r) => CRUD.statusBadge(r.active) },
+    ],
+    form: { labelCols: true, createTitle: ["Create New support category", "إنشاء فئة دعم جديدة"], editTitle: ["edit Category", "تعديل الفئة"], creatingText: ["create ...", "جاري الإنشاء ..."], updatingText: ["update ...", "جاري التحديث ..."], fields: supFields(true) },
+    onSave: (v, r) => { if (r) Object.assign(r, v); else D.support.unshift(Object.assign({ id: Date.now() % 100000, tickets_count: 0, subs: [], subcategories_count: 0 }, v)); },
+    del: { title: ["delete category", "حذف الفئة"], body: ["Are you sure you want to delete this category?", "هل أنت متأكد أنك تريد حذف هذه الفئة؟"] },
+  };
+
+  CRUD.page(CFG[file] || CFG["setup-types"]);
+})();
+</script>
+</body>
+</html>

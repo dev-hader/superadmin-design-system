@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Foundations · HighFive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .comp-list { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 2px; }
+  .comp-list button { text-align: start; padding: 9px 12px; border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); display: flex; align-items: center; gap: 8px; }
+  .comp-list button svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .comp-list button:hover { background: var(--color-surface-hover); color: var(--color-text); }
+  .comp-list button.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .comp-list__label { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--color-text-tertiary); padding: var(--space-4) 12px 4px; }
+  .comp-list__label:first-child { padding-top: 4px; }
+  .comp-stage { flex: 1; min-width: 0; background: var(--color-surface-sunken); border-radius: var(--radius-lg); padding: var(--space-8); }
+  .comp-stage__head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-5); }
+  .comp-stage__head .kpi-ic { width: 36px; height: 36px; }
+  .comp-stage__head .kpi-ic svg { width: 18px; height: 18px; }
+  .comp-stage__note { margin-top: var(--space-4); }
+  .fd-label { display: block; font-size: var(--text-xs); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: var(--tracking-wide); color: var(--color-text-tertiary); margin-bottom: var(--space-3); }
+  .fd-block + .fd-block { margin-top: var(--space-6); }
+  .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: var(--space-2); }
+  .icon-cell { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); padding: var(--space-4) var(--space-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); transition: border-color var(--duration-fast), box-shadow var(--duration-fast); }
+  .icon-cell:hover { border-color: var(--color-primary-ink); box-shadow: var(--shadow-sm); }
+  .icon-cell svg { width: 20px; height: 20px; color: var(--color-text-secondary); }
+  .icon-cell code { font-size: 10.5px; font-family: var(--font-mono); color: var(--color-text-tertiary); word-break: break-all; text-align: center; }
+  .space-row { display: flex; align-items: center; gap: var(--space-4); padding: 6px 0; border-bottom: 1px dashed var(--color-border-subtle); }
+  .space-row:last-child { border-bottom: none; }
+  .space-row code { width: 110px; flex-shrink: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-text-tertiary); }
+  .space-row .bar { height: 14px; background: var(--color-primary); border-radius: var(--radius-xs); }
+  .space-row .px { font-size: var(--text-xs); color: var(--color-text-tertiary); }
+  .fx-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-4); }
+  .fx-box { height: 92px; border-radius: var(--radius-md); background: var(--color-surface); display: grid; place-items: center; }
+  .fx-box code { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--color-text-tertiary); }
+  .type-demo { border-bottom: 1px dashed var(--color-border-subtle); padding: var(--space-3) 0; display: flex; align-items: baseline; gap: var(--space-4); flex-wrap: wrap; }
+  .type-demo:last-child { border-bottom: none; }
+  .type-demo code { width: 140px; flex-shrink: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-text-tertiary); }
+  .type-demo .px { font-size: var(--text-xs); color: var(--color-text-tertiary); margin-inline-start: auto; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner">
+
+      <header class="page-head animate-in" style="margin-bottom:var(--space-6)">
+        <h1>Foundations</h1>
+        <p class="lead">The raw material every component is built from — colors, type, space, elevation and icons, live from tokens.css.</p>
+      </header>
+
+      <div class="row" style="align-items:flex-start;gap:var(--space-6)">
+        <nav class="comp-list" id="compList" aria-label="Foundations"></nav>
+        <div class="comp-stage" id="compStage"></div>
+      </div>
+
+    </div></main>
+  </div>
+</div>
+<div class="device-stage" id="deviceStage"></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script>
+(() => {
+  RD.boot({ activeId: "foundations", title: "Foundations" });
+  const ic = RD.icon;
+
+  const scaleRow = (prefix, steps) => `
+    <div class="scale-row">${steps.map((s) => `<div class="scale-cell" style="background:var(--${prefix}-${s});color:${+s >= 500 ? "rgba(255,255,255,.85)" : "rgba(0,0,0,.55)"}">${s}</div>`).join("")}</div>`;
+  const roleRow = (token, use) => `
+    <tr><td><span class="token-chip" style="background:var(${token})"></span></td><td><code>${token}</code></td><td class="text-secondary">${use}</td></tr>`;
+
+  const SECTIONS = [
+    { group: "Color", id: "scales", title: "Brand color scales", icon: "layers", body: () => `
+      <div class="fd-block"><span class="fd-label">Brand green (primary) — --lime-50 … --lime-950</span>${scaleRow("lime", [50,100,200,300,400,500,600,700,800,900,950])}</div>
+      <div class="fd-block"><span class="fd-label">Brand navy (secondary / accent) — --navy-50 … --navy-950</span>${scaleRow("navy", [50,100,200,300,400,500,600,700,800,900,950])}</div>
+      <div class="fd-block"><span class="fd-label">Ink (locked dark surfaces)</span>
+        <div class="swatch-grid">
+          ${[["--ink-canvas","canvas"],["--ink-surface","surface"],["--ink-raised","raised"],["--ink-border","border"],["--ink-text","text"],["--ink-muted","muted"]].map(([t,n]) => `
+            <div class="swatch"><div class="swatch__color" style="background:var(${t})"></div><div class="swatch__meta"><div class="name">${n}</div><div class="val">${t}</div></div></div>`).join("")}
+        </div>
+      </div>
+      <p class="t-xs text-tertiary comp-stage__note">Primitives are raw material — components never reference them directly. The scale keeps its historical --lime-* names; the values are the Super Admin orange (#FC6404 = --lime-500).</p>` },
+    { group: "Color", id: "roles", title: "Semantic roles", icon: "sliders", body: () => `
+      <table class="token-table"><thead><tr><th></th><th>Token</th><th>Used for</th></tr></thead><tbody>
+        ${roleRow("--color-primary", "Primary fills: main CTA, selected day/slot — always with --color-on-primary text")}
+        ${roleRow("--color-primary-ink", "Primary as TEXT or icon — readable on light surfaces (deep green in light, bright in dark)")}
+        ${roleRow("--color-primary-subtle", "Primary washes: active nav, selected chips, icon chips")}
+        ${roleRow("--color-accent", "Secondary brand (navy) — one rare high-emphasis moment per view")}
+        ${roleRow("--color-canvas", "App background")}
+        ${roleRow("--color-surface", "Cards, panels, table rows")}
+        ${roleRow("--color-surface-sunken", "Table headers, wells, pressed areas")}
+        ${roleRow("--color-text", "Primary text")}
+        ${roleRow("--color-text-secondary", "Supporting text")}
+        ${roleRow("--color-text-tertiary", "Captions, meta, placeholders")}
+        ${roleRow("--color-border", "Default borders")}
+        ${roleRow("--color-success", "Positive status")}
+        ${roleRow("--color-warning", "Attention status")}
+        ${roleRow("--color-danger", "Destructive / errors (salmon in dark — locked)")}
+        ${roleRow("--color-info", "Informational status")}
+      </tbody></table>
+      <p class="t-xs text-tertiary comp-stage__note">Components consume Tier-2 roles only. Both themes remap these roles — a component that sticks to them gets dark mode and the light remap for free.</p>` },
+    { group: "Type", id: "typography", title: "Typography", icon: "chat", body: () => `
+      <div class="fd-block"><span class="fd-label">Families</span>
+        <div class="type-demo"><code>--font-display</code><span style="font-family:var(--font-display);font-size:22px;font-weight:700">Space Grotesk — headings &amp; numbers</span></div>
+        <div class="type-demo"><code>--font-sans</code><span style="font-size:15px">Inter — body, forms, tables</span></div>
+        <div class="type-demo"><code>--font-ar-display</code><span style="font-family:var(--font-ar-display);font-size:20px;font-weight:600">نوتو كوفي عربي — العناوين</span></div>
+        <div class="type-demo"><code>--font-ar-body</code><span style="font-family:var(--font-ar-body);font-size:15px">آي بي إم بلكس عربي — النصوص والجداول</span></div>
+        <div class="type-demo"><code>--font-mono</code><span style="font-family:var(--font-mono);font-size:13px">JetBrains Mono — HF-24815 · SAR 180</span></div>
+      </div>
+      <div class="fd-block"><span class="fd-label">Scale</span>
+        ${[["--text-display","56 / 44"],["--text-h1","40 / 32"],["--text-h2","32 / 26"],["--text-h3","24 / 21"],["--text-title","20 / 18"],["--text-body","16"],["--text-sm","14"],["--text-caption","13"],["--text-xs","12"]].map(([t, px]) => `
+          <div class="type-demo"><code>${t}</code><span style="font-size:var(${t});font-weight:600;line-height:1.2;font-family:var(--font-display)">Aa تصميم</span><span class="px">${px}px</span></div>`).join("")}
+      </div>
+      <p class="t-xs text-tertiary comp-stage__note">≤1024px the display/heading steps compact automatically (the second number). Arabic families take over via html[lang="ar"] — tracking neutralizes, layout untouched.</p>` },
+    { group: "Layout", id: "spacing", title: "Spacing", icon: "steps", body: () => `
+      <span class="fd-label">8pt grid with 4px half-steps</span>
+      ${[1,2,3,4,5,6,8,10,12,16,20,24].map((s) => `
+        <div class="space-row"><code>--space-${s}</code><div class="bar" style="width:var(--space-${s})"></div><span class="px" data-space="${s}"></span></div>`).join("")}
+      <p class="t-xs text-tertiary comp-stage__note">Every margin, padding and gap uses a step — raw px values fail review.</p>` },
+    { group: "Layout", id: "radius", title: "Radius & borders", icon: "box", body: () => `
+      <div class="fd-block"><span class="fd-label">Radius</span>
+        <div class="fx-grid">
+          ${["xs","sm","md","lg","xl","2xl","3xl","full"].map((r) => `
+            <div class="fx-box" style="border:var(--border-base) solid var(--color-border-strong);border-radius:var(--radius-${r})"><code>--radius-${r}</code></div>`).join("")}
+        </div>
+      </div>
+      <div class="fd-block"><span class="fd-label">Border widths</span>
+        <div class="fx-grid">
+          ${[["thin","1px"],["base","1.5px"],["thick","2px"]].map(([b, px]) => `
+            <div class="fx-box" style="border:var(--border-${b}) solid var(--color-primary-ink)"><code>--border-${b} · ${px}</code></div>`).join("")}
+        </div>
+      </div>
+      <p class="t-xs text-tertiary comp-stage__note">Buttons/inputs sit on --radius-md, cards on --radius-lg, modals on --radius-xl. Never invent an in-between value.</p>` },
+    { group: "Effects", id: "shadows", title: "Shadows & elevation", icon: "moon", body: () => `
+      <div class="fx-grid" style="gap:var(--space-5)">
+        ${["xs","sm","md","lg","xl"].map((s) => `<div class="fx-box" style="box-shadow:var(--shadow-${s})"><code>--shadow-${s}</code></div>`).join("")}
+        <div class="fx-box" style="box-shadow:var(--shadow-glass);background:var(--glass-bg);backdrop-filter:var(--glass-blur)"><code>--shadow-glass</code></div>
+        <div class="fx-box" style="box-shadow:var(--shadow-focus)"><code>--shadow-focus</code></div>
+      </div>
+      <p class="t-xs text-tertiary comp-stage__note">Elevation is meaning: xs/sm rest on the page, md is lifted (hover, dropdowns), lg/xl float (drawers, modals). --shadow-focus is the universal focus ring — never remove it.</p>` },
+    { group: "Effects", id: "motion", title: "Motion", icon: "flash", body: () => `
+      <div class="fd-block"><span class="fd-label">Durations</span>
+        <table class="token-table"><tbody>
+          ${[["--duration-instant","80ms","state ticks: checkbox, switch"],["--duration-fast","140ms","hovers, small reveals"],["--duration-base","220ms","panels, drawers, theme change"],["--duration-slow","360ms","page-level entrances"]].map(([t, v, u]) => `
+            <tr><td><code>${t}</code></td><td style="font-family:var(--font-mono);font-size:var(--text-xs)">${v}</td><td class="text-secondary">${u}</td></tr>`).join("")}
+        </tbody></table>
+      </div>
+      <div class="fd-block"><span class="fd-label">Easings</span>
+        <table class="token-table"><tbody>
+          ${[["--ease-standard","everyday transitions"],["--ease-out","entrances — fast start, soft landing"],["--ease-in","exits"],["--ease-spring","playful pops: steppers, toggles"]].map(([t, u]) => `
+            <tr><td><code>${t}</code></td><td class="text-secondary">${u}</td></tr>`).join("")}
+        </tbody></table>
+      </div>
+      <p class="t-xs text-tertiary comp-stage__note">Motion is feedback, never decoration — and every animation in the system is wrapped in a prefers-reduced-motion guard.</p>` },
+    { group: "Assets", id: "icons", title: "Iconography", icon: "flash", body: () => `
+      <span class="fd-label">The complete inventory — <span id="iconCount"></span> icons, 24px viewBox, 1.75 stroke</span>
+      <div class="icon-grid">
+        ${RD.iconNames.map((n) => `<div class="icon-cell">${ic(n)}<code>${n}</code></div>`).join("")}
+      </div>
+      <p class="t-xs text-tertiary comp-stage__note">This grid renders straight from RD.icon's source — it can never drift. An unknown name renders the warn glyph and logs a console warning (closed-world guard). Need a new icon? Governance flow, MINOR bump.</p>` },
+    { group: "Assets", id: "result-illustrations", title: "Result illustrations", icon: "flash", body: () => `
+      <span class="fd-label">9 files, from the client identity handoff — assets/img/status/</span>
+      <div class="icon-grid">
+        ${[
+          ["01_success_check", "Success"], ["02_payment_success", "Payment success"],
+          ["03_complaint_submitted", "Complaint submitted"], ["04_booking_cancelled", "Booking cancelled"],
+          ["05_refund_requested", "Refund requested"], ["06_review_submitted", "Review submitted"],
+          ["07_no_results", "No results (full page)"], ["08_no_bookings", "No bookings (full page)"],
+          ["09_general_error", "General error"],
+        ].map(([f, label]) => `<div class="icon-cell"><img src="assets/img/status/${f}.png" width="44" height="44" alt="" style="border-radius:var(--radius-md)"><code>${label}</code></div>`).join("")}
+      </div>
+      <p class="t-xs text-tertiary comp-stage__note">For a dedicated confirmation/result screen or modal — NOT the inline empty-state composite, which stays illustration-free by its own rule. Usage map + reference markup: <code>design-system/patterns/result-illustrations.md</code>.</p>` },
+  ];
+
+  function render(id) {
+    const s = SECTIONS.find((x) => x.id === id);
+    let lastGroup = null;
+    document.getElementById("compList").innerHTML = SECTIONS.map((x) => {
+      const groupHtml = x.group !== lastGroup ? `<div class="comp-list__label">${x.group}</div>` : "";
+      lastGroup = x.group;
+      return `${groupHtml}<button class="${x.id === id ? "is-active" : ""}" data-comp="${x.id}">${ic(x.icon)}${x.title}</button>`;
+    }).join("");
+    document.getElementById("compStage").innerHTML = `
+      <div class="comp-stage__head"><span class="kpi-ic">${ic(s.icon)}</span><b class="t-title">${s.title}</b></div>
+      ${s.body()}`;
+    /* live px readouts (computed, so they stay honest at any breakpoint) */
+    document.querySelectorAll("[data-space]").forEach((el) => {
+      el.textContent = getComputedStyle(document.documentElement).getPropertyValue("--space-" + el.dataset.space).trim();
+    });
+    const count = document.getElementById("iconCount");
+    if (count) count.textContent = RD.iconNames.length;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  document.getElementById("compList").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-comp]"); if (b) render(b.dataset.comp);
+  });
+  render(SECTIONS[0].id);
+})();
+</script>
+</body>
+</html>

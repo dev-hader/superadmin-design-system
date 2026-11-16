@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>employees · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/sa-emp.js"></script>
+<script>
+(() => {
+  /* Employees — mirrors pages/emploayees (list): add new, pills (all · active ·
+     inactive), search by name / phone / email, Filter (country · job), 7 columns,
+     row actions reset password · edit · delete. All feedback is inline alerts
+     inside the modals (no toasts), as in the dashboard. API: GET /employees. */
+  RD.boot({ activeId: "emp-list", title: "employees" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic, badge } = SA;
+  const S = HF.SA, data = S.employees;
+  const mount = document.getElementById("listMount");
+  const dash = (v) => (v == null || v === "" ? "---" : esc(v));
+  const countries = [...new Map(S.GEO.map((g) => [g.country.iso, g.country.name])).entries()];
+  const CODES = { SA: "+966", EG: "+20", AE: "+971" };
+
+  SA.head(document.getElementById("pageHead"), { title: ["employees", "الموظفين"], actions: PP.btn(L("add new", "إضافة جديد"), "plus", "data-add") });
+  const ctl = SA.list({
+    mount, data,
+    pills: [{ key: "all", label: ["all", "الكل"] }, { key: "1", label: ["active", "نشط"] }, { key: "0", label: ["inactive", "غير نشط"] }],
+    pillMatch: (r, k) => k === "all" || String(r.active) === k,
+    search: ["search by name, phone, or email", "البحث بالاسم أو الهاتف أو البريد الإلكتروني"],
+    searchMatch: (r, q) => [r.name, r.phone, r.email].some((v) => v.toLowerCase().includes(q)),
+    toolbarExtra: PP.filterBtn(),
+    extraMatch: (r, f) => (!f.country || r.country.iso === f.country) && (!f.job_id || String(r.job.id) === f.job_id),
+    empty: ["There is no data to display.", "لا توجد بيانات للعرض."],
+    columns: [
+      { head: ["name", "الاسم"], cell: (r) => `<div class="cell-user">${PP.avatar(r.name)}<div><b>${esc(r.name)}</b><div class="t-xs text-tertiary">${esc(r.created_at)}</div></div></div>` },
+      { head: ["phone", "الهاتف"], align: "center", cell: (r) => `<span dir="ltr">${dash(r.phone)}</span>` },
+      { head: ["Email", "البريد الإلكتروني"], align: "center", cell: (r) => dash(r.email) },
+      { head: ["job", "الوظيفة"], align: "center", cell: (r) => dash(r.job && r.job.name) },
+      { head: ["country", "البلد"], align: "center", cell: (r) => dash(r.country.name) },
+      { head: ["status", "الحالة"], align: "center", cell: (r) => (r.active === 1 ? badge("primary", L("active", "نشط")) : badge("danger", L("inactive", "غير نشط"))) },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<div class="row gap-1" style="justify-content:center">${SA.iconBtn("lock", L("reset password", "إعادة تعيين كلمة المرور"), `data-pass="${r.id}"`)}${SA.iconBtn("edit", L("edit employee", "تعديل موظف"), `data-edit="${r.id}"`)}${SA.iconBtn("trash", L("delete item", "حذف العنصر"), `data-del="${r.id}"`)}</div>` },
+    ],
+  });
+
+  /* ---------- helpers ---------- */
+  const errBox = (el, k, m) => (el.querySelector(`[data-e="${k}"]`).innerHTML = m ? `<span class="field__error">${ic("warn")} ${m}</span>` : "");
+  const row = (label, control, k) => `<div class="sa-formrow"><label class="field__label">${label}:</label><div class="stack gap-1">${control}<span data-e="${k}"></span></div></div>`;
+  const REQ = L("this field is required", "هذا الحقل مطلوب"), MIN3 = L("Minimum 3 symbols", "الحد الأدنى 3 رموز"), MAX50 = L("Maximum 50 symbols", "الحد الأقصى 50 رمز");
+  const PHONE_RE = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
+
+  /* ---------- Create / Edit employee ---------- */
+  function form(emp) {
+    const isNew = !emp, codes = [...new Set(Object.values(CODES))];
+    const el = SA.modal({ id: "empForm", wide: true, title: isNew ? L("create employee", "إنشاء موظف") : L("edit employee", "تعديل موظف"), body: `<div class="stack gap-4"><div data-alert></div>
+        ${row(L("Image", "صورة"), `<div class="row gap-3" style="align-items:center"><span class="cell-thumb" style="width:125px;height:125px;border-radius:var(--radius-lg)">${emp ? esc(PP.initials(emp.name)) : ic("camera")}</span>
+          <div class="stack gap-2"><label class="btn btn--sm btn--secondary">${ic("edit")}<span>Change image</span><input type="file" accept=".png,.jpg,.jpeg" data-img hidden></label><span class="t-xs text-tertiary">${L("Max size 1MB for images", "الحد الأقصى للصور 1 ميجابايت")}</span></div></div>`, "img")}
+        ${row(L("name", "الاسم"), `<input class="input" data-f="name" value="${esc(emp ? emp.name : "")}" placeholder="${L("enter name", "أدخل الاسم")}">`, "name")}
+        ${row(L("Email", "البريد الإلكتروني"), `<input class="input" data-f="email" value="${esc(emp ? emp.email : "")}" placeholder="${L("Enter email address", "أدخل البريد الإلكتروني")}">`, "email")}
+        ${row(L("phone", "الهاتف"), `<div class="row gap-2" dir="ltr">${SA.select(codes.map((c) => [c, c, emp ? emp.phone_code === c : c === codes[0]]), 'data-f="code" style="width:110px"')}<input class="input" data-f="phone" value="${esc(emp ? emp.phone : "")}" placeholder="${L("enter phone", "أدخل الهاتف")}"></div>`, "phone")}
+        ${row(L("job", "الوظيفة"), SA.select(S.jobs.map((j, i) => [j.id, j.name, emp ? emp.job.id === j.id : i === 0]), 'data-f="job"'), "job")}
+        ${row(L("country", "البلد"), SA.select(countries.map((c, i) => [c[0], c[1], emp ? emp.country.iso === c[0] : i === 0]), 'data-f="country"'), "country")}
+        ${row(L("status", "الحالة"), SA.select([["1", L("active", "نشط"), !emp || emp.active === 1], ["0", L("inactive", "غير نشط"), emp && emp.active === 0]], 'data-f="active"'), "active")}</div>`,
+      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${isNew ? L("create", "إنشاء") : L("update", "تحديث")}</button>` });
+    el.querySelector(".modal__foot").style.justifyContent = "space-between";
+    el.querySelector("[data-img]").onchange = (e) => errBox(el, "img", e.target.files[0] && e.target.files[0].size > 1024 * 1024 ? L("Max size 1MB for images", "الحد الأقصى للصور 1 ميجابايت") : "");
+    el.querySelector("[data-ok]").onclick = (e) => {
+      const v = (k) => el.querySelector(`[data-f="${k}"]`).value.trim();
+      const n = v("name"), m = v("email"), p = v("phone");
+      errBox(el, "name", !n ? REQ : n.length < 3 ? MIN3 : n.length > 50 ? MAX50 : "");
+      errBox(el, "email", !m ? REQ : !/^\S+@\S+\.\S+$/.test(m) ? L("Wrong email format", "تنسيق البريد الإلكتروني خاطئ") : m.length > 50 ? MAX50 : "");
+      errBox(el, "phone", !p ? REQ : !PHONE_RE.test(p) ? L("phone number is not valid", "رقم الهاتف غير صحيح") : "");
+      if (el.querySelector(".field__error")) return;
+      const b = e.currentTarget; b.disabled = true; b.textContent = isNew ? L("creating ...", "جاري الإنشاء ...") : L("updating ...", "جاري التحديث ...");
+      setTimeout(() => {
+        const job = S.jobs.find((j) => String(j.id) === v("job")), c = countries.find((x) => x[0] === v("country"));
+        const vals = { name: n, email: m, phone: p, phone_code: v("code"), job, country: { iso: c[0], name: c[1] }, active: +v("active") };
+        if (isNew) data.unshift(Object.assign({ id: Math.max(...data.map((x) => x.id)) + 1, image: null, created_at: "2026-11-16 10:00:00" }, vals)); else Object.assign(emp, vals);
+        SA.close(el); ctl.paint(); /* success is silent in the dashboard */
+      }, 400);
+    };
+  }
+  /* ---------- Reset password — POST /employees/set-password ---------- */
+  function pass(emp) {
+    const el = SA.modal({ id: "empPass", title: L("reset password", "إعادة تعيين كلمة المرور"), body: `<div class="stack gap-4"><div data-alert></div>
+        <div class="field"><label class="field__label">${L("new password", "كلمة المرور الجديدة")}</label><input class="input" type="password" data-p placeholder="${L("enter new password", "أدخل كلمة المرور الجديدة")}"><span data-e="p"></span></div>
+        <div class="field"><label class="field__label">${L("confirm new password", "تأكيد كلمة المرور الجديدة")}</label><input class="input" type="password" data-c placeholder="${L("enter confirm new password", "أدخل تأكيد كلمة المرور الجديدة")}"><span data-e="c"></span></div></div>`,
+      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${L("update", "تحديث")}</button>` });
+    el.querySelector("[data-ok]").onclick = (e) => {
+      const p = el.querySelector("[data-p]").value, c = el.querySelector("[data-c]").value;
+      const len = (x) => (x.length < 8 ? L("Minimum 8 symbols", "الحد الأدنى 8 رموز") : x.length > 50 ? MAX50 : "");
+      errBox(el, "p", !p ? L("Password is required", "كلمة المرور مطلوبة") : len(p));
+      errBox(el, "c", !c ? L("Password confirmation is required", "تأكيد كلمة المرور مطلوب") : len(c) || (c !== p ? L("Password and Confirm Password didn't match", "كلمة المرور وتأكيد كلمة المرور غير متطابقتين") : ""));
+      if (el.querySelector(".field__error")) return;
+      const b = e.currentTarget; b.disabled = true; b.textContent = L("updating ...", "جاري التحديث ...");
+      setTimeout(() => SA.close(el), 400);
+    };
+  }
+  /* ---------- Delete — DELETE /employees/{id} ---------- */
+  function del(emp) {
+    const el = SA.modal({ id: "empDel", title: L("delete item", "حذف العنصر"), body: `<p class="t-sm text-secondary">${L("Please confirm that you want to delete this item", "يرجى تأكيد أنك تريد حذف هذا العنصر")}</p>`,
+      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn btn--danger" data-ok>${L("Confirm", "تأكيد")}</button>` });
+    el.querySelector("[data-ok]").onclick = (e) => { e.currentTarget.disabled = true; e.currentTarget.textContent = L("Confirming ...", "جاري التأكيد ..."); setTimeout(() => { data.splice(data.indexOf(emp), 1); SA.close(el); ctl.paint(); }, 400); };
+  }
+
+  document.addEventListener("click", (e) => {
+    const find = (id) => data.find((x) => String(x.id) === id);
+    if (e.target.closest("[data-add]")) return form(null);
+    const t = e.target.closest("[data-pass],[data-edit],[data-del]");
+    if (t) return t.dataset.pass ? pass(find(t.dataset.pass)) : t.dataset.edit ? form(find(t.dataset.edit)) : del(find(t.dataset.del));
+    const fb = e.target.closest("[data-filter]");
+    if (fb) PP.filterPop(fb, { width: 300, value: ctl.state.extra, fields: [
+      { key: "country", label: ["country :", "البلد :"], placeholder: ["Select country", "اختر البلد"], options: () => countries },
+      { key: "job_id", label: ["job :", "الوظيفة :"], placeholder: ["Select job", "اختر الوظيفة"], options: () => S.jobs.map((j) => [String(j.id), j.name]) },
+    ], onApply: (d) => { ctl.state.extra = d; ctl.state.page = 1; ctl.paint(); } });
+  });
+})();
+</script>
+</body>
+</html>

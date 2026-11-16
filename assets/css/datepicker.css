@@ -1,0 +1,135 @@
+/* =============================================================================
+   HF DATE PICKER - flatpickr theme
+   -----------------------------------------------------------------------------
+   Restyles the flatpickr calendar (loaded + attached by assets/js/datepicker.js)
+   to match this design system's tokens, so it reacts to theme (dark/light) and
+   Identity switching (--color-primary) instead of flatpickr's default blue.
+   Only ever targets ".flatpickr-calendar.hf-datepicker" (the class our JS adds
+   in onReady) so this never leaks onto some other unrelated flatpickr usage.
+   Link this on any page that calls HFDatePicker.init(...).
+   ============================================================================= */
+
+.flatpickr-calendar.hf-datepicker {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  width: 307.875px;
+  z-index: var(--z-popover);
+}
+.flatpickr-calendar.hf-datepicker.arrowTop:before,
+.flatpickr-calendar.hf-datepicker.arrowTop:after { display: none; } /* no default flatpickr "speech bubble" tail - DS popovers don't use one */
+.flatpickr-calendar.hf-datepicker.arrowBottom:before,
+.flatpickr-calendar.hf-datepicker.arrowBottom:after { display: none; }
+
+/* ---------- Month header (prev/next nav + month & year) ---------- */
+.hf-datepicker .flatpickr-months { padding: var(--space-3) var(--space-3) 0; }
+.hf-datepicker .flatpickr-month { color: var(--color-text); fill: var(--color-text); height: 40px; }
+.hf-datepicker .flatpickr-current-month { font-size: var(--text-sm); font-weight: var(--weight-semibold); padding-top: 0; height: 40px; display: flex; align-items: center; justify-content: center; }
+.hf-datepicker .flatpickr-current-month span.cur-month { font-weight: var(--weight-semibold); color: var(--color-text); }
+.hf-datepicker .flatpickr-current-month span.cur-month:hover { background: var(--color-surface-hover); border-radius: var(--radius-sm); }
+.hf-datepicker .flatpickr-current-month input.cur-year { font-weight: var(--weight-semibold); color: var(--color-text); }
+.hf-datepicker .flatpickr-current-month .flatpickr-monthDropdown-months:hover { background: var(--color-surface-hover); border-radius: var(--radius-sm); }
+.hf-datepicker .numInputWrapper:hover { background: var(--color-surface-hover); border-radius: var(--radius-sm); }
+.hf-datepicker .numInputWrapper span.arrowUp:after { border-bottom-color: var(--color-text-secondary); }
+.hf-datepicker .numInputWrapper span.arrowDown:after { border-top-color: var(--color-text-secondary); }
+
+.hf-datepicker .flatpickr-prev-month,
+.hf-datepicker .flatpickr-next-month {
+  color: var(--color-text-secondary);
+  fill: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  height: 32px; padding: 6px;
+}
+.hf-datepicker .flatpickr-prev-month:hover,
+.hf-datepicker .flatpickr-next-month:hover { color: var(--color-primary-ink); fill: var(--color-primary-ink); background: var(--color-primary-subtle); }
+.hf-datepicker .flatpickr-prev-month svg,
+.hf-datepicker .flatpickr-next-month svg { width: 14px; height: 14px; }
+
+/* ---------- Weekday row ---------- */
+.hf-datepicker .flatpickr-weekdays { margin-top: var(--space-2); }
+.hf-datepicker span.flatpickr-weekday {
+  color: var(--color-text-tertiary);
+  font-weight: var(--weight-medium);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+}
+
+/* ---------- Day grid ---------- */
+.hf-datepicker .flatpickr-days { border: none; width: 307.875px; }
+.hf-datepicker .dayContainer { width: 307.875px; min-width: 307.875px; max-width: 307.875px; padding: var(--space-2) var(--space-3) var(--space-3); box-shadow: none; }
+.hf-datepicker .flatpickr-day {
+  color: var(--color-text);
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  font-size: var(--text-sm);
+}
+.hf-datepicker .flatpickr-day.prevMonthDay,
+.hf-datepicker .flatpickr-day.nextMonthDay,
+.hf-datepicker .flatpickr-day.flatpickr-disabled,
+.hf-datepicker .flatpickr-day.flatpickr-disabled:hover,
+.hf-datepicker .flatpickr-day.notAllowed { color: var(--color-text-disabled); background: transparent; border-color: transparent; }
+
+.hf-datepicker .flatpickr-day:hover,
+.hf-datepicker .flatpickr-day:focus,
+.hf-datepicker .flatpickr-day.prevMonthDay:hover,
+.hf-datepicker .flatpickr-day.nextMonthDay:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+/* today (not selected): outlined in the identity's primary color */
+.hf-datepicker .flatpickr-day.today { border-color: var(--color-primary); }
+.hf-datepicker .flatpickr-day.today:hover,
+.hf-datepicker .flatpickr-day.today:focus { background: var(--color-primary-subtle); border-color: var(--color-primary); color: var(--color-primary-ink); }
+
+/* selected day (and range endpoints, for any future range use): solid primary fill */
+.hf-datepicker .flatpickr-day.selected,
+.hf-datepicker .flatpickr-day.startRange,
+.hf-datepicker .flatpickr-day.endRange,
+.hf-datepicker .flatpickr-day.selected:hover,
+.hf-datepicker .flatpickr-day.startRange:hover,
+.hf-datepicker .flatpickr-day.endRange:hover,
+.hf-datepicker .flatpickr-day.selected:focus,
+.hf-datepicker .flatpickr-day.selected.today {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text-inverse);
+  box-shadow: none;
+}
+.hf-datepicker .flatpickr-day.inRange {
+  background: var(--color-primary-subtle);
+  border-color: var(--color-primary-subtle);
+  box-shadow: -5px 0 0 var(--color-primary-subtle), 5px 0 0 var(--color-primary-subtle);
+}
+
+/* ---------- RTL (Arabic) ----------
+   flatpickr's own CSS hardcodes "direction: ltr" directly on
+   .flatpickr-calendar (verified in its shipped stylesheet) - that beats the
+   dir="rtl" attribute datepicker.js sets on the container (an author rule
+   always outranks the attribute-mapped presentational hint), so the
+   month/weekday/day flex rows do NOT mirror on their own. This explicit
+   "direction: rtl" (two classes = higher specificity than flatpickr's single
+   ".flatpickr-calendar" rule) is what actually reverses their flex order.
+   Once that's real, the only remaining fix is the prev/next chevron glyphs,
+   which keep pointing their original LTR way after the flex reversal - same
+   fix this DS already applies to pagination chevrons ([dir="rtl"]
+   .pg-prev/.pg-next svg in components.css). */
+.flatpickr-calendar.hf-datepicker.hf-datepicker--rtl { direction: rtl; }
+
+/* flatpickr also hardcodes the prev/next month buttons to PHYSICAL
+   left:0 / right:0 (position: absolute) with its own "rtl:begin:ignore"
+   comments marking those two rules as deliberately exempt from any RTL
+   auto-flip tooling - so unlike the weekday/day flex rows, "direction: rtl"
+   above does nothing for these two buttons and they must be swapped by hand.
+   (4 class selectors here vs flatpickr's 3, so this reliably wins the
+   cascade regardless of stylesheet load order.) */
+.hf-datepicker.hf-datepicker--rtl .flatpickr-months .flatpickr-prev-month { left: auto; right: 0; }
+.hf-datepicker.hf-datepicker--rtl .flatpickr-months .flatpickr-next-month { right: auto; left: 0; }
+.hf-datepicker--rtl .flatpickr-prev-month svg,
+.hf-datepicker--rtl .flatpickr-next-month svg { transform: scaleX(-1); }
+.hf-datepicker--rtl span.flatpickr-weekday,
+.hf-datepicker--rtl .flatpickr-current-month { font-family: var(--font-sans); } /* Cairo (Arabic) falls back through --font-sans's stack */

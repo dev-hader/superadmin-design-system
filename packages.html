@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Packages · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script>
+(() => {
+  /* Packages — mirrors pages/packages (global list): approval pills with
+     counts, search, Filter with an active-groups count (partner · branch ·
+     partner status · selling · validity · commission · created date),
+     sortable Name/Subscribers/Status, 11 columns, eye → package details.
+     Page sizes 20/50/100. API: GET /packages, /packages/filter-options. */
+  RD.boot({ activeId: "packages", title: "Packages" });
+  /* the detail page's Back returns to the exact list URL (dashboard: sessionStorage packages:listUrl) */
+  try { sessionStorage.setItem("packages:listUrl", location.pathname.split("/").pop() + location.search); } catch (e) {}
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic, badge, fmt } = SA;
+  const data = HF.SA.packages;
+
+  SA.head(document.getElementById("pageHead"), { title: ["Packages", "الباقات"] });
+
+  const APPROVAL = {
+    pending: () => badge("warning", L("Pending", "قيد المراجعة")),
+    approved: () => badge("success", L("Approved", "مقبولة")),
+    not_approved: () => badge("danger", L("Not Approved", "غير مقبولة")),
+  };
+  const initials = (s) => (s || "?").trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+  const dash = (v) => (v == null || v === "" ? "---" : esc(v));
+  const activeGroups = (f) => ["partners", "branches", "partner_status", "selling", "validity"].filter((k) => f[k] && f[k].length).length + (f.commission ? 1 : 0) + (f.from || f.to ? 1 : 0);
+
+  const ctl = SA.list({
+    mount: document.getElementById("listMount"),
+    data,
+    sizes: [20, 50, 100],
+    cardTitle: ["Packages", "الباقات"],
+    pills: [
+      { key: "all", label: ["All", "الكل"] },
+      { key: "pending", label: ["Pending", "قيد المراجعة"] },
+      { key: "approved", label: ["Approved", "مقبولة"] },
+      { key: "not_approved", label: ["Not Approved", "غير مقبولة"] },
+    ],
+    pillMatch: (r, k) => k === "all" || r.approval_status.value === k,
+    search: ["Search by package name", "ابحث باسم الباقة"],
+    searchMatch: (r, q) => r.name.toLowerCase().includes(q),
+    toolbarExtra: (st) => {
+      const n = activeGroups(st.extra);
+      return `<button type="button" class="btn btn--sm btn--secondary" data-filter aria-haspopup="dialog">${ic("sliders")}<span>${L("Filter", "تصفية")}</span>${n ? ` <span class="badge badge--primary">${n}</span>` : ""}</button>`;
+    },
+    extraMatch: (r, f) =>
+      (!f.partners || !f.partners.length || f.partners.includes(String(r.partner.id))) &&
+      (!f.branches || !f.branches.length || r.branches.some((b) => f.branches.includes(b.name))) &&
+      (!f.partner_status || !f.partner_status.length || f.partner_status.includes(r.partner_status.value)) &&
+      (!f.selling || !f.selling.length || f.selling.includes(r.selling_methodology.value)) &&
+      (!f.validity || !f.validity.length || f.validity.includes(r.validity.type)) &&
+      (!f.from || r.created_at.slice(0, 10) >= f.from) && (!f.to || r.created_at.slice(0, 10) <= f.to),
+    sorter: (a, b, k) => (k === "name" ? a.name.localeCompare(b.name) : k === "subscribers" ? a.subscribers.active - b.subscribers.active : a.approval_status.value.localeCompare(b.approval_status.value)),
+    empty: (st) => (st.q || st.pill !== "all" || activeGroups(st.extra) ? L("No packages match your search.", "لا توجد باقات تطابق بحثك.") : L("There are no packages yet.", "لا توجد باقات بعد.")),
+    columns: [
+      { head: ["Name", "الاسم"], sort: "name", cell: (r) => `<a href="package-detail.html?id=${r.id}&tab=details" style="font-weight:var(--weight-bold);color:var(--color-text)">${esc(r.name)}</a>
+          <div class="t-xs text-secondary">${r.categories.map(esc).join(" · ")}</div><div class="t-xs text-tertiary">${esc(r.created_at)}</div>
+          ${r.partner_status.value !== "active" ? badge("danger", r.partner_status.label) : ""}` },
+      { head: ["Partner", "الشريك"], cell: (r) => `<div class="cell-user"><span class="avatar avatar--xs">${esc(initials(r.partner.name))}</span>
+          <div><a href="partner-profile.html?id=${r.partner.id}" style="color:var(--color-text-link)">${esc(r.partner.name)}</a>${r.partner.disabled ? `<div class="t-xs" style="color:var(--color-danger)">${esc(r.partner.disabled_label)}</div>` : ""}</div></div>` },
+      { head: ["Branches", "الفروع"], cell: (r) => `${esc(r.branches[0].name)}${r.branches.length > 1 ? ` <span class="badge" title="${esc(r.branches.slice(1).map((b) => b.name).join(", "))}">+${r.branches.length - 1}</span>` : ""}` },
+      { head: ["Plans", "الخطط"], cell: (r) => (r.plans.single ? `1 · ${fmt(r.plans.from_price)} ${r.plans.currency}` : L(`${r.plans.count} · from ${fmt(r.plans.from_price)} ${r.plans.currency}`, `${r.plans.count} · من ${fmt(r.plans.from_price)} ${r.plans.currency}`)) },
+      { head: ["Validity", "الصلاحية"], cell: (r) => `${esc(r.validity.label)}${r.validity.type === "fixed_date_range" ? `<div class="t-xs text-tertiary">${r.validity.starts_on} – ${r.validity.ends_on}</div>` : ""}` },
+      { head: ["Usage", "الاستخدام"], cell: (r) => dash(r.usage.label) },
+      { head: ["Capacity", "السعة"], cell: (r) => dash(r.capacity.label) },
+      { head: ["Subscribers", "المشتركون"], sort: "subscribers", cell: (r) => `<b>${fmt(r.subscribers.active)}</b>${r.subscribers.amount_due > 0 ? `<div class="t-xs" style="color:var(--color-warning)">${esc(r.subscribers.amount_due_label)}</div>` : ""}` },
+      { head: ["Selling Methodology", "طريقة البيع"], cell: (r) => esc(r.selling_methodology.label) },
+      { head: ["Status", "الحالة"], sort: "status", align: "center", cell: (r) => `<span title="${esc(r.approval_status.tooltip || "")}">${(APPROVAL[r.approval_status.value] || (() => badge("", r.approval_status.label)))()}</span>` },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<a class="icon-btn" href="package-detail.html?id=${r.id}&tab=details" aria-label="${L("View", "عرض")} ${esc(r.name)}" title="${L("View", "عرض")}">${ic("eye")}</a>` },
+    ],
+  });
+
+  /* ---------------- Filter Options ---------------- */
+  const pop = document.createElement("div");
+  pop.className = "popover";
+  pop.setAttribute("role", "dialog");
+  pop.style.cssText = "width:340px;max-height:520px;overflow:auto";
+  document.body.appendChild(pop);
+  let draft = {};
+  const uniq = (a) => a.filter((x, i) => a.indexOf(x) === i);
+  function checks(k, opts) {
+    const cur = draft[k] || [];
+    return `<div class="stack gap-1" style="max-height:132px;overflow:auto;padding:var(--space-1) 0">${opts.map((o) => `<label class="check"><input type="checkbox" data-m="${k}" value="${esc(o[0])}" ${cur.includes(String(o[0])) ? "checked" : ""}><span class="check__box">${ic("check")}</span>${esc(o[1])}</label>`).join("")}</div>`;
+  }
+  function paintPop() {
+    const partners = uniq(data.map((p) => p.partner.id)).map((id) => [String(id), data.find((p) => p.partner.id === id).partner.name]);
+    const branches = uniq(data.flatMap((p) => p.branches.map((b) => b.name))).map((b) => [b, b]);
+    pop.innerHTML = `<div class="popover__title">${L("Filter Options", "خيارات التصفية")}</div>
+      <div class="popover__body stack gap-3">
+        ${SA.field(["Partner :", "الشريك :"], checks("partners", partners))}
+        ${SA.field(["Branch :", "الفرع :"], checks("branches", branches))}
+        ${SA.field(["Partner status :", "حالة الشريك :"], checks("partner_status", [["active", "Active"], ["inactive", "Partner inactive"]]))}
+        ${SA.field(["Selling methodology :", "طريقة البيع :"], checks("selling", HF.SA.SELL.map((s) => [s.value, s.label])))}
+        ${SA.field(["Validity :", "الصلاحية :"], checks("validity", HF.SA.VALID.map((v) => [v.type, v.label])))}
+        ${SA.field(["Commission :", "العمولة :"], SA.select([["", L("All", "الكل"), !draft.commission], ["with", "With commission", draft.commission === "with"], ["without", "Without commission", draft.commission === "without"]], 'data-f="commission"'))}
+        ${SA.field(["Created date :", "تاريخ الإنشاء :"], `<div class="grid grid-2">
+            <input class="input" type="date" data-f="from" value="${draft.from || ""}" ${draft.to ? `max="${draft.to}"` : ""} aria-label="${L("From", "من")}">
+            <input class="input" type="date" data-f="to" value="${draft.to || ""}" ${draft.from ? `min="${draft.from}"` : ""} aria-label="${L("To", "إلى")}"></div>`)}
+      </div>
+      <div class="popover__foot">
+        <button type="button" class="btn btn--sm btn--secondary" data-reset>${L("Reset", "إعادة تعيين")}</button>
+        <button type="button" class="btn btn--sm" data-apply>${L("Apply", "تطبيق")}</button>
+      </div>`;
+  }
+  pop.addEventListener("change", (e) => {
+    const m = e.target.dataset.m, k = e.target.dataset.f;
+    if (m) {
+      const cur = new Set(draft[m] || []);
+      e.target.checked ? cur.add(e.target.value) : cur.delete(e.target.value);
+      draft[m] = [...cur];
+    }
+    if (k) { draft[k] = e.target.value; paintPop(); }
+  });
+  const apply = () => { ctl.state.extra = JSON.parse(JSON.stringify(draft)); ctl.state.page = 1; pop.classList.remove("is-open"); ctl.paint(); };
+  pop.addEventListener("click", (e) => {
+    /* the dashboard's Reset applies empty filters and closes */
+    if (e.target.closest("[data-reset]")) { draft = {}; apply(); }
+    if (e.target.closest("[data-apply]")) apply();
+  });
+  document.getElementById("listMount").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-filter]");
+    if (!b) return;
+    if (pop.classList.contains("is-open")) return pop.classList.remove("is-open");
+    draft = JSON.parse(JSON.stringify(ctl.state.extra));
+    paintPop();
+    SA.popover(pop, b);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Add New Partner · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .sa-wiz { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: var(--space-10); align-items: start; }
+  .sa-wiz form { max-width: 640px; }
+  @media (max-width: 768px) { .sa-wiz { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); } }
+  .file-row { position: relative; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="wizMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script>
+(() => {
+  /* Add New Partner — mirrors pages/partners/AddPartnerPage.js: 3-step
+     vertical stepper (Sign Up · Company Information · Documents), same
+     fields and validation copy. API: POST /partners (multipart). */
+  RD.boot({ activeId: "partners", title: "Add New Partner" });
+  if (!document.getElementById("wizMount")) return;
+  const { L, esc, ic } = SA;
+
+  SA.head(document.getElementById("pageHead"), {
+    title: ["Add New Partner", "إضافة شريك جديد"],
+    crumbs: [["Partners", "الشركاء", "partners.html"]],
+    actions: `<a class="btn btn--sm btn--secondary" href="partners.html">${ic("close")}<span>${L("Cancel", "إلغاء")}</span></a>`,
+  });
+
+  const CODES = [["SA", "Saudi Arabia", "+966"], ["EG", "Egypt", "+20"], ["AE", "United Arab Emirates", "+971"], ["KW", "Kuwait", "+965"], ["BH", "Bahrain", "+973"]];
+  const GEO = HF.SA.GEO;
+  const DOCS = {
+    SA: [{ name: "Commercial Registration", required: 1 }, { name: "VAT Certificate", required: 1 }],
+    EG: [{ name: "Commercial Registration", required: 1 }, { name: "Tax Card", required: 0 }],
+    AE: [{ name: "Trade License", required: 1 }],
+    1: [{ name: "Riyadh Municipality Permit", required: 0 }],
+    11: [{ name: "Civil Defense Certificate", required: 1 }],
+  };
+  const v = { name: "", phone_country: "SA", phone: "", email: "", password: "", password_confirmation: "", company_name: "", country: "", state: "", city: "", files: {} };
+  let step = 0;
+  const err = {};
+  const uniq = (arr, key) => arr.filter((x, i) => arr.findIndex((y) => key(y) === key(x)) === i);
+
+  function docs() {
+    return [].concat(DOCS[v.country] || [], DOCS[v.state] || [], DOCS[v.city] || []);
+  }
+  function validate(s) {
+    Object.keys(err).forEach((k) => delete err[k]);
+    if (s === 0) {
+      if (!v.name.trim()) err.name = L("Name is required", "الاسم مطلوب");
+      else if (v.name.trim().length < 3) err.name = L("Minimum 4 symbols", "الحد الأدنى 4 رموز");
+      else if (v.name.length > 50) err.name = L("Maximum 50 symbols", "50 رمزًا كحد أقصى");
+      if (!v.phone) err.phone = L("Phone number is required", "رقم الهاتف مطلوب");
+      else if (!/^\d+$/.test(v.phone)) err.phone = L("Phone number must be digits only", "رقم الهاتف يجب أن يحتوي على أرقام فقط");
+      else if (v.phone.length < 8) err.phone = L("Minimum 8 digits", "الحد الأدنى 8 أرقام");
+      else if (v.phone.length > 15) err.phone = L("Maximum 15 digits", "الحد الأقصى 15 رقماً");
+      if (!v.email) err.email = L("Email is required", "البريد الإلكتروني مطلوب");
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) err.email = L("Invalid email format", "البريد الإلكتروني غير صالح");
+      if (!v.password) err.password = L("Password is required", "كلمة المرور مطلوبة");
+      else if (v.password.length < 8) err.password = L("Minimum 8 symbols", "8 رموز كحد أدنى");
+      if (v.password_confirmation !== v.password) err.password_confirmation = L("Password and Confirm Password didn't match", "كلمة المرور وتأكيد كلمة المرور غير متطابقين");
+    }
+    if (s === 1) {
+      if (!v.company_name.trim()) err.company_name = L("Please enter the company name", "يرجى إدخال اسم الشركة");
+      else if (v.company_name.trim().length < 4) err.company_name = L("Minimum 4 symbols", "الحد الأدنى 4 رموز");
+    }
+    if (s === 2) {
+      docs().forEach((d, i) => { if (d.required && !v.files[i]) err["doc" + i] = `${d.name} ${L("is required", "مطلوب")}`; });
+    }
+    return !Object.keys(err).length;
+  }
+
+  const input = (k, type, extra) => `<input class="input${err[k] ? " is-error" : ""}" type="${type || "text"}" data-k="${k}" value="${esc(v[k])}" ${err[k] ? `aria-invalid="true" aria-describedby="e-${k}"` : ""} ${extra || ""}>`;
+  const errLine = (k) => (err[k] ? `<span class="field__error" id="e-${k}">${ic("warn")} ${esc(err[k])}</span>` : "");
+  const fld = (label, k, control, after) => `<div class="field"><label class="field__label">${label}</label>${control}${errLine(k)}${after || ""}</div>`;
+  const pw = (k) => `<div class="input-wrap" dir="ltr">${input(k, "password")}<button type="button" class="input-wrap__suffix icon-btn" data-eye="${k}" aria-label="${L("Show password", "إظهار كلمة المرور")}" style="width:32px;height:32px">${ic("eye")}</button></div>`;
+
+  function panel() {
+    if (step === 0) {
+      const emailOk = v.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email) && !err.email;
+      return `<div class="stack gap-4">
+        ${fld(L("Full Name", "الاسم الكامل"), "name", input("name"))}
+        ${fld(L("Phone Number", "رقم الهاتف"), "phone", `<div class="phone-field" dir="ltr">
+            <div class="select" style="min-width:120px"><select data-k="phone_country" aria-label="${L("Country code", "رمز الدولة")}">${CODES.map((c) => `<option value="${c[0]}" ${c[0] === v.phone_country ? "selected" : ""}>${c[1]} (${c[2]})</option>`).join("")}</select><span class="select__caret">${ic("chevronDown")}</span></div>
+            ${input("phone", "tel", 'inputmode="numeric"')}</div>`)}
+        ${fld(L("Email", "البريد الإلكتروني"), "email", input("email", "email"), emailOk ? `<span class="field__hint" style="color:var(--color-success)">${L("Valid email", "بريد إلكتروني صالح")}</span>` : "")}
+        ${fld(L("Password", "كلمة المرور"), "password", pw("password"))}
+        ${fld(L("Confirm Password", "تأكيد كلمة المرور"), "password_confirmation", pw("password_confirmation"))}
+      </div>`;
+    }
+    if (step === 1) {
+      const countries = uniq(GEO.map((g) => g.country), (c) => c.iso);
+      const states = v.country ? uniq(GEO.filter((g) => g.country.iso === v.country).map((g) => g.state), (s) => s.id) : [];
+      const cities = v.state ? uniq(GEO.filter((g) => String(g.state.id) === String(v.state)).map((g) => g.city), (c) => c.id) : [];
+      const sel = (k, opts) => SA.select([["", L("select", "اختر"), !v[k]]].concat(opts.map((o) => [o[0], o[1], String(v[k]) === String(o[0])])), `data-k="${k}"`);
+      return `<div class="stack gap-4">
+        ${fld(L("Company Name", "اسم الشركة"), "company_name", input("company_name"))}
+        ${fld(L("country", "البلد"), "country", sel("country", countries.map((c) => [c.iso, c.name])))}
+        ${fld(L("state", "الولاية"), "state", sel("state", states.map((s) => [s.id, s.name])))}
+        ${fld(L("city", "المدينة"), "city", sel("city", cities.map((c) => [c.id, c.name])))}
+      </div>`;
+    }
+    const list = docs();
+    if (!list.length) return `<p class="text-tertiary" style="text-align:center;padding:var(--space-10) 0">${L("No documents required", "لا توجد مستندات مطلوبة")}</p>`;
+    return `<div class="stack gap-4"><p class="t-sm text-secondary">${L("Please upload required documents", "يرجى تحميل المستندات المطلوبة")}</p>
+      ${list.map((d, i) => `<div class="field">
+        <label class="field__label">${esc(d.name || L("Unknown File", "ملف غير معروف"))}${d.required ? ' <span class="req">*</span>' : ""}</label>
+        <label class="file-row" style="cursor:pointer">
+          <span class="file-row__icon">${ic("upload")}</span>
+          <span class="t-sm" style="flex:1;min-width:0">${v.files[i] ? esc(v.files[i]) : L("Please select a file", "يرجى اختيار ملف")}</span>
+          <input type="file" data-doc="${i}" style="position:absolute;width:1px;height:1px;opacity:0">
+        </label>${errLine("doc" + i)}</div>`).join("")}</div>`;
+  }
+
+  const STEPS = [["Sign Up", "التسجيل"], ["Company Information", "معلومات الشركة"], ["Documents", "مستندات"]];
+  function paint() {
+    document.getElementById("wizMount").innerHTML = `<section class="card card--pad animate-in">
+      <div class="sa-wiz">
+        <div class="stepper stepper--vertical" aria-label="${L("Steps", "الخطوات")}">
+          ${STEPS.map((s, i) => `<div class="step ${i < step ? "is-done" : i === step ? "is-active" : ""}" ${i === step ? 'aria-current="step"' : ""}>
+            <span class="step__dot">${i < step ? ic("check") : i + 1}</span><span class="step__label">${L(s[0], s[1])}</span></div>`).join("")}
+        </div>
+        <form class="stack gap-6" id="wizForm" novalidate>
+          ${panel()}
+          <div class="row between gap-3">
+            ${step ? `<button type="button" class="btn btn--secondary" data-prev>${L("previous", "السابق")}</button>` : "<span></span>"}
+            <button type="submit" class="btn" data-next>${step < 2 ? L("next", "التالي") : L("submit", "تسجيل")}</button>
+          </div>
+        </form>
+      </div></section>`;
+  }
+
+  const mount = document.getElementById("wizMount");
+  mount.addEventListener("input", (e) => { const k = e.target.dataset.k; if (k) v[k] = e.target.value; });
+  mount.addEventListener("change", (e) => {
+    const k = e.target.dataset.k;
+    if (k === "country") { v.country = e.target.value; v.state = ""; v.city = ""; v.files = {}; return paint(); }
+    if (k === "state") { v.state = e.target.value; v.city = ""; v.files = {}; return paint(); }
+    if (k === "city") { v.city = e.target.value; v.files = {}; return paint(); }
+    if (k) v[k] = e.target.value;
+    const d = e.target.dataset.doc;
+    if (d != null && e.target.files[0]) { v.files[d] = e.target.files[0].name; delete err["doc" + d]; paint(); }
+  });
+  mount.addEventListener("click", (e) => {
+    const eye = e.target.closest("[data-eye]");
+    if (eye) { const i = mount.querySelector(`[data-k="${eye.dataset.eye}"]`); i.type = i.type === "password" ? "text" : "password"; eye.innerHTML = ic(i.type === "password" ? "eye" : "eyeOff"); return; }
+    if (e.target.closest("[data-prev]")) { step--; paint(); }
+  });
+  mount.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!validate(step)) return paint();
+    if (step < 2) { step++; return paint(); }
+    const btn = mount.querySelector("[data-next]");
+    btn.disabled = true;
+    btn.textContent = L("submitting", "جاري التسجيل...");
+    /* POST /partners (multipart). Success → toast "Partner added successfully"
+       / "تمت إضافة الشريك بنجاح" then back to /partners; failure → toast
+       "Error in …" / "خطأ في" with the API message. */
+    setTimeout(() => (location.href = "partners.html"), 700);
+  });
+  paint();
+})();
+</script>
+</body>
+</html>

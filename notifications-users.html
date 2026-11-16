@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>User Notifications · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/sa-crud.js"></script>
+<script src="assets/js/sa-emp.js"></script>
+<script>
+(() => {
+  /* User / Partner push notifications — mirrors pages/notifications/{users,partners}:
+       list   notifications-users.html · notifications-partners.html   pills (all · pending · send · failed), search,
+                                                                      row + full-width targeting detail row, delete
+       create ?new=1                                                  title · message · timing · targeting · image ·
+                                                                      external link · test send
+     The dashboard's Edit pages exist but nothing links to them (pencil commented out) — not shown here. */
+  const file = location.pathname.split("/").pop().replace(/^_preview-/, "").replace(".html", "");
+  const isP = file === "notifications-partners", qs = new URLSearchParams(location.search);
+  RD.boot({ activeId: isP ? "nt-partners" : "nt-users", title: "notifications" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic, badge } = SA;
+  const S = HF.SA, mount = document.getElementById("listMount");
+  const T = isP ? ["Partner Notifications", "إشعارات الشركاء"] : ["User Notifications", "إشعارات المستخدمين"];
+
+  /* ---- data (GET /player-push-notifications · /partner-push-notifications) ---- */
+  if (!S._notif) {
+    const mk = (i, p) => ({ id: 700 + i + (p ? 50 : 0), title: ["Weekend offers are live", "New padel courts near you", "Your package renews soon", "Ramadan schedule update", "Rate your last booking", "Summer camp registration"][i % 6],
+      body: ["Book any court this weekend and get 20% off.", "Three new courts opened in Riyadh.", "Tap to review your package.", "Opening hours change during Ramadan.", "Tell us how it went.", "Seats are limited."][i % 6],
+      created_by: { id: S.employees ? 50 : 2200, name: ["Mona Fawzi", "Super Admin", "Ahmed Saeed"][i % 3] }, created_at: `2026-11-${String(1 + i).padStart(2, "0")} 10:${String(10 + i).padStart(2, "0")}`,
+      status: ["sent", "pending", "sent", "failed", "pending", "sent"][i % 6], sending_date: `2026-11-${String(2 + i).padStart(2, "0")} 18:00`, timing: i % 2 ? "scheduled" : "now",
+      targeted: i % 6 === 1 || i % 6 === 4 ? null : 1200 - i * 90, delivered: i % 6 === 1 || i % 6 === 4 ? null : 1100 - i * 95,
+      user_type: ["registered", "all", "guest"][i % 3], location_type: i % 2 ? "gps_location" : "phone_country", country_iso: i % 3 ? "SA" : null, state: i % 3 === 1 ? "Riyadh Region" : null, city: null, gender: ["all", "male", "female"][i % 3], age: ["all", "age_group", "undetermined"][i % 3], app_lang: ["all", "ar", "en"][i % 3],
+      partner_status: ["approved", "not_approved", "all"][i % 3], country: i % 2 ? { name: "Saudi Arabia" } : null, state_id: null, city_id: null, activity_category: i % 2 ? { name: "Sports" } : null, activities: i % 2 ? [{ name: "Padel" }, { name: "Football" }] : [] });
+    S._notif = { users: Array.from({ length: 9 }, (_, i) => mk(i, false)), partners: Array.from({ length: 7 }, (_, i) => mk(i, true)) };
+  }
+  const data = isP ? S._notif.partners : S._notif.users;
+
+  /* ================= create ================= */
+  if (qs.get("new")) {
+    SA.head(document.getElementById("pageHead"), { title: isP ? ["Create Partner Notifications", "إنشاء إشعارات الشركاء"] : ["Create User Notifications", "إنشاء إشعارات المستخدمين"] });
+    const f = { title: "", body: "", timing: "now", sending_date: "", user_type: "registered", activity_status: "", location_type: "phone_country", country_iso: "", country: "", state: "", city: "", gender: "", age: "all", age_group_id: "", app_lang: "all",
+      partner_status: "approved", p_country: "", p_state: "", p_city: "", partners: ["all"], category: "", activities: [], image: null, link: "none", url: "", test: "" };
+    let errs = {}, testMsg = null, lastProfile = true;
+    const ALL = L("All", "الكل");
+    const radio = (k, v, t, dis) => `<label class="check check--radio" style="${dis ? "opacity:.5" : ""}"><input type="radio" name="n_${k}" data-k="${k}" value="${v}" ${f[k] === v ? "checked" : ""} ${dis ? "disabled" : ""}><span class="check__box"><span class="check__dot"></span></span>${t}</label>`;
+    const sel = (k, opts, ph) => SA.select([["", ph || ALL]].concat(opts.map((o) => [o[0], o[1], String(f[k]) === String(o[0])])), `data-k="${k}"`);
+    const row = (lab, ctl, k) => `<div class="sa-formrow"><label class="field__label">${lab}:</label><div class="stack gap-1">${ctl}${errs[k] ? `<span class="field__error">${ic("warn")} ${errs[k]}</span>` : ""}</div></div>`;
+    const sec = (t, body) => `<div class="stack gap-4" style="padding-top:var(--space-4);border-top:var(--border-thin) dashed var(--color-border)"><h4 class="t-title" style="font-size:var(--text-body)">${t}</h4>${body}</div>`;
+    const geo = S.GEO, states = (c) => [...new Set(geo.filter((g) => g.country.name === c).map((g) => g.state.name))], cities = (s) => geo.filter((g) => g.state.name === s).map((g) => g.city.name);
+    const urlErr = () => (f.link !== "direct" ? "" : !f.url ? "Action URL is required" : !/^(https?|app):\/\/.+/.test(f.url) ? "URL is invalid. Must start with http://, https://, or app://" : ""); /* hard-coded English in the dashboard */
+    const paint = () => {
+      const guestish = f.user_type !== "registered";
+      const userSecs = sec(L("users type settings", "إعدادات نوع المستخدمين"), row(L("type", "النوع"), `<div class="row gap-4">${radio("user_type", "registered", L("registered", "مسجل"))}${radio("user_type", "guest", L("guest", "ضيف"))}${radio("user_type", "all", ALL)}</div>`)
+          + (f.user_type === "registered" ? row(L("activity status", "حالة النشاط"), sel("activity_status", [["all", ALL], ["active", L("active", "نشط")], ["very_active", L("very active", "نشط جدًا")], ["inactive", L("inactive", "غير نشط")]], L("select activity status", "اختر حالة النشاط"))) : ""))
+        + sec(L("location settings", "إعدادات الموقع"), row(L("type", "النوع"), `<div class="row gap-4">${radio("location_type", "phone_country", L("phone country", "دولة الهاتف"), guestish)}${radio("location_type", "gps_location", L("GPS location", "موقع GPS"))}</div>`)
+          + (f.location_type === "phone_country" && !guestish ? row(L("country", "الدولة"), sel("country_iso", [["SA", "Saudi Arabia"], ["EG", "Egypt"], ["AE", "United Arab Emirates"]], L("select country", "اختر الدولة")))
+            : row(L("country", "الدولة"), sel("country", [...new Set(geo.map((g) => g.country.name))].map((c) => [c, c]))) + row(L("State", "المحافظة"), sel("state", states(f.country).map((s) => [s, s]), L("Select state", "اختر المحافظة"))) + row(L("City", "المدينة"), sel("city", cities(f.state).map((c) => [c, c]), L("Select city", "اختر المدينة")))
+              + `<label class="check"><input type="checkbox"><span class="check__box">${ic("check")}</span>${L("include all users with undetermined gps_location location.", "تضمين جميع المستخدمين الذين لديهم موقع GPS غير محدد.")}</label>`))
+        + (lastProfile ? sec(L("profile settings", "إعدادات الملف الشخصي"), row(L("gender", "الجنس"), sel("gender", [["all", ALL], ["male", L("male", "ذكر")], ["female", L("female", "أنثى")], ["undetermined", L("undetermined", "غير محدد")]], L("select gender", "اختر الجنس")))
+            + row(L("age", "العمر"), sel("age", [["all", ALL], ["age_group", L("specific age group", "فئة عمرية محددة")], ["undetermined", L("undetermined date of barth", "تاريخ ميلاد غير محدد")]], L("select age", "اختر العمر")) + (f.age === "age_group" ? sel("age_group_id", [["2", "Kids"], ["3", "Teens"], ["4", "Adults"]], L("select age group", "اختر الفئة العمرية")) : ""))) : "")
+        + sec(L("app language settings", "إعدادات لغة التطبيق"), row(L("language", "اللغة"), SA.select([["all", ALL, f.app_lang === "all"], ["en", "English", f.app_lang === "en"], ["ar", "العربية", f.app_lang === "ar"]], 'data-k="app_lang"'), "app_lang"));
+      const partnerSecs = sec(L("status settings", "إعدادات الحالة"), row(L("status", "الحالة"), `<div class="row gap-4">${radio("partner_status", "approved", L("approved", "معتمد"))}${radio("partner_status", "not_approved", L("not approved", "غير معتمد"))}${radio("partner_status", "all", ALL)}</div>`))
+        + sec(L("main location settings", "إعدادات الموقع الرئيسي"), row(L("country", "الدولة"), sel("p_country", [["SA", "Saudi Arabia"], ["EG", "Egypt"], ["AE", "United Arab Emirates"]])) + row(L("State", "المحافظة"), sel("p_state", geo.filter((g) => g.country.iso === f.p_country).map((g) => [g.state.id, g.state.name]).filter((x, i, a) => a.findIndex((y) => y[0] === x[0]) === i)))
+          + row(L("City", "المدينة"), sel("p_city", geo.filter((g) => String(g.state.id) === f.p_state).map((g) => [g.city.id, g.city.name])))
+          + row(L("Partner", "الشريك"), `<div class="row gap-3" style="flex-wrap:wrap;max-height:140px;overflow:auto">${[["all", ALL]].concat(S.partners.filter((p) => (!f.p_country || p.country.iso === f.p_country) && (f.partner_status === "all" || (f.partner_status === "approved") === (p.active === "active"))).slice(0, 10).map((p) => [String(p.id), p.company_name]))
+            .map((o) => `<label class="check"><input type="checkbox" data-pp value="${o[0]}" ${f.partners.includes(o[0]) ? "checked" : ""}><span class="check__box">${ic("check")}</span>${esc(o[1])}</label>`).join("")}</div>`));
+      const linkSec = sec(L("External Link", "الرابط الخارجي"), row(L("Link Type", "نوع الرابط"), `<div class="row gap-4">${radio("link", "none", L("No Link", "بدون رابط"))}${radio("link", "direct", L("External Link", "رابط خارجي"))}</div>`)
+        + (f.link === "direct" ? row(L("URL", "الرابط"), `<input class="input" dir="ltr" data-k="url" value="${esc(f.url)}" placeholder="https://example.com">`, "url") : ""));
+      const imgSec = sec(L("Notification Image", "صورة الإشعار"), row(L("Image", "الصورة"), `<div class="row gap-3" style="align-items:center"><span class="cell-thumb" style="width:75px;height:75px">${f.image ? ic("check") : ic("camera")}</span>
+          <label class="btn btn--sm btn--secondary">${L("Upload Image", "رفع صورة")}<input type="file" accept=".jpg,.jpeg,.png" data-img hidden></label>${f.image ? `<button type="button" class="btn btn--sm btn--danger" data-rmimg>${L("Remove Image", "إزالة الصورة")}</button>` : ""}</div>
+          <span class="t-xs text-tertiary">${L("Maximum size: 10 MB", "الحد الأقصى للحجم: 10 ميجابايت")}</span>`, "image"));
+      const actSec = isP ? sec(L("activities settings", "إعدادات الأنشطة"), row(L("categories", "الفئات"), sel("category", S.CATS.map((c) => [c.id, c.name]), L("select category", "اختر الفئة")))
+        + row(L("Activity", "النشاط"), f.category ? `<div class="row gap-3" style="flex-wrap:wrap">${(S.ACTS[f.category] || []).map((a) => `<label class="check"><input type="checkbox" data-act value="${esc(a)}" ${f.activities.includes(a) ? "checked" : ""}><span class="check__box">${ic("check")}</span>${esc(a)}</label>`).join("")}</div>` : `<span class="t-sm text-tertiary">${L("select activities", "اختر الأنشطة")}</span>`)) : "";
+      const testSec = sec(L("Test Notification", "إشعار تجريبي"), row(L("Send test to", "إرسال اختبار إلى"), `<div class="row gap-2"><input class="input" data-k="test" value="${esc(f.test)}" placeholder="${L("Enter phone number or email", "أدخل رقم الهاتف أو البريد الإلكتروني")}"><button type="button" class="btn btn--sm" data-test>${L("Send Test", "إرسال اختبار")}</button></div>${testMsg ? CRUD.alert(testMsg[0], testMsg[1]) : ""}`, "test"));
+      mount.innerHTML = `<section class="card card--pad stack gap-5">
+        ${row(L("title", "العنوان"), `<input class="input" data-k="title" value="${esc(f.title)}" placeholder="${L("enter notification title", "أدخل عنوان الإشعار")}">`, "title")}
+        ${row(L("message", "الرسالة"), `<textarea class="input" rows="3" data-k="body" placeholder="${L("enter notification message here ...", "أدخل رسالة الإشعار هنا ...")}">${esc(f.body)}</textarea>`, "body")}
+        ${row(L("timing", "التوقيت"), `<div class="row gap-4">${radio("timing", "now", L("now", "الآن"))}${radio("timing", "scheduled", L("scheduled", "مجدول"))}</div>`)}
+        ${f.timing === "scheduled" ? row(L("scheduled date", "التاريخ المجدول"), `<input class="input" type="datetime-local" step="900" data-k="sending_date" value="${f.sending_date}" style="max-width:260px">`) : ""}
+        ${isP ? partnerSecs + linkSec + imgSec + actSec : userSecs + imgSec + linkSec}${testSec}
+        <div class="row between"><a class="btn btn--ghost" href="${file}.html">${L("cancel", "إلغاء")}</a><button type="button" class="btn" data-create>${L("create", "إنشاء")}</button></div></section>`;
+    };
+    const val = (k) => { const m3 = L("Minimum 3 symbols", "3 رموز على الأقل"); const v = f[k].trim(); return !v ? L("this field is required", "هذا الحقل مطلوب") : v.length < 3 ? m3 : v.length > 200 ? L("Maximum 50 symbols", "50 رمز على الأكثر") : ""; };
+    mount.addEventListener("input", (e) => { const k = e.target.dataset.k; if (k && ["title", "body", "url", "test", "sending_date"].includes(k)) f[k] = e.target.value; });
+    mount.addEventListener("change", (e) => {
+      const t = e.target, k = t.dataset.k;
+      if (t.matches("[data-pp]")) { const v = t.value; f.partners = v === "all" ? (t.checked ? ["all"] : []) : (t.checked ? f.partners.filter((x) => x !== "all").concat(v) : f.partners.filter((x) => x !== v)); }
+      else if (t.matches("[data-act]")) f.activities = t.checked ? f.activities.concat(t.value) : f.activities.filter((x) => x !== t.value);
+      else if (t.matches("[data-img]")) { const file0 = t.files[0]; errs.image = file0 && file0.size > 10 * 1024 * 1024 ? L("Image size must not exceed 10 MB", "حجم الصورة يجب أن لا يتجاوز 10 ميجابايت") : file0 && !/\.(jpe?g|png)$/i.test(file0.name) ? L("Unsupported image type. Supported types: JPG, PNG", "نوع الصورة غير مدعوم. الأنواع المدعومة: JPG, PNG") : ""; if (!errs.image) f.image = file0 ? file0.name : null; }
+      else if (k) {
+        f[k] = t.value;
+        if (k === "user_type") { lastProfile = t.value === "registered"; if (t.value !== "registered") f.location_type = "gps_location"; }
+        if (k === "location_type") lastProfile = t.value === "phone_country";
+        if (k === "country") { f.state = ""; f.city = ""; } if (k === "state") f.city = "";
+        if (k === "p_country") { f.p_state = ""; f.p_city = ""; f.partners = ["all"]; } if (k === "p_state") f.p_city = ""; if (k === "partner_status") f.partners = ["all"];
+        if (k === "category") f.activities = [];
+      }
+      if (k === "url") errs.url = urlErr();
+      paint();
+    });
+    mount.addEventListener("click", (e) => {
+      if (e.target.closest("[data-rmimg]")) { f.image = null; return paint(); }
+      if (e.target.closest("[data-test]")) {
+        const v = f.test.trim();
+        errs.test = !v ? L("Phone number or email is required", "رقم الهاتف أو البريد الإلكتروني مطلوب") : v.includes("@") ? (/^\S+@\S+\.\S+$/.test(v) ? "" : L("Invalid email address", "البريد الإلكتروني غير صالح")) : /^\+?[0-9]{10,15}$/.test(v) ? "" : L("Invalid phone number", "رقم الهاتف غير صالح");
+        testMsg = errs.test ? null : ["success", L("Test notification sent successfully", "تم إرسال الإشعار التجريبي بنجاح")];
+        paint(); if (testMsg) setTimeout(() => { testMsg = null; paint(); }, 3000); return;
+      }
+      if (e.target.closest("[data-create]")) {
+        errs = { title: val("title"), body: val("body"), url: urlErr() };
+        if (Object.values(errs).some(Boolean)) return paint();
+        const b = e.target.closest("[data-create]"); b.disabled = true; b.textContent = L("create ...", "جاري الإنشاء ...");
+        setTimeout(() => { data.unshift({ id: Date.now() % 100000, title: f.title, body: f.body, created_by: { id: 1, name: "Super Admin" }, created_at: "2026-11-16 12:00", status: "pending", sending_date: f.timing === "now" ? "2026-11-16 12:00" : f.sending_date.replace("T", " "), timing: f.timing, targeted: null, delivered: null,
+          user_type: f.user_type, location_type: f.location_type, country_iso: f.country_iso, state: f.state, city: f.city, gender: f.gender, age: f.age, app_lang: f.app_lang, partner_status: f.partner_status, country: null, activities: f.activities.map((n) => ({ name: n })) }); location.href = file + ".html"; }, 400);
+      }
+    });
+    paint();
+    return;
+  }
+
+  /* ================= list ================= */
+  SA.head(document.getElementById("pageHead"), { title: T, actions: `<a class="btn btn--sm" href="${file}.html?new=1">${ic("plus")}<span>${L("add new", "إضافة جديد")}</span></a>` });
+  const ALL = L("All", "الكل");
+  const cell = (icon, lab, val, w) => `<div class="row gap-2" style="align-items:flex-start;${w ? `min-width:${w}px` : ""}"><span class="text-tertiary">${ic(icon)}</span><div class="stack"><span class="t-xs text-tertiary">${lab}</span><b class="t-xs">${val}</b></div></div>`;
+  const stats = (r) => `${r.targeted ?? "N/A"} ${L("TARGETED", "المستهدفة")} – ${r.delivered ?? "N/A"} ${L("DELIVERED", "المسلمة")}`;
+  const detail = (r) => isP
+    ? [cell("check", L("status", "الحالة"), esc((r.partner_status || "---").replace(/_/g, " "))), cell("pin", L("main location", "الموقع الرئيسي"), `${r.country ? esc(r.country.name) : L("all countries", "جميع الدول")} - ${L("all states", "جميع المحافظات")} - ${L("all cities", "جميع المدن")}`),
+      cell("layers", L("activity categories", "فئات الأنشطة"), r.activity_category ? esc(r.activity_category.name) : L("all categories", "جميع الفئات")), cell("layers", L("activities", "الأنشطة"), r.activities.length ? r.activities.map((a) => esc(a.name)).join(" - ") : L("all activities", "جميع الأنشطة")),
+      cell("clock", L("timing", "التوقيت"), esc(r.timing || "---")), cell("chart", L("statistics", "الإحصائيات"), stats(r))].join("")
+    : [cell("users", L("users", "المستخدمون"), `${esc(r.user_type)}(${L("active", "نشط")})`), cell("pin", L("location type", "نوع الموقع"), esc((r.location_type || "").replace(/_/g, " "))),
+      cell("pin", L("location", "الموقع"), `${r.country_iso || L("All countries", "جميع الدول")} - ${r.state && r.state !== "all" ? esc(r.state) : L("All States", "جميع المحافظات")} - ${r.city ? esc(r.city) : L("All Cities", "جميع المدن")}`),
+      cell("users", L("gender", "الجنس"), esc(r.gender || "---")), cell("calendar", L("age", "العمر"), esc(r.age || "---")), cell("globe", L("language", "اللغة"), esc(r.app_lang || "---")), cell("clock", L("timing", "التوقيت"), esc(r.timing || "---")), cell("chart", L("statistics", "الإحصائيات"), stats(r))].join("");
+  /* badge tone as in the dashboard: pending → warning, "send" → secondary, anything else (incl. "sent") → danger */
+  const tone = (s) => (s === "pending" ? "warning" : s === "send" ? "" : "danger");
+  const canDel = (r) => (isP ? String(r.status).toLowerCase() === "pending" : r.status !== "sent");
+  const ctl = SA.list({
+    mount, data,
+    pills: [["all", "all", "الكل"], ["pending", "pending", "قيد الانتظار"], ["sent", "send", "مرسل"], ["failed", "failed", "فشل"]].map((p) => ({ key: p[0], label: [p[1], p[2]] })),
+    pillMatch: (r, k) => k === "all" || r.status === k,
+    search: ["search by name", "البحث بالاسم"], searchMatch: (r, q) => r.title.toLowerCase().includes(q),
+    empty: ["there is no data to display", "لا توجد بيانات لعرضها"],
+    columns: [
+      { head: ["notification", "الإشعار"], cell: (r) => `<b>${esc(r.title || "---")}</b><div class="t-xs text-tertiary" style="white-space:normal;max-width:360px">${esc(r.body || "---")}</div>` },
+      { head: ["create", "الإنشاء"], align: "center", cell: (r) => `${isP ? esc(r.created_by.name) : `<a href="user-profile.html?id=${r.created_by.id}&tab=details" style="color:var(--color-text-link)">${esc(r.created_by.name)}</a>`}<div class="t-xs text-tertiary">${esc(r.created_at)}</div>` },
+      { head: ["Sending...", "جاري الإرسال..."], align: "center", cell: (r) => `${badge(tone(r.status), r.status)}<div class="t-xs text-tertiary">${esc(r.sending_date || "---")}</div>` },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => (canDel(r) ? SA.iconBtn("trash", L("delete item", "حذف العنصر"), `data-del="${r.id}"`) : "") },
+    ],
+    /* each notification gets a full-width targeting row under it */
+    after: (root) => root.querySelectorAll("tbody tr").forEach((tr, i) => {
+      const id = (tr.querySelector("[data-del]") || {}).dataset; const title = tr.querySelector("b"); if (!title) return;
+      const r = data.find((x) => x.title === title.textContent && tr.innerText.includes(x.created_at)) || null; if (!r) return;
+      const d = document.createElement("tr"); d.innerHTML = `<td colspan="4" style="background:var(--color-surface-sunken)"><div class="row gap-5" style="flex-wrap:wrap;justify-content:space-between">${detail(r)}</div></td>`; tr.after(d);
+    }),
+  });
+  mount.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-del]"); if (!b) return;
+    const r = data.find((x) => String(x.id) === b.dataset.del);
+    const el = SA.modal({ id: "ntDel", title: L("delete item", "حذف العنصر"), body: `<p class="t-sm text-secondary">${L("Please confirm that you want to delete this item", "يرجى تأكيد أنك تريد حذف هذا العنصر")}</p>`,
+      foot: `<button class="btn btn--ghost" data-close>${L("cancel", "إلغاء")}</button><button class="btn" data-ok>${L("Confirm", "تأكيد")}</button>` });
+    el.querySelector("[data-ok]").onclick = (ev) => { ev.currentTarget.disabled = true; ev.currentTarget.textContent = L("Confirm ...", "جاري التأكيد ..."); setTimeout(() => { data.splice(data.indexOf(r), 1); SA.close(el); ctl.paint(); }, 400); };
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Partners · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script>
+(() => {
+  /* Partners — mirrors HighFive-SuperAdmin-Front pages/partners (list):
+     status pills with counts, search, Filter (created by · country · state ·
+     city), 9-column table, eye → partner profile. API: GET /partners. */
+  RD.boot({ activeId: "partners", title: "Partners" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic, badge, iconBtn } = SA;
+  const data = HF.SA.partners;
+
+  SA.head(document.getElementById("pageHead"), {
+    title: ["Partners", "الشركاء"],
+    actions: `<a class="btn btn--sm" href="partners-add.html">${ic("plus")}<span>${L("Add New Partner", "إضافة شريك جديد")}</span></a>`,
+  });
+
+  const STATUS = (v) =>
+    v === "waiting" ? badge("warning", L("Pending", "معلق"))
+      : v === 1 || v === "active" ? badge("primary", L("active", "نشط"))
+        : badge("danger", L("inactive", "غير نشط"));
+  const initials = (s) => (s || "?").trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+  const dash = (v) => (v == null || v === "" ? "---" : esc(v));
+
+  let ctl = null;
+  ctl = SA.list({
+    mount: document.getElementById("listMount"),
+    data,
+    pills: [
+      { key: "all", label: ["all", "الكل"] },
+      { key: "waiting", label: ["Pending", "معلق"] },
+      { key: "active", label: ["active", "نشط"] },
+      { key: "inactive", label: ["inactive", "غير نشط"] },
+    ],
+    pillMatch: (r, k) => k === "all" || (k === "active" ? r.active === "active" || r.active === 1 : k === "waiting" ? r.active === "waiting" : r.active !== "waiting" && r.active !== "active" && r.active !== 1),
+    search: ["search by company name, owner name, email, phone", "البحث بالاسم التجاري، اسم المالك، البريد الإلكتروني، رقم الهاتف"],
+    searchMatch: (r, q) => [r.company_name, r.owner_name, r.email, r.partner_phone].some((v) => v && String(v).toLowerCase().includes(q)),
+    toolbarExtra: `<button type="button" class="btn btn--sm btn--secondary" data-filter aria-haspopup="dialog">${ic("sliders")}<span>${L("Filter", "تصفية")}</span></button>`,
+    extraMatch: (r, f) =>
+      (!f.created_by || r.created_by.toLowerCase() === f.created_by) &&
+      (!f.country || r.country.iso === f.country) &&
+      (!f.state || String(r.state.id) === f.state) &&
+      (!f.city || String(r.city.id) === f.city),
+    empty: ["there is no data to display", "لا توجد بيانات لعرضها"],
+    columns: [
+      { head: ["name", "الاسم"], cell: (r) => `<div class="cell-user"><span class="avatar avatar--sm">${esc(initials(r.company_name))}</span>
+          <div><b>${esc(r.company_name)}</b><div class="t-xs text-tertiary">#${r.id}</div><div class="t-xs text-tertiary">${esc(r.created_at)}</div></div></div>` },
+      { head: ["owner", "المالك"], cell: (r) => `<div class="cell-user"><span class="avatar avatar--sm">${esc(initials(r.owner_name || "-"))}</span>
+          <div><b>${dash(r.owner_name)}</b><div class="t-xs text-tertiary" dir="ltr">${esc(r.partner_phone)}</div><div class="t-xs text-tertiary">${esc(r.email)}</div></div></div>` },
+      { head: ["country", "البلد"], align: "center", cell: (r) => dash(r.country && r.country.name) },
+      { head: ["state", "الولاية"], align: "center", cell: (r) => dash(r.state && r.state.name) },
+      { head: ["city", "المدينة"], align: "center", cell: (r) => dash(r.city && r.city.name) },
+      { head: ["units", "وحدات"], align: "center", cell: (r) => `<b>${r.units_count}</b>` },
+      { head: ["Status", "الحالة"], align: "center", cell: (r) => STATUS(r.active) },
+      { head: ["Created By", "المنشئ"], align: "center", cell: (r) => (r.created_by === "Admin" ? L("Admin", "ادمن") : L("Partner", "شريك")) },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<a class="icon-btn" href="partner-profile.html?id=${r.id}&tab=owner&redirect_to_page=${ctl ? ctl.state.page : 1}" aria-label="${L("View", "عرض")} ${esc(r.company_name)}" title="${L("View", "عرض")}">${ic("eye")}</a>` },
+    ],
+  });
+
+  /* ---------------- Filter Options popover ---------------- */
+  const GEO = HF.SA.GEO;
+  const uniq = (arr, key) => arr.filter((x, i) => arr.findIndex((y) => key(y) === key(x)) === i);
+  const ALL = L("all", "الكل");
+  const pop = document.createElement("div");
+  pop.className = "popover";
+  pop.setAttribute("role", "dialog");
+  pop.style.width = "300px";
+  document.body.appendChild(pop);
+  let draft = {};
+  function paintPop() {
+    const countries = uniq(GEO.map((g) => g.country), (c) => c.iso);
+    const states = draft.country ? uniq(GEO.filter((g) => g.country.iso === draft.country).map((g) => g.state), (s) => s.id) : [];
+    const cities = draft.state ? uniq(GEO.filter((g) => String(g.state.id) === draft.state).map((g) => g.city), (c) => c.id) : [];
+    const opt = (v, label, cur) => [v, label, String(cur || "") === String(v)];
+    pop.innerHTML = `<div class="popover__title">${L("Filter Options", "خيارات التصفية")}</div>
+      <div class="popover__body stack gap-3">
+        ${SA.field([`Created by:`, `المنشئ:`], SA.select([opt("", ALL, draft.created_by), opt("partner", L("Partner", "شريك"), draft.created_by), opt("admin", L("Admin", "ادمن"), draft.created_by)], 'data-f="created_by"'))}
+        ${SA.field(["country:", "البلد:"], SA.select([opt("", ALL, draft.country)].concat(countries.map((c) => opt(c.iso, c.name, draft.country))), 'data-f="country"'))}
+        ${SA.field(["state:", "الولاية:"], SA.select([opt("", ALL, draft.state)].concat(states.map((s) => opt(s.id, s.name, draft.state))), 'data-f="state"'))}
+        ${SA.field(["city:", "المدينة:"], SA.select([opt("", ALL, draft.city)].concat(cities.map((c) => opt(c.id, c.name, draft.city))), 'data-f="city"'))}
+      </div>
+      <div class="popover__foot">
+        <button type="button" class="btn btn--sm btn--secondary" data-reset>${L("Reset", "إعادة تعيين")}</button>
+        <button type="button" class="btn btn--sm" data-apply>${L("Apply", "تطبيق")}</button>
+      </div>`;
+  }
+  pop.addEventListener("change", (e) => {
+    const k = e.target.dataset.f;
+    if (!k) return;
+    draft[k] = e.target.value;
+    if (k === "country") { draft.state = ""; draft.city = ""; }
+    if (k === "state") draft.city = "";
+    paintPop();
+  });
+  pop.addEventListener("click", (e) => {
+    if (e.target.closest("[data-reset]")) { draft = {}; paintPop(); }
+    if (e.target.closest("[data-apply]")) { ctl.state.extra = Object.assign({}, draft); ctl.state.page = 1; pop.classList.remove("is-open"); ctl.paint(); }
+  });
+  document.getElementById("listMount").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-filter]");
+    if (!b) return;
+    if (pop.classList.contains("is-open")) return pop.classList.remove("is-open");
+    draft = Object.assign({}, ctl.state.extra);
+    paintPop();
+    SA.popover(pop, b);
+  });
+})();
+</script>
+</body>
+</html>

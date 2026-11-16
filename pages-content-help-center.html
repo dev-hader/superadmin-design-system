@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>help center · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/sa-translation.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/sa-crud.js"></script>
+<script>
+(() => {
+  /* Pages Content — pages/pages-content:
+       pages-content-pages.html         list (gallery button, no add — commented out in the dashboard) · ?edit= · ?view= · ?gallery=1
+       pages-content-help-center.html   list (+ add new) · ?parent=<id> children · ?new=1 · ?edit= · ?view= · ?gallery=1
+     Content uses a rich-text editor (CKEditor 5 Classic in the dashboard — here a small editable box
+     with bold / italic / heading / lists / link). Validation copy is hard-coded English, as in the dashboard. */
+  const file = location.pathname.split("/").pop().replace(/^_preview-/, "").replace(".html", "");
+  const isHC = file === "pages-content-help-center", qs = new URLSearchParams(location.search);
+  RD.boot({ activeId: isHC ? "pc-help-center" : "pc-pages", title: "pages content" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic, badge } = SA;
+  const S = HF.SA, mount = document.getElementById("listMount"), base = file + ".html";
+  const listTitle = isHC ? ["help center", "مركز المساعدة"] : ["Pages", "الصفحات"];
+  const crumbs = [[listTitle[0], listTitle[1], base]];
+
+  /* ---- data (GET /pages · /help-centers) ---- */
+  if (!S._content) {
+    const html = (t) => `<h3>${t}</h3><p>This page explains <b>${t.toLowerCase()}</b> for HighFive users and partners.</p><ul><li>Read the terms before booking.</li><li>Contact support for help.</li></ul>`;
+    S._content = {
+      pages: [["Terms & Conditions", "terms", "player"], ["Privacy Policy", "privacy", "player"], ["Partner Agreement", "partner-agreement", "partner"], ["About HighFive", "about", "player"], ["Refund Policy", "refunds", "partner"]].map((p, i) => ({ id: i + 1, title: p[0], slug: p[1], target: p[2], status: i === 3 ? "unpublish" : "publish", image: null, content: html(p[0]) })),
+      help: [["Getting started", 0], ["Bookings", 0], ["Payments & wallet", 0], ["Account", 0], ["How to book a court", 2], ["Cancel a booking", 2], ["Top up your wallet", 3]].map((h, i) => ({ id: i + 1, title: h[0], slug: h[0].toLowerCase().replace(/[^a-z0-9]+/g, "-"), parent_id: h[1], order: i + 1, status: i === 3 ? 0 : 1, content: html(h[0]) })),
+      gallery: { pages: [1, 2, 3, 4].map((id) => ({ id })), help: [1, 2].map((id) => ({ id })) },
+    };
+  }
+  const C = S._content, rows = isHC ? C.help : C.pages;
+  const childCount = (r) => C.help.filter((x) => x.parent_id === r.id).length;
+
+  /* ---- rich-text editor (stands in for CKEditor 5 Classic) ---- */
+  const editor = (v) => `<div class="stack" style="border:var(--border-thin) solid var(--input-border);border-radius:var(--radius-md);overflow:hidden">
+      <div class="row gap-1" style="padding:6px;border-bottom:var(--border-thin) solid var(--color-border);background:var(--color-surface-sunken);flex-wrap:wrap">${[["bold", "B"], ["italic", "I"], ["formatBlock:H3", "H"], ["insertUnorderedList", L("• List", "• قائمة")], ["insertOrderedList", L("1. List", "1. قائمة مرقمة")], ["createLink", L("Link", "رابط")]].map((b) => `<button type="button" class="btn btn--sm btn--ghost" data-cmd="${b[0]}" style="${b[1] === "B" ? "font-weight:800" : b[1] === "I" ? "font-style:italic" : ""}">${b[1]}</button>`).join("")}</div>
+      <div contenteditable="true" data-editor style="min-height:200px;padding:var(--space-3);outline:none" data-placeholder="${L("enter content here ...", "أدخل المحتوى هنا ...")}">${v || ""}</div></div>`;
+  const wireEditor = (root) => root.addEventListener("click", (e) => { const b = e.target.closest("[data-cmd]"); if (!b) return; const [cmd, arg] = b.dataset.cmd.split(":"); root.querySelector("[data-editor]").focus(); document.execCommand(cmd, false, cmd === "createLink" ? prompt("URL", "https://") : arg ? `<${arg}>` : null); });
+  const row = (lab, ctl, k) => `<div class="sa-formrow"><label class="field__label">${lab}:</label><div class="stack gap-1">${ctl}<span data-e="${k}"></span></div></div>`;
+  const status = (r) => (isHC ? (+r.status !== 0 ? badge("primary", L("active", "نشط")) : badge("danger", L("inactive", "غير نشط"))) : badge(String(r.status).toLowerCase() === "publish" ? "primary" : "danger", r.status));
+
+  /* ================= translation (shared Translation module) ================= */
+  if (qs.get("translation")) {
+    const r = rows.find((x) => String(x.id) === qs.get("translation")) || rows[0];
+    document.getElementById("pageHead").hidden = true;
+    SATR.render(mount, { key: (isHC ? "help" : "page") + r.id, itemName: r.title, editTitle: L("edit translates", "تعديل الترجمات"), cols: [["title", L("title", "العنوان")], ["content", L("content", "المحتوى")]], src: { title: r.title, content: r.content.replace(/<[^>]+>/g, " ").trim().slice(0, 60) + "…" }, backHref: base });
+    return;
+  }
+
+  /* ================= gallery (images arrive only through editor uploads — no upload UI) ================= */
+  if (qs.get("gallery")) {
+    const G = isHC ? C.gallery.help : C.gallery.pages;
+    SA.head(document.getElementById("pageHead"), { title: ["gallery", "معرض"], crumbs });
+    const paint = () => (mount.innerHTML = G.length ? `<div class="row gap-5" style="flex-wrap:wrap">${G.map((g) => `<div style="position:relative;width:125px;height:125px"><span class="cell-thumb" style="width:100%;height:100%;border-radius:var(--radius-md)">${ic("camera")}</span>
+        <button type="button" class="icon-btn" data-del="${g.id}" title="${L("Remove photo", "إزالة الصورة")}" aria-label="${L("Remove photo", "إزالة الصورة")}" style="position:absolute;top:-8px;inset-inline-end:-8px;width:28px;height:28px;border-radius:50%;background:var(--color-surface);box-shadow:var(--shadow-sm)">${ic("trash")}</button>
+        <a class="icon-btn" href="#" title="${L("View", "عرض")}" aria-label="${L("View", "عرض")}" style="position:absolute;bottom:-8px;inset-inline-end:-8px;width:28px;height:28px;border-radius:50%;background:var(--color-surface);box-shadow:var(--shadow-sm)">${ic("eye")}</a></div>`).join("")}</div>`
+      : `<p class="text-tertiary">${L("no photo have been added", "لم يتم إضافة أي صورة")}</p>`);
+    mount.addEventListener("click", (e) => { const b = e.target.closest("[data-del]"); if (!b) return; CRUD.del({ data: G, del: {} }, G.find((x) => String(x.id) === b.dataset.del), paint); });
+    paint(); return;
+  }
+
+  /* ================= view ================= */
+  if (qs.get("view")) {
+    const r = rows.find((x) => String(x.id) === qs.get("view")) || rows[0];
+    SA.head(document.getElementById("pageHead"), { title: isHC ? [r.title, r.title] : listTitle, crumbs: isHC ? crumbs : [] });
+    mount.innerHTML = `<section class="card card--pad stack gap-4" style="${isHC ? "" : "max-width:760px;margin-inline:auto"}">${isHC ? "" : `<span class="cell-thumb" style="width:100%;height:180px;border-radius:var(--radius-lg)">${ic("camera")}</span><h3 class="t-h3">${esc(r.title)}</h3>`}
+      <div class="stack gap-2">${r.content}</div><div><a class="btn btn--secondary" href="${base}">${L("back", "رجوع")}</a></div></section>`;
+    return;
+  }
+
+  /* ================= create / edit ================= */
+  if (qs.get("edit") || qs.get("new")) {
+    const r = qs.get("edit") ? rows.find((x) => String(x.id) === qs.get("edit")) : null;
+    SA.head(document.getElementById("pageHead"), { title: r ? [r.title, r.title] : isHC ? ["create new help center", "إنشاء مركز مساعدة جديد"] : ["create new page", "إنشاء صفحة جديدة"], crumbs });
+    const f = r ? Object.assign({}, r) : { title: "", slug: "", status: isHC ? 1 : "", target: "", order: 1, parent_id: undefined, content: "" };
+    const sel = (k, opts, ph) => SA.select([["", ph]].concat(opts.map((o) => [o[0], o[1], String(f[k]) === String(o[0])])), `data-k="${k}"`);
+    mount.innerHTML = `<section class="card card--pad stack gap-4"><div data-alert></div>
+      ${isHC ? "" : row(L("image", "الصورة"), `<div class="row gap-3" style="align-items:center"><span class="cell-thumb" style="width:125px;height:125px;border-radius:var(--radius-lg)">${ic("camera")}</span><div class="stack gap-1"><input class="input" type="file" accept=".png,.jpg,.jpeg" data-img style="padding-top:8px">${r ? `<span class="t-xs text-tertiary">${L("Max size 1MB for images", "الحد الأقصى للصور 1 ميجابايت")}</span>` : ""}</div></div>`, "image")}
+      ${row(L("title", "العنوان"), `<input class="input" data-k="title" value="${esc(f.title)}" placeholder="${L("enter title", "أدخل العنوان")}">`, "title")}
+      ${row(L("slug", "الرابط"), `<input class="input" data-k="slug" value="${esc(f.slug)}" placeholder="${L("enter slug", "أدخل الرابط")}" dir="ltr">`, "slug")}
+      ${row(L("status", "الحالة"), isHC ? sel("status", [["1", L("publish", "نشر")], ["0", L("unpublish", "إلغاء النشر")]], L("select status", "اختر الحالة")) : sel("status", [["publish", L("publish", "نشر")], ["unpublish", L("unpublish", "إلغاء النشر")]], L("select status", "اختر الحالة")), "status")}
+      ${isHC ? row(L("parent", "الأب"), sel("parent_id", [["0", L("parent", "الأب")]].concat(C.help.filter((x) => !r || x.id !== r.id).map((x) => [x.id, x.title])), L("select parent", "اختر الأب")), "parent_id")
+          + row(L("order", "الترتيب"), `<input class="input" type="number" min="1" data-k="order" value="${esc(f.order)}" placeholder="${L("enter type order", "أدخل الترتيب")}" style="max-width:160px">`, "order")
+        : row(L("target", "الهدف"), sel("target", [["player", L("player", "لاعب")], ["partner", L("partner", "شريك")]], L("select target", "اختر الهدف")), "target")}
+      ${row(L("content", "المحتوى"), editor(f.content), "content")}
+      <div class="row between"><a class="btn btn--ghost" href="${base}">${L("cancel", "إلغاء")}</a><button type="button" class="btn" data-save>${r ? L("update", "تحديث") : L("create", "إنشاء")}</button></div></section>`;
+    wireEditor(mount);
+    mount.querySelector("[data-save]").onclick = (e) => {
+      const v = (k) => { const el = mount.querySelector(`[data-k="${k}"]`); return el ? el.value.trim() : ""; }, content = mount.querySelector("[data-editor]").innerHTML.trim(), txt = mount.querySelector("[data-editor]").innerText.trim();
+      const len = (x) => (!x ? "this field is required" : x.length < 3 ? "Minimum 3 symbols" : x.length > 200 ? "Maximum 50 symbols" : ""); /* hard-coded English (Yup) in the dashboard */
+      const errs = { title: len(v("title")), slug: len(v("slug")), status: v("status") === "" ? "this field is required" : "", content: !txt ? "this field is required" : txt.length < 3 ? "Minimum 3 symbols" : "" };
+      if (isHC) { errs.parent_id = v("parent_id") === "" ? "this field is required" : ""; errs.order = !v("order") ? "this field is required" : !/^[0-9]+$/.test(v("order")) ? "number is not valid" : v("order").length > 10 ? "Maximum 50 symbols" : ""; }
+      else errs.target = v("target") === "" ? "this field is required" : "";
+      Object.entries(errs).forEach(([k, m]) => { const s = mount.querySelector(`[data-e="${k}"]`); if (s) s.innerHTML = m ? `<span class="field__error">${ic("warn")} ${m}</span>` : ""; });
+      if (Object.values(errs).some(Boolean)) return;
+      const b = e.currentTarget; b.disabled = true; b.textContent = r ? L("update ...", "جاري التحديث ...") : L("create ...", "جاري الإنشاء ...");
+      setTimeout(() => {
+        const vals = { title: v("title"), slug: v("slug"), status: isHC ? +v("status") : v("status"), content };
+        if (isHC) Object.assign(vals, { parent_id: +v("parent_id"), order: +v("order") }); else vals.target = v("target");
+        if (r) Object.assign(r, vals); else rows.unshift(Object.assign({ id: Math.max(...rows.map((x) => x.id)) + 1 }, vals));
+        location.href = base;
+      }, 400);
+    };
+    return;
+  }
+
+  /* ================= lists ================= */
+  const parent = isHC && qs.get("parent") ? C.help.find((x) => String(x.id) === qs.get("parent")) : null;
+  SA.head(document.getElementById("pageHead"), { title: parent ? [parent.title, parent.title] : listTitle, crumbs: parent ? crumbs : [],
+    actions: `<a class="btn btn--sm" style="background:var(--color-success);border-color:var(--color-success)" href="${base}?gallery=1">${ic("camera")}<span>${L("gallery", "معرض")}</span></a>${isHC ? `<a class="btn btn--sm" href="${base}?new=1">${ic("plus")}<span>${L("add new", "إضافة جديد")}</span></a>` : ""}` });
+  const data = isHC ? C.help.filter((x) => x.parent_id === (parent ? parent.id : 0)) : C.pages;
+  const isPub = (r) => (isHC ? +r.status !== 0 : r.status === "publish");
+  const ctl = SA.list({
+    mount, data,
+    pills: [{ key: "all", label: ["all", "الكل"] }, { key: "publish", label: ["publish", "نشر"] }, { key: "unpublish", label: ["unpublish", "إلغاء النشر"] }],
+    pillMatch: (r, k) => k === "all" || (k === "publish") === isPub(r),
+    search: ["search by name", "البحث بالاسم"], searchMatch: (r, q) => r.title.toLowerCase().includes(q),
+    empty: ["there is no data to display", "لا توجد بيانات للعرض"],
+    columns: (isHC ? [
+      { head: ["name", "الاسم"], cell: (r) => esc(r.title || "---") },
+      { head: ["order", "الترتيب"], cell: (r) => r.order },
+      { hidden: !!parent, head: ["children", "الأبناء"], cell: (r) => { const n = childCount(r); return n ? `<a href="${base}?parent=${r.id}" style="color:var(--color-text-link);font-weight:var(--weight-semibold)">${n} ${L("children", "الأبناء")}</a>` : `0 ${L("children", "الأبناء")}`; } },
+    ] : [
+      { head: ["image", "الصورة"], cell: () => `<span class="cell-thumb">${ic("camera")}</span>` },
+      { head: ["name", "الاسم"], cell: (r) => esc(r.title || "---") },
+      { head: ["type", "النوع"], align: "center", cell: (r) => esc(r.target || "---") },
+    ]).concat([
+      { head: ["states", "الحالة"], align: "center", cell: status },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<div class="row gap-1" style="justify-content:center"><a class="icon-btn" href="${base}?translation=${r.id}" title="${L("translation", "ترجمة")}" aria-label="${L("translation", "ترجمة")}">${ic("globe")}</a><a class="icon-btn" href="${base}?view=${r.id}" aria-label="${L("View", "عرض")}">${ic("eye")}</a><a class="icon-btn" href="${base}?edit=${r.id}" aria-label="${L("edit", "تعديل")}">${ic("edit")}</a>${isHC ? SA.iconBtn("trash", L("delete item", "حذف العنصر"), `data-del="${r.id}"`) : ""}</div>` },
+    ]),
+  });
+  mount.addEventListener("click", (e) => { const b = e.target.closest("[data-del]"); if (b) CRUD.del({ data: C.help, del: {} }, C.help.find((x) => String(x.id) === b.dataset.del), () => { data.splice(0, data.length, ...C.help.filter((x) => x.parent_id === (parent ? parent.id : 0))); ctl.paint(); }); });
+})();
+</script>
+</body>
+</html>

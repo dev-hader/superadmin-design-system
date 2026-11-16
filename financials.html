@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>financials · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script>
+(() => {
+  /* Financials — mirrors pages/financials:
+       overview  (/financials)                   financials.html — Export + Filter (year · month), one card per country
+       country   (/financials/:iso/transactions) ?iso=<ISO>       — statistics (booking · public event · [packages] · revenues)
+                                                 + partner rows, Filter (year · month · state → city), eye → partner financials.
+     API: GET /financials · GET /financials/{iso}. No charts, no row modals. */
+  const qs = new URLSearchParams(location.search), iso = qs.get("iso");
+  RD.boot({ activeId: "financials", title: "financials" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic } = SA;
+  const { card } = PP;
+  const mount = document.getElementById("listMount");
+  const f2 = (v) => Number(v || 0).toFixed(2);
+  const money = (v) => (v === undefined ? "---" : Number(v).toFixed(2));
+  const csv = (name, rows) => {
+    const blob = new Blob([rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  };
+  const countries = [...new Map(HF.SA.GEO.map((g) => [g.country.iso, g.country])).values()];
+  const CUR = { SA: "SAR", EG: "EGP", AE: "AED" };
+  const now = new Date(), mmYY = (f) => `${String(f.month || now.getMonth() + 1).padStart(2, "0")}/${f.year || now.getFullYear()}`;
+
+  /* ---- per-country totals from the partners' own transactions (sample) ---- */
+  const partnerRows = (c, f) => HF.SA.partners.filter((p) => p.country.iso === c.iso && (!f.state_id || String(p.state.id) === f.state_id) && (!f.city_id || String(p.city.id) === f.city_id)).map((p, i) => {
+    const seed = (p.id % 13) + 1 + (f.month ? +f.month % 3 : 0), grp = (a, b) => ({ cash: a, online: b, total: a + b });
+    const booking = grp(seed * 120, seed * 340), event = grp(seed * 45, seed * 160), pkg = grp(seed * 90, seed * 410);
+    return { id: p.id, partner_name: p.company_name, country: p.country.name, state: p.state.name, city: p.city.name, date: `${f.year || now.getFullYear()}-${String(f.month || now.getMonth() + 1).padStart(2, "0")}`,
+      booking, public_event: event, package: pkg, all_revenues: grp(booking.cash + event.cash + pkg.cash, booking.online + event.online + pkg.online) };
+  });
+  const sumG = (rows, k) => rows.reduce((a, r) => ({ online_revenue: a.online_revenue + r[k].online, cash_revenue: a.cash_revenue + r[k].cash, online_collected: a.online_collected + r[k].online * 0.85, cash_collected: a.cash_collected + r[k].cash * 0.15 }), { online_revenue: 0, cash_revenue: 0, online_collected: 0, cash_collected: 0 });
+
+  /* ================= country transactions ================= */
+  if (iso) {
+    const c = countries.find((x) => x.iso === iso) || countries[0];
+    const pkgVisible = c.iso === "SA";
+    SA.head(document.getElementById("pageHead"), { title: [c.name, c.name], crumbs: [["financials", "المالية", "financials.html"]],
+      actions: `<a class="btn btn--sm btn--secondary" href="financials.html">${ic(document.documentElement.dir === "rtl" ? "chevronRight" : "chevronLeft")}<span>${L("financials", "المالية")}</span></a>` });
+    let f = {};
+    const statTable = (title, s, fmt) => `<div class="data-table-scroll" style="flex:1;min-width:min(220px,100%)"><table class="data-table"><thead><tr><th style="font-size:var(--text-lg);color:var(--color-text)">${title}</th><th>${L("revenue", "الإيرادات")}</th><th>${L("collected", "المحصل")}</th></tr></thead><tbody>
+        <tr><td>${L("online", "عبر الإنترنت")}</td><td>${fmt(s.online_revenue)}</td><td>${fmt(s.online_collected)} <span style="color:var(--color-danger)" title="${L("collected by highfive", "محصل من هاي فايف")}">${ic("info")}</span></td></tr>
+        <tr><td>${L("cash", "نقدي")}</td><td>${fmt(s.cash_revenue)}</td><td>${fmt(s.cash_collected)} <span style="color:var(--color-danger)" title="${L("SAR to be collected", "ريال سعودي للتحصيل")}">${ic("info")}</span></td></tr>
+        <tr style="font-weight:var(--weight-bold)"><td>${L("Total (SAR)", "المجموع (ريال سعودي)")}</td><td>${fmt(s.online_revenue + s.cash_revenue)}</td><td>${fmt(s.online_collected + s.cash_collected)}</td></tr></tbody></table></div>`;
+    const money3 = (o, fmt) => [["cash", L("cash", "نقدي")], ["online", L("online", "عبر الإنترنت")], ["total", L("total", "المجموع")]].map(([k, t]) => `<div class="row gap-2" style="flex-wrap:wrap;${k === "total" ? "font-weight:var(--weight-bold);color:var(--color-text)" : ""}"><span class="text-tertiary" style="min-width:60px">${t}</span>${fmt(o[k])}</div>`).join("");
+    const paint = () => {
+      const rows = partnerRows(c, f);
+      const st = { booking: sumG(rows, "booking"), public_event: sumG(rows, "public_event"), package: sumG(rows, "package"), all: sumG(rows, "all_revenues") };
+      mount.innerHTML = `<div class="stack gap-6">` + card(L(`${c.name} transactions of ${mmYY(f)} in all partners`, `معاملات ${c.name} لشهر ${mmYY(f)} في جميع الشركاء`),
+          `${PP.btn(L("Export", "تصدير"), "upload", "data-export", "secondary")}${PP.filterBtn()}`,
+          `<div class="row gap-4" style="flex-wrap:wrap">${statTable(L("booking", "الحجز"), st.booking, f2)}${statTable(L("public event", "الحدث العام"), st.public_event, f2)}${pkgVisible ? statTable(L("Packages", "الباقات"), st.package, f2) : ""}${statTable(L("revenues", "الإيرادات"), st.all, money)}</div>`)
+        + `<div data-l></div></div>`;
+      SA.list({ mount: mount.querySelector("[data-l]"), data: rows, empty: ["There is no data to display.", "لا توجد بيانات للعرض."], columns: [
+        { head: ["partner", "الشريك"], cell: (r) => `<div class="cell-user">${PP.avatar(r.partner_name)}<div><b>${esc(r.partner_name)}</b><div class="t-xs text-tertiary">#${r.id}</div></div></div>` },
+        { head: ["location", "الموقع"], cell: (r) => `<div class="stack gap-1">${esc(r.country)}<span>${esc(r.state)}</span><span>${esc(r.city)}</span></div>` },
+        { head: ["booking", "الحجز"], cell: (r) => money3(r.booking, f2) },
+        { head: ["public event", "الحدث العام"], cell: (r) => money3(r.public_event, f2) },
+        { hidden: !pkgVisible, head: ["Packages", "الباقات"], cell: (r) => money3(r.package, f2) },
+        { head: ["All Revenues", "جميع الإيرادات"], cell: (r) => money3(r.all_revenues, money) },
+        { head: ["Date", "التاريخ"], align: "center", cell: (r) => r.date },
+        { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<a class="icon-btn" href="partner-profile.html?id=${r.id}&tab=financials&from=transactions&iso=${c.iso}" aria-label="${L("View", "عرض")}" title="${L("View", "عرض")}">${ic("eye")}</a>` },
+      ] });
+      mount.querySelector("[data-export]").onclick = () => csv("transactions.csv", [["id", "partner_name", "country", "state", "city", "date"].concat(pkgVisible ? ["package_cash", "package_online", "package_total"] : [], ["all_revenues_cash", "all_revenues_online", "all_revenues_total"])]
+        .concat(rows.map((r) => [r.id, r.partner_name, r.country, r.state, r.city, r.date].concat(pkgVisible ? [f2(r.package.cash), f2(r.package.online), f2(r.package.total)] : [], [money(r.all_revenues.cash), money(r.all_revenues.online), money(r.all_revenues.total)]))));
+    };
+    const states = () => [...new Map(HF.SA.GEO.filter((g) => g.country.iso === c.iso).map((g) => [String(g.state.id), g.state.name])).entries()];
+    mount.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-filter]");
+      if (b) PP.filterPop(b, { width: 300, value: f, cascade: { state_id: ["city_id"] }, resetApplies: true, fields: [
+        { key: "year", label: ["year :", "السنة :"], placeholder: ["select year", "اختر السنة"], options: () => [2024, 2025, 2026].map((y) => [String(y), String(y)]) },
+        { key: "month", label: ["month :", "الشهر :"], placeholder: ["select month", "اختر الشهر"], options: () => Array.from({ length: 12 }, (_, i) => [String(i + 1), String(i + 1).padStart(2, "0")]) },
+        { key: "state_id", label: ["State:", "الولاية:"], placeholder: ["all", "الكل"], options: states },
+        { key: "city_id", label: ["City:", "المدينة:"], placeholder: ["all", "الكل"], options: (d) => HF.SA.GEO.filter((g) => String(g.state.id) === d.state_id).map((g) => [String(g.city.id), g.city.name]) },
+      ], onApply: (d) => { f = d; paint(); } });
+    });
+    paint();
+    return;
+  }
+
+  /* ================= overview ================= */
+  let f = {};
+  SA.head(document.getElementById("pageHead"), { title: ["financials", "المالية"],
+    actions: `${PP.btn(L("Export", "تصدير"), "upload", "data-export", "secondary")}<span id="finFilter">${PP.filterBtn()}</span>` });
+  const items = () => countries.map((c, i) => { const rows = partnerRows(c, f), s = sumG(rows, "all_revenues"); return Object.assign({ id: i + 1, iso: c.iso, name: c.name, currency: { code: CUR[c.iso] } }, s); });
+  const paint = () => {
+    const list = items();
+    mount.innerHTML = list.length ? `<div class="sa-stats" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">${list.map((c) => `<section class="card card--pad animate-in stack gap-3" style="align-items:center;text-align:center">
+        <div class="row gap-2" style="align-items:center"><span class="badge">${esc(c.iso)}</span><h3 class="t-title">${esc(c.name || "---")}</h3></div>
+        <span class="t-sm text-tertiary">${esc(c.currency.code || "---")}</span>
+        <table class="data-table" style="width:100%"><thead><tr><th style="color:var(--color-text);font-size:var(--text-body)">${L("revenues", "الإيرادات")}</th><th>${L("revenue", "الإيرادات")}</th><th>${L("collected", "المحصل")}</th></tr></thead><tbody>
+          <tr><td>${L("online", "عبر الإنترنت")}</td><td>${f2(c.online_revenue)}</td><td>${f2(c.online_collected)}</td></tr>
+          <tr><td>${L("cash", "نقدي")}</td><td>${f2(c.cash_revenue)}</td><td>${f2(c.cash_collected)}</td></tr>
+          <tr style="font-weight:var(--weight-bold);color:var(--color-text)"><td>${L("total", "المجموع")}</td><td>${f2(c.online_revenue + c.cash_revenue)}</td><td>${f2(c.online_collected + c.cash_collected)}</td></tr></tbody></table>
+        <a class="btn" href="financials.html?iso=${c.iso}">${L("Show", "عرض")}</a></section>`).join("")}</div>`
+      : `<p class="text-tertiary">${L("There is no data to display.", "لا توجد بيانات للعرض.")}</p>`;
+  };
+  document.getElementById("pageHead").addEventListener("click", (e) => {
+    if (e.target.closest("[data-export]")) { const list = items(); if (list.length) csv("financials.csv", [Object.keys(list[0])].concat(list.map((c) => Object.values(Object.assign({}, c, { currency: c.currency.code }))))); return; }
+    const b = e.target.closest("[data-filter]");
+    if (b) PP.filterPop(b, { width: 300, value: f, resetApplies: true, fields: [
+      { key: "year", label: ["year :", "السنة :"], placeholder: ["select year", "اختر السنة"], options: () => [2024, 2025, 2026].map((y) => [String(y), String(y)]) },
+      { key: "month", label: ["month :", "الشهر :"], placeholder: ["select month", "اختر الشهر"], options: () => Array.from({ length: 12 }, (_, i) => [String(i + 1), String(i + 1).padStart(2, "0")]) },
+    ], onApply: (d) => { f = d; paint(); } });
+  });
+  paint();
+})();
+</script>
+</body>
+</html>

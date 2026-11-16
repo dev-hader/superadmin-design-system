@@ -1,0 +1,524 @@
+/* ============================================================================
+   HIGH FIVE SUPER ADMIN - DESIGN TOKENS
+   3-tier architecture: Primitives → Semantic → Component
+   Never hardcode values in components. Reference these tokens only.
+   Forked 2026-11-15 from the Partner Web Design System; ONLY the identity
+   layer changed (.claude-rules.md §9): light-first, the Super Admin's own
+   orange #FC6404 primary, the dashboard's cool blue-grey neutrals
+   (#FCFCFC canvas, #071437 text) and its #131313 / #1C1C1C dark chrome.
+   NOTE: the primary scale keeps the Partner system's historical --lime-*
+   token names so components.css works unchanged; the values are orange.
+   ========================================================================== */
+
+:root {
+  /* ------------------------------------------------------------------ */
+  /* TIER 1 - PRIMITIVES (raw values, never used directly in UI)        */
+  /* ------------------------------------------------------------------ */
+
+  /* Brand · Orange (PRIMARY) - anchored to the Super Admin's runtime
+     --bs-primary #FC6404 (500); #FF6600 (the app's $app-main-color, used
+     for active menu links) sits between 400 and 500. Token names kept as
+     --lime-* for compatibility with the shared component stylesheet. */
+  --lime-50:  #fff5ee;
+  --lime-100: #ffe6d3;
+  --lime-200: #ffcaa5;
+  --lime-300: #ffa76c;
+  --lime-400: #ff8536;
+  --lime-500: #fc6404;
+  --lime-600: #e05400;
+  --lime-700: #b84300;
+  --lime-800: #8d3400;
+  --lime-900: #602400;
+  --lime-950: #381500;
+
+  /* Brand · Rich Black - primary ink for the logo lockup */
+  --brand-rich-black: #071437;
+
+  /* Brand · Secondary accents (client identity deck, "Secondary Color") -
+     illustrative/accent use (charts, avatars, highlights) — NOT a
+     replacement for the semantic status hues (success/warning/error) below,
+     which keep their own accessibility-driven values. */
+  --brand-ufo-green:      #29e766;
+  --brand-cadmium-orange: #e3882d;
+  --brand-peridot:        #e2e800;
+  --brand-button-blue:    #2da8e3;
+
+  /* Brand · Navy (secondary / accent) */
+  --navy-50:  #eef4fb;
+  --navy-100: #d6e3f4;
+  --navy-200: #aecae9;
+  --navy-300: #7ba6d8;
+  --navy-400: #4a7dc2;
+  --navy-500: #2f5fa8;
+  --navy-600: #244b87;
+  --navy-700: #1e3d6d;
+  --navy-800: #1a3358;
+  --navy-900: #0f2038;
+  --navy-950: #081222;
+
+  /* Neutral · Ink (Super Admin dark chrome: #131313 sidebar, #1C1C1C body) */
+  --ink-canvas: #131313;
+  --ink-surface: #1c1c1c;
+  --ink-raised: #232323;
+  --ink-border: #2f2f33;
+  --ink-border-soft: #26262a;
+  --ink-text: #f5f5f7;
+  --ink-muted: #9a9cae;
+
+  /* Neutral · Gray (the Super Admin dashboard's own blue-grey scale) */
+  --gray-100: #f9f9f9;
+  --gray-200: #f1f1f2;
+  --gray-300: #dbdfe9;
+  --gray-400: #b5b5c3;
+  --gray-500: #99a1b7;
+  --gray-600: #78829d;
+  --gray-700: #4b5675;
+  --gray-800: #252f4a;
+  --gray-900: #071437;
+
+  /* Neutral · Slate */
+  --slate-0:   #ffffff;
+  --slate-50:  #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e6ebf1;
+  --slate-300: #cdd6e0;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  --slate-950: #060b18;
+
+  /* Semantic hues */
+  --green-50:  #ecfdf3;  --green-100: #d1fadf;  --green-300: #6ce9a6;
+  --green-500: #12b76a;  --green-600: #039855;  --green-700: #027a48;
+  --amber-50:  #fffaeb;  --amber-100: #fef0c7;  --amber-300: #fec84b;
+  --amber-500: #f79009;  --amber-600: #dc6803;  --amber-700: #b54708;
+  --red-50:    #fef3f2;  --red-100:   #fee4e2;  --red-300:   #fda29b;
+  --red-500:   #f04438;  --red-600:   #d92d20;  --red-700:   #b42318;
+  --salmon-400: #ff6b5b; /* locked dark-theme danger */
+  --sky-50:    #eff8ff;  --sky-100:   #d1e9ff;  --sky-300:   #84caff;
+  --sky-500:   #2e90fa;  --sky-600:   #1570ef;  --sky-700:   #175cd3;
+  --violet-50: #f5f3ff;  --violet-100:#ede9fe;  --violet-300:#c4b5fd;
+  --violet-500:#8b5cf6;  --violet-600:#7c3aed;  --violet-700:#6d28d9;
+  --teal-50:   #f0fdfa;  --teal-300:  #5eead4;  --teal-500:  #14b8a6;  --teal-600: #0d9488;
+  --pink-500:  #ec4899;  --orange-500:#f97316;
+
+  /* ------------------------------------------------------------------ */
+  /* SPACING · 8pt grid (with 4px half-steps)                           */
+  /* ------------------------------------------------------------------ */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* RADIUS */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-3xl: 32px;
+  --radius-full: 9999px;
+
+  /* BORDER WIDTHS */
+  --border-thin: 1px;
+  --border-base: 1.5px;
+  --border-thick: 2px;
+
+  /* TYPOGRAPHY — the Super Admin dashboard's own pair: English Inter,
+     Arabic Tajawal (both loaded from Google Fonts by every page). */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-ar-body: "Tajawal", "Inter", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-ar-display: "Tajawal", "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Cascadia Code", ui-monospace, Menlo,
+    Consolas, monospace;
+
+  --text-display: 3.5rem;   /* 56 */
+  --text-h1: 2.5rem;        /* 40 */
+  --text-h2: 2rem;          /* 32 */
+  --text-h3: 1.5rem;        /* 24 */
+  --text-title: 1.25rem;    /* 20 */
+  --text-lg: 1.125rem;      /* 18 */
+  --text-body: 1rem;        /* 16 */
+  --text-sm: 0.875rem;      /* 14 */
+  --text-caption: 0.8125rem;/* 13 */
+  --text-xs: 0.75rem;       /* 12 */
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  --tracking-tight: -0.02em;
+  --tracking-snug: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+  --tracking-caps: 0.06em;
+
+  /* MOTION */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-instant: 80ms;
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 360ms;
+
+  /* Z-INDEX */
+  --z-base: 1;
+  --z-sticky: 100;
+  --z-drawer: 900;
+  --z-modal: 1000;
+  --z-popover: 1100;
+  --z-toast: 1200;
+
+  /* LAYOUT */
+  --sidebar-width: 288px;
+  --topbar-height: 64px;
+  --container-max: 1120px;
+
+  /* ------------------------------------------------------------------ */
+  /* TIER 2 - SEMANTIC (light theme — the Super Admin's default).        */
+  /* Components reference THESE.                                          */
+  /* ------------------------------------------------------------------ */
+
+  /* Brand — orange fills with white text, exactly like the dashboard's
+     .btn-primary; -ink is the deeper orange that stays readable as
+     text/icons on light surfaces (#FC6404 itself is too light for text). */
+  --color-primary: var(--lime-500);
+  --color-primary-hover: var(--lime-600);
+  --color-primary-pressed: var(--lime-700);
+  --color-primary-subtle: var(--lime-50);
+  --color-primary-subtle-hover: var(--lime-100);
+  --color-primary-ink: var(--lime-700);
+  --color-on-primary: #ffffff;
+
+  --color-accent: var(--navy-600);
+  --color-accent-hover: var(--navy-700);
+  --color-accent-subtle: var(--navy-50);
+  --color-on-accent: #ffffff;
+
+  /* Inputs: neutral border at rest, brand orange on hover / focus (owner request,
+     2026-11-15 — replaces the Partner rule that kept the accent at rest). */
+  --input-border: var(--color-border-strong);
+  --input-border-hover: var(--color-primary);
+
+  /* Status */
+  --color-success: var(--green-600);
+  --color-success-subtle: var(--green-50);
+  --color-success-border: var(--green-300);
+  --color-warning: var(--amber-600);
+  --color-warning-subtle: var(--amber-50);
+  --color-warning-border: var(--amber-300);
+  --color-danger: var(--red-600);
+  --color-danger-subtle: var(--red-50);
+  --color-danger-border: var(--red-300);
+  --color-info: var(--sky-600);
+  --color-info-subtle: var(--sky-50);
+  --color-info-border: var(--sky-300);
+
+  /* Surfaces & background (the dashboard's cool blue-grey neutrals) */
+  --color-canvas: #fcfcfc;          /* app background ($app-bg-color) */
+  --color-surface: #ffffff;         /* cards, panels */
+  --color-surface-raised: #ffffff;
+  --color-surface-sunken: var(--gray-100);
+  --color-surface-hover: #f7f8fb;   /* the dashboard's active-link wash */
+  --color-overlay: rgba(7, 20, 55, 0.5);
+
+  /* Sidebar (theme-aware: white chrome in light mode, #131313 in dark) */
+  --color-sidebar: #ffffff;
+  --sidebar-bg: #ffffff;
+  --sidebar-glow:
+    radial-gradient(300px 150px at 20% -10%, color-mix(in srgb, var(--lime-500) 6%, transparent), transparent 70%);
+  --sidebar-border: var(--gray-200);
+  --sidebar-divider: #e4e6ef;
+  --sidebar-text: var(--gray-800);
+  --sidebar-text-strong: var(--gray-900);
+  --sidebar-muted: var(--gray-400);
+  --sidebar-hover: #f7f8fb;
+  --sidebar-active: linear-gradient(90deg, color-mix(in srgb, var(--lime-500) 22%, transparent), color-mix(in srgb, var(--lime-500) 8%, transparent) 60%, transparent);
+  --sidebar-ic-bg: rgba(7, 20, 55, 0.03);
+  --sidebar-ic-border: rgba(7, 20, 55, 0.07);
+  --sidebar-ic-active: linear-gradient(135deg, color-mix(in srgb, var(--lime-500) 22%, transparent), color-mix(in srgb, var(--lime-600) 12%, transparent));
+  --sidebar-ic-active-border: color-mix(in srgb, var(--lime-600) 35%, transparent);
+  --sidebar-ic-active-fg: var(--lime-600);
+  --sidebar-active-accent: var(--lime-500);
+  --sidebar-active-accent-glow: color-mix(in srgb, var(--lime-500) 45%, transparent);
+  --sidebar-badge-bg: color-mix(in srgb, var(--lime-500) 14%, transparent);
+  --sidebar-badge-fg: var(--lime-700);
+  --sidebar-user-bg: rgba(7, 20, 55, 0.03);
+  --sidebar-user-border: rgba(7, 20, 55, 0.07);
+  --sidebar-user-hover: rgba(7, 20, 55, 0.06);
+  --sidebar-avatar-ring: #ffffff;
+
+  /* Text */
+  --color-text: var(--gray-900);
+  --color-text-secondary: var(--gray-700);
+  --color-text-tertiary: var(--gray-600);
+  --color-text-disabled: var(--gray-400);
+  --color-text-inverse: #ffffff;
+  --color-text-link: var(--lime-700);
+
+  /* Selection (orange wash, navy-black text) */
+  --color-selection-bg: var(--lime-100);
+  --color-selection-fg: var(--gray-900);
+
+  /* Inverse surfaces (tooltip, bulk-actions bar): hover wash on the flipped bg */
+  --color-inverse-hover: rgba(255, 255, 255, 0.14);
+
+  /* Borders */
+  --color-border: var(--gray-300);
+  --color-border-strong: #c4cada;
+  --color-border-subtle: var(--gray-200);
+  --color-divider: #e4e6ef;
+  --color-focus-ring: color-mix(in srgb, var(--lime-500) 40%, transparent);
+
+  /* States */
+  --opacity-disabled: 0.45;
+  --opacity-hover: 0.08;
+  --opacity-pressed: 0.14;
+  --opacity-backdrop: 0.48;
+
+  /* ELEVATION - soft, layered */
+  --shadow-xs: 0 1px 2px rgba(82, 63, 105, 0.05);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(82, 63, 105, 0.04);
+  --shadow-md: 0 4px 12px rgba(82, 63, 105, 0.07), 0 2px 4px rgba(82, 63, 105, 0.04);
+  --shadow-lg: 0 10px 30px rgba(82, 63, 105, 0.10), 0 4px 8px rgba(82, 63, 105, 0.05);
+  --shadow-xl: 0 24px 48px rgba(82, 63, 105, 0.14), 0 8px 16px rgba(82, 63, 105, 0.06);
+  --shadow-glass: 0 8px 32px rgba(82, 63, 105, 0.10);
+  --shadow-focus: 0 0 0 4px var(--color-focus-ring);
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-blur: saturate(180%) blur(16px);
+
+  /* CHART palette (categorical) */
+  --chart-1: var(--navy-500);
+  --chart-2: var(--lime-600);
+  --chart-3: var(--sky-500);
+  --chart-4: var(--violet-500);
+  --chart-5: var(--amber-500);
+  --chart-6: var(--teal-500);
+  --chart-7: var(--pink-500);
+  --chart-8: var(--orange-500);
+  --chart-grid: var(--gray-200);
+  --chart-axis: var(--gray-500);
+
+  /* BOOKING STATUS palette */
+  --status-pending-fg: var(--amber-700);   --status-pending-bg: var(--amber-50);   --status-pending-dot: var(--amber-500);
+  --status-confirmed-fg: var(--navy-700);  --status-confirmed-bg: var(--navy-50);  --status-confirmed-dot: var(--navy-500);
+  --status-checkedin-fg: var(--green-700); --status-checkedin-bg: var(--green-50); --status-checkedin-dot: var(--green-500);
+  --status-checkedout-fg: var(--sky-700);  --status-checkedout-bg: var(--sky-50);  --status-checkedout-dot: var(--sky-500);
+  --status-completed-fg: var(--teal-600);  --status-completed-bg: var(--teal-50);  --status-completed-dot: var(--teal-500);
+  --status-cancelled-fg: var(--red-700);   --status-cancelled-bg: var(--red-50);   --status-cancelled-dot: var(--red-500);
+  --status-refunded-fg: var(--violet-700); --status-refunded-bg: var(--violet-50); --status-refunded-dot: var(--violet-500);
+  --status-waitlist-fg: var(--slate-600);  --status-waitlist-bg: var(--slate-100); --status-waitlist-dot: var(--slate-400);
+
+  /* DATED SCHEDULE event colours — the product's original calendar palette
+     (lime · red · orange · blue · grey) kept exactly, at LOW opacity fills
+     (client directive 2026-07-22: same old hues, softer from up close).
+     bar = saturated edge · bg = soft tint · ink = dark same-family text. */
+  --sched-avail-bar: #6d8f10;    --sched-avail-bg: rgba(162,200,55,.12);  --sched-avail-ink: #5a780c;
+  --sched-booked-bar: #bf5757;   --sched-booked-bg: rgba(191,87,87,.10);  --sched-booked-ink: #a33f3f;
+  --sched-public-bar: #e08a0c;   --sched-public-bg: rgba(224,138,12,.12); --sched-public-ink: #ad730a;
+  --sched-multi-bar: #007bff;    --sched-multi-bg: rgba(0,123,255,.10);   --sched-multi-ink: #0056b3;
+  --sched-conflict-bar: #6b736b; --sched-conflict-bg: rgba(90,90,90,.07); --sched-conflict-ink: #5a635a;
+
+  /* WEEKLY SCHEDULE event colours — this calendar carries the NEW brand
+     identity (unlike Dated Schedule above, which keeps the original hues):
+     green = normal/fixed slot, navy = multi-booking. */
+  --week-normal-bar: var(--lime-500); --week-normal-bg: color-mix(in srgb, var(--lime-500) 14%, transparent); --week-normal-ink: var(--lime-800);
+  --week-multi-bar: var(--navy-600);  --week-multi-bg: rgba(36,75,135,.10);  --week-multi-ink: #1e3d6d;
+
+  /* AVAILABILITY palette */
+  --avail-free: var(--green-500);
+  --avail-partial: var(--amber-500);
+  --avail-booked: var(--red-500);
+  --avail-blocked: var(--slate-400);
+
+  /* DENSITY (comfortable defaults) - data surfaces consume these, never
+     raw space tokens, so [data-density="compact"] can remap them alone */
+  --table-pad-y: var(--space-3);
+  --table-pad-x: var(--space-4);
+  --table-head-pad-y: var(--space-2);
+  --table-font: var(--text-caption);
+  --list-row-pad-y: var(--space-3);
+}
+
+/* ============================================================================
+   DENSITY MODE - compact remap for operations screens (data tables & lists).
+   Toggled via data-density on <html> (style switcher / RD.boot, persisted).
+   Only density tokens change; components need no compact-specific CSS.
+   ========================================================================== */
+:root[data-density="compact"] {
+  --table-pad-y: var(--space-1);
+  --table-pad-x: var(--space-3);
+  --table-head-pad-y: var(--space-1);
+  --table-font: var(--text-xs);
+  --list-row-pad-y: var(--space-2);
+}
+
+/* ============================================================================
+   TIER 2 - SEMANTIC (dark theme) — the Super Admin dashboard's own dark
+   mode: #131313 canvas/sidebar, #1C1C1C body surfaces, same orange
+   primary. Re-mapped, NOT inverted.
+   ========================================================================== */
+:root[data-theme="dark"],
+.theme-dark {
+  --color-primary: var(--lime-500);
+  --color-primary-hover: var(--lime-400);
+  --color-primary-pressed: var(--lime-300);
+  --color-primary-subtle: color-mix(in srgb, var(--lime-500) 12%, transparent);
+  --color-primary-subtle-hover: color-mix(in srgb, var(--lime-500) 22%, transparent);
+  --color-primary-ink: var(--lime-400);
+  --color-on-primary: #ffffff;
+
+  --color-accent: var(--navy-400);
+  --color-accent-hover: var(--navy-300);
+  --color-accent-subtle: rgba(74, 125, 194, 0.14);
+  --color-on-accent: var(--navy-950);
+
+  --color-success: var(--green-500);
+  --color-success-subtle: rgba(18, 183, 106, 0.14);
+  --color-success-border: rgba(18, 183, 106, 0.35);
+  --color-warning: var(--amber-500);
+  --color-warning-subtle: rgba(247, 144, 9, 0.14);
+  --color-warning-border: rgba(247, 144, 9, 0.35);
+  --color-danger: var(--salmon-400);                       /* §9 danger #FF6B5B */
+  --color-danger-subtle: rgba(255, 107, 91, 0.14);
+  --color-danger-border: rgba(255, 107, 91, 0.35);
+  --color-info: var(--sky-500);
+  --color-info-subtle: rgba(46, 144, 250, 0.14);
+  --color-info-border: rgba(46, 144, 250, 0.35);
+
+  --color-canvas: var(--ink-canvas);          /* #131313 */
+  --color-surface: var(--ink-surface);        /* #1c1c1c */
+  --color-surface-raised: var(--ink-raised);  /* #232323 */
+  --color-surface-sunken: #0f0f0f;
+  --color-surface-hover: #26262a;
+  --color-overlay: rgba(0, 0, 0, 0.66);
+
+  /* Sidebar (dark chrome, the dashboard's #131313) */
+  --color-sidebar: var(--ink-canvas);
+  --sidebar-bg: var(--ink-canvas);
+  --sidebar-glow:
+    radial-gradient(300px 150px at 20% -10%, color-mix(in srgb, var(--lime-500) 10%, transparent), transparent 70%),
+    radial-gradient(380px 220px at 90% -30%, color-mix(in srgb, var(--lime-500) 4%, transparent), transparent 70%);
+  --sidebar-border: rgba(241, 244, 241, 0.06);
+  --sidebar-divider: rgba(241, 244, 241, 0.06);
+  --sidebar-text: #adb5ad;
+  --sidebar-text-strong: var(--ink-text);
+  --sidebar-muted: #7f887f;
+  --sidebar-hover: rgba(241, 244, 241, 0.05);
+  --sidebar-active: linear-gradient(90deg, color-mix(in srgb, var(--lime-500) 14%, transparent), color-mix(in srgb, var(--lime-500) 4%, transparent) 60%, transparent);
+  --sidebar-ic-bg: rgba(241, 244, 241, 0.04);
+  --sidebar-ic-border: rgba(241, 244, 241, 0.06);
+  --sidebar-ic-active: linear-gradient(135deg, color-mix(in srgb, var(--lime-500) 24%, transparent), color-mix(in srgb, var(--lime-500) 8%, transparent));
+  --sidebar-ic-active-border: color-mix(in srgb, var(--lime-500) 32%, transparent);
+  --sidebar-ic-active-fg: var(--lime-400);
+  --sidebar-active-accent: var(--lime-400);
+  --sidebar-active-accent-glow: color-mix(in srgb, var(--lime-400) 55%, transparent);
+  --sidebar-badge-bg: color-mix(in srgb, var(--lime-500) 14%, transparent);
+  --sidebar-badge-fg: var(--lime-400);
+  --sidebar-user-bg: rgba(241, 244, 241, 0.04);
+  --sidebar-user-border: rgba(241, 244, 241, 0.07);
+  --sidebar-user-hover: rgba(241, 244, 241, 0.07);
+  --sidebar-avatar-ring: var(--ink-surface);
+
+  --color-text: var(--ink-text);              /* #f5f5f7 */
+  --color-text-secondary: var(--ink-muted);   /* #9a9cae */
+  --color-text-tertiary: #858799;
+  --color-text-disabled: #55565f;
+  --color-text-inverse: var(--ink-canvas);
+  --color-text-link: var(--lime-400);
+
+  /* Selection (orange fill, white text) */
+  --color-selection-bg: var(--lime-600);
+  --color-selection-fg: #ffffff;
+
+  /* Inverse surfaces are LIGHT in dark mode — hover wash flips to dark alpha */
+  --color-inverse-hover: rgba(0, 0, 0, 0.10);
+
+  --color-border: var(--ink-border);          /* #2f2f33 */
+  --color-border-strong: #3b3b41;
+  --color-border-subtle: var(--ink-border-soft); /* #26262a */
+  --color-divider: var(--ink-border);
+  --color-focus-ring: color-mix(in srgb, var(--lime-500) 40%, transparent);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.55), 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.6), 0 8px 16px rgba(0, 0, 0, 0.4);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.55);
+  --glass-bg: rgba(28, 28, 28, 0.72);
+
+  --chart-2: var(--lime-500);
+  --chart-grid: var(--ink-border);
+  --chart-axis: #79827a;
+
+  --status-pending-bg: rgba(247, 144, 9, 0.16);   --status-pending-fg: var(--amber-300);
+  --status-confirmed-bg: rgba(74, 125, 194, 0.18);--status-confirmed-fg: var(--navy-300);
+  --status-checkedin-bg: rgba(18, 183, 106, 0.16);--status-checkedin-fg: var(--green-300);
+  --status-checkedout-bg: rgba(46, 144, 250, 0.16);--status-checkedout-fg: var(--sky-300);
+  --status-completed-bg: rgba(20, 184, 166, 0.16);--status-completed-fg: var(--teal-300);
+  --status-cancelled-bg: rgba(255, 107, 91, 0.16); --status-cancelled-fg: var(--salmon-400);
+  --status-refunded-bg: rgba(139, 92, 246, 0.16); --status-refunded-fg: var(--violet-300);
+  --status-waitlist-bg: rgba(148, 163, 184, 0.16);--status-waitlist-fg: var(--slate-400);
+
+  /* dark theme: same bars, slightly stronger tints, lighter same-family ink */
+  --sched-avail-bg: rgba(162,200,55,.15);  --sched-avail-ink: #a2c837;
+  --sched-booked-bg: rgba(191,87,87,.16);  --sched-booked-ink: #e39b9b;
+  --sched-public-bg: rgba(224,138,12,.16); --sched-public-ink: #e0a85c;
+  --sched-multi-bg: rgba(0,123,255,.16);   --sched-multi-ink: #7fb6ff;
+  --sched-conflict-bg: rgba(255,255,255,.06); --sched-conflict-ink: #b8bcb8;
+
+  --week-normal-bg: color-mix(in srgb, var(--lime-500) 18%, transparent); --week-normal-ink: var(--lime-400);
+  --week-multi-bg: rgba(36,75,135,.28);   --week-multi-ink: #9db8e0;
+}
+
+/* Scoped dark preview (used by the per-showcase theme toggle) */
+.theme-dark { color: var(--color-text); }
+
+/* ============================================================================
+   RESPONSIVE SCALE — tablet & below (≤1024px) run a compact type + space
+   scale. Token remap only: every component that consumes the scale compacts
+   for free, exactly like theming.
+   ========================================================================== */
+@media (max-width: 1024px) {
+  :root {
+    --text-display: 2.75rem;  /* 44 */
+    --text-h1: 2rem;          /* 32 */
+    --text-h2: 1.625rem;      /* 26 */
+    --text-h3: 1.3125rem;     /* 21 */
+    --text-title: 1.125rem;   /* 18 */
+    --text-lg: 1.0625rem;     /* 17 */
+
+    --space-10: 32px;
+    --space-12: 40px;
+    --space-16: 48px;
+    --space-20: 64px;
+    --space-24: 72px;
+  }
+}
+
