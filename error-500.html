@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
         <script>
             try {
                 document.documentElement.setAttribute("data-theme", localStorage.getItem("rd-theme") === "1" ? "dark" : "light");
@@ -18,27 +19,66 @@
         <link rel="stylesheet" href="assets/css/app.css" />
         <link rel="stylesheet" href="assets/css/components.css" />
         <link rel="stylesheet" href="assets/shell.css" />
+        <link rel="stylesheet" href="assets/css/skin-v2.css?v=7" />
+        <link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7" />
         <style>
-            body { min-height: 100vh; display: grid; place-items: center; background: var(--color-bg); padding: var(--space-6) var(--space-4); }
-            .err { max-width: 560px; width: 100%; text-align: center; display: grid; gap: var(--space-4); justify-items: center; padding: var(--space-10) var(--space-6); }
-            .err__code { font-size: 96px; line-height: 1; font-weight: 800; letter-spacing: -0.04em; color: var(--color-primary); }
-            .err svg { width: min(100%, 300px); height: auto; }
+            /* Error screen: same canvas + lockup as the auth pages, one split card. Tokens only. */
+            body { min-height: 100vh; min-height: 100dvh; background: var(--color-canvas); }
+            .err-page { min-height: 100vh; min-height: 100dvh; display: grid; place-content: center; justify-items: center; gap: var(--space-6); padding: var(--space-8) var(--space-4); position: relative; overflow: hidden; }
+            /* soft bloom in the start corner, like the auth canvas */
+            .err-page::before { content: ""; position: absolute; inset-block-start: -30%; inset-inline-start: -20%; width: min(640px, 80%); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 10%, transparent) 0%, transparent 70%); filter: blur(30px); pointer-events: none; }
+            .err-page > * { position: relative; }
+            .err-brand { display: flex; align-items: center; gap: 10px; }
+            .err-brand__word { font-family: var(--font-display); font-size: var(--text-h3); font-weight: var(--weight-bold); letter-spacing: -0.02em; line-height: 1; color: var(--color-text); }
+            .err-brand__word b { font-weight: inherit; }
+            .err { width: min(820px, 100%); display: grid; grid-template-columns: 1fr 1fr; padding: 0; overflow: hidden; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); }
+            .err__copy { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: var(--space-3); padding: var(--space-10) var(--space-8); text-align: start; }
+            .err__code { font-size: clamp(64px, 9vw, 96px); line-height: 1; font-weight: var(--weight-bold); letter-spacing: -0.04em; color: var(--color-primary); font-variant-numeric: tabular-nums; }
+            .err__title { font-size: var(--text-h2); line-height: 1.2; color: var(--color-text); }
+            .err__text { color: var(--color-text-secondary); font-size: var(--text-md, var(--text-sm)); }
+            .err__copy .btn { margin-block-start: var(--space-3); }
+            .err__copy .btn svg { width: 16px; height: 16px; }
+            .err__art { display: grid; place-items: center; padding: var(--space-8); background-color: var(--color-surface-sunken); background-image: radial-gradient(color-mix(in srgb, var(--color-primary) 22%, transparent) 1.5px, transparent 1.6px); background-size: 18px 18px; border-inline-start: 1px solid var(--color-border-subtle); }
+            .err__art svg { width: min(100%, 300px); height: auto; }
+            @media (max-width: 640px) {
+                .err-page { place-content: start center; padding-block-start: var(--space-10); }
+                .err { grid-template-columns: 1fr; }
+                .err__art { order: -1; padding: var(--space-6) var(--space-4); border-inline-start: 0; border-block-end: 1px solid var(--color-border-subtle); }
+                .err__art svg { width: min(100%, 240px); }
+                .err__copy { padding: var(--space-6) var(--space-5) var(--space-8); }
+                .err__copy .btn { align-self: stretch; justify-content: center; }
+            }
         </style>
     </head>
     <body>
         <!-- Error 500 — mirrors modules/errors/components/Error500.tsx (route error/500):
              title · text · illustration · Return Home (to the dashboard). The dashboard's copy is
-             English-only (hard-coded, no i18n keys); the Arabic below is this system's translation. -->
-        <main class="card err">
-            <span class="err__code" aria-hidden="true">500</span>
-            <h1 class="t-h2" data-ar="خطأ في النظام">System Error</h1>
-            <p class="text-tertiary" data-ar="حدث خطأ ما! يرجى المحاولة لاحقاً.">Something went wrong! Please try again later.</p>
-            <svg viewBox="0 0 300 170" aria-hidden="true"><ellipse cx="150" cy="155" rx="120" ry="10" fill="var(--color-surface-sunken)"/><rect x="90" y="30" width="120" height="40" rx="10" fill="var(--color-surface)" stroke="var(--color-border)" stroke-width="3"/><rect x="90" y="80" width="120" height="40" rx="10" fill="var(--color-surface)" stroke="var(--color-border)" stroke-width="3"/><circle cx="110" cy="50" r="5" fill="var(--color-success)"/><circle cx="110" cy="100" r="5" fill="var(--color-danger)"/><path d="M130 50h55M130 100h55" stroke="var(--color-border)" stroke-width="5" stroke-linecap="round"/><path d="M205 112l18-30h-14l10-22" fill="none" stroke="var(--color-primary)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <a class="btn btn--sm" href="index.html" data-ar="العودة للرئيسية">Return Home</a>
-        </main>
+             English-only (hard-coded, no i18n keys); the Arabic below is this system's translation.
+             Layout: brand lockup above a split card — copy + action on the start side,
+             the illustration on a dotted panel on the end side (stacked on phones). -->
+        <div class="err-page">
+            <div class="err-brand"><span id="errMark" aria-hidden="true"></span><span class="err-brand__word">High<b>Five</b></span></div>
+            <main class="card err">
+                <div class="err__copy">
+                    <span class="err__code" aria-hidden="true">500</span>
+                    <h1 class="err__title" data-ar="خطأ في النظام">System error</h1>
+                    <p class="err__text" data-ar="حدث خطأ ما! يرجى المحاولة لاحقًا.">Something went wrong! Please try again later.</p>
+                    <a class="btn" href="index.html"><span data-ic="home" aria-hidden="true"></span><span data-ar="العودة إلى الرئيسية">Return home</span></a>
+                </div>
+                <div class="err__art">
+                    <svg viewBox="0 0 300 170" width="300" height="170" aria-hidden="true"><ellipse cx="150" cy="155" rx="120" ry="10" fill="var(--color-surface-sunken)"/><rect x="90" y="30" width="120" height="40" rx="10" fill="var(--color-surface)" stroke="var(--color-border)" stroke-width="3"/><rect x="90" y="80" width="120" height="40" rx="10" fill="var(--color-surface)" stroke="var(--color-border)" stroke-width="3"/><circle cx="110" cy="50" r="5" fill="var(--color-success)"/><circle cx="110" cy="100" r="5" fill="var(--color-danger)"/><path d="M130 50h55M130 100h55" stroke="var(--color-border)" stroke-width="5" stroke-linecap="round"/><path d="M205 112l18-30h-14l10-22" fill="none" stroke="var(--color-primary)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+            </main>
+        </div>
         <script src="assets/shell.js"></script>
+        <script src="assets/js/auth.js"></script>
         <script>
             if (document.documentElement.dir === "rtl" && window.RD && RD.arInit) RD.arInit();
+            /* lockup mark (same inline gradient vector the auth pages use) + [data-ic] icons */
+            if (window.AUTH) document.getElementById("errMark").innerHTML = AUTH.MARK("errMarkGrad", 34, 28);
+            /* language + theme toggles, same as the sign-in pages */
+            if (window.AUTH && AUTH.tools) AUTH.tools();
+            if (window.RD) document.querySelectorAll("[data-ic]").forEach((x) => (x.innerHTML = RD.icon(x.dataset.ic)));
         </script>
     </body>
 </html>

@@ -871,3 +871,53 @@ body.device-active .app { display: none; }
 /* Topbar account button: on phones only the avatar (photo or initials) —
    the name crowded the topbar off-screen. The menu it opens still shows it. */
 @media (max-width: 768px) { .rd-acct__name { display: none; } }
+
+/* Scroll lock while a drawer is open (RD.openDrawer): the page and its inner
+   scroller stay put; the drawer body scrolls on its own and doesn't chain. */
+html.rd-scroll-lock,
+html.rd-scroll-lock body,
+html.rd-scroll-lock .main,
+html.rd-scroll-lock .content { overflow: hidden !important; }
+html.rd-scroll-lock { scrollbar-gutter: stable; } /* no sideways jump when the scrollbar hides */
+.drawer-live .drawer__body { overscroll-behavior: contain; }
+
+/* Permissions demo (?perm=limited | ?perm=none — see RD.can in shell.js): controls
+   tagged data-perm disappear when their key isn't granted. */
+html[data-perm-mode="limited"] [data-perm]:not([data-perm^="view_"]):not([data-perm^="VIEW_"]):not([data-perm$="_view"]),
+html[data-perm-mode="none"] [data-perm] { display: none !important; }
+
+/* .tabs bars with scroll arrows (shell.js) */
+.rd-tabs { position: relative; min-width: 0; }
+.rd-tabs > .tabs { overflow-x: auto; scrollbar-width: none; }
+.rd-tabs > .tabs::-webkit-scrollbar { display: none; }
+.rd-tabs__arrow { position: absolute; inset-block: 0; z-index: 2; width: 40px; display: grid; place-items: center; color: var(--color-text-secondary); background: var(--color-canvas); }
+.rd-tabs__arrow[hidden] { display: none; }
+.rd-tabs__arrow:hover { color: var(--color-primary-ink); }
+.rd-tabs__arrow svg { width: 18px; height: 18px; }
+.rd-tabs__arrow[data-dir="start"] { inset-inline-start: 0; box-shadow: 14px 0 12px -8px var(--color-canvas); }
+.rd-tabs__arrow[data-dir="end"] { inset-inline-end: 0; box-shadow: -14px 0 12px -8px var(--color-canvas); }
+[dir="rtl"] .rd-tabs__arrow[data-dir="start"] { box-shadow: -14px 0 12px -8px var(--color-canvas); }
+[dir="rtl"] .rd-tabs__arrow[data-dir="end"] { box-shadow: 14px 0 12px -8px var(--color-canvas); }
+
+/* Floating permissions switcher (shell.js permSwitcher) — bottom, inline-end corner */
+.rd-permfab { position: fixed; inset-block-end: var(--space-5); inset-inline-end: var(--space-5); z-index: calc(var(--z-toast) - 1); display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-2); }
+.rd-permfab__bar { display: flex; align-items: center; gap: 2px; padding: 3px; border-radius: var(--radius-full); background: var(--color-surface-raised); border: 1px solid var(--color-border); box-shadow: var(--shadow-lg); }
+.rd-permfab.is-sim .rd-permfab__bar { border-color: var(--color-warning); background: var(--color-warning-subtle); }
+.rd-permfab__btn { display: inline-flex; align-items: center; gap: var(--space-2); height: 36px; padding: 0 var(--space-3); border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-text); }
+.rd-permfab.is-sim .rd-permfab__btn { color: var(--color-warning); }
+.rd-permfab__btn:hover { background: var(--color-surface-hover); }
+.rd-permfab__btn svg { width: 16px; height: 16px; }
+.rd-permfab__x { width: 30px; height: 30px; border-radius: var(--radius-full); display: grid; place-items: center; color: var(--color-text-tertiary); }
+.rd-permfab__x:hover { background: var(--color-surface-hover); color: var(--color-text); }
+.rd-permfab__x svg { width: 14px; height: 14px; }
+.rd-permfab__menu { width: min(280px, calc(100vw - 32px)); padding: var(--space-2); border-radius: var(--radius-lg); background: var(--color-surface-raised); border: 1px solid var(--color-border); box-shadow: var(--shadow-lg); }
+.rd-permfab__menu[hidden] { display: none; }
+.rd-permfab__title { padding: var(--space-2) var(--space-3) var(--space-1); font-size: var(--text-xs); color: var(--color-text-tertiary); font-weight: var(--weight-semibold); }
+.rd-permfab__opt { width: 100%; display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); text-align: start; color: var(--color-text); }
+.rd-permfab__opt:hover { background: var(--color-surface-hover); }
+.rd-permfab__opt.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); }
+.rd-permfab__opt > svg { width: 18px; height: 18px; flex: none; }
+.rd-permfab__opt > svg:last-child { margin-inline-start: auto; }
+.rd-permfab__opt span { display: flex; flex-direction: column; min-width: 0; }
+.rd-permfab__opt small { font-size: var(--text-xs); color: var(--color-text-tertiary); }
+@media print { .rd-permfab { display: none; } }

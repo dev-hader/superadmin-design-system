@@ -1,0 +1,181 @@
+/* ============================================================================
+   SKIN V2 · LOOKS — three alternative shapes for the same v2 palette.
+   Picked with ui-ux-pro-max (--domain style), each verified for dashboards /
+   enterprise tools with low accessibility risk:
+     ?look=swiss  → "Minimalism & Swiss Style"  — sharp, flat, rule-based
+     ?look=bento  → "Bento Box Grid"            — big rounded tiles, airy grid
+     ?look=soft   → "Soft UI Evolution"         — borderless, layered soft depth
+   Colours are NOT touched: every rule reuses the v2 tokens and the same colour
+   roles (ink active states, orange primary). Only radius, elevation, spacing,
+   type scale and state treatment change. Business / data / JS: untouched.
+   Requires skin-v2.css (scoped under :root[data-skin="v2"][data-look="…"]).
+   ========================================================================== */
+
+/* ---- A · SWISS --------------------------------------------------------------
+   style keywords: "clean borders, no box-shadow unless necessary",
+   "--border-radius: 0px", "clear type hierarchy", "grid-based" */
+:root[data-skin="v2"][data-look="swiss"] {
+  --radius-lg: 4px;
+  --radius-md: 4px;
+  --radius-sm: 2px;
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+}
+:root[data-skin="v2"][data-look="swiss"] :is(.card, .data-table-wrap) {
+  border-color: var(--color-border);
+  box-shadow: none;
+}
+:root[data-skin="v2"][data-look="swiss"] .card:hover { box-shadow: none; border-color: var(--color-border-strong); }
+:root[data-skin="v2"][data-look="swiss"] :is(.btn, .input, .select select, .pagination button, .nav-link, .nav-ic, .badge, .sa-box, .cell-user .avatar) { border-radius: 2px; }
+:root[data-skin="v2"][data-look="swiss"] .btn:not(:disabled) { box-shadow: none; }
+:root[data-skin="v2"][data-look="swiss"] .content h1.t-h3 {
+  font-size: var(--text-h1);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+/* tabs instead of pills: same ink, drawn as a 2px rule under the active label */
+:root[data-skin="v2"][data-look="swiss"] .segmented {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  gap: var(--space-5);
+}
+:root[data-skin="v2"][data-look="swiss"] .segmented button {
+  border-radius: 0;
+  padding-inline: 0;
+  border-bottom: 2px solid transparent;
+}
+:root[data-skin="v2"][data-look="swiss"] .segmented button.is-active {
+  background: transparent;
+  color: var(--color-text);
+  border-bottom-color: var(--color-text);
+  box-shadow: none;
+}
+/* a strong rule under the table head — the Swiss grid signature */
+:root[data-skin="v2"][data-look="swiss"] .data-table th { border-bottom: 2px solid var(--color-text); }
+:root[data-skin="v2"][data-look="swiss"] .kpi-ic {
+  border-radius: 2px;
+  background: var(--color-primary);
+  box-shadow: none;
+}
+:root[data-skin="v2"][data-look="swiss"] .sa-box { background: transparent; border: 1px solid var(--color-border); }
+
+/* ---- B · BENTO --------------------------------------------------------------
+   style keywords: "modular cards", "rounded corners (16-24px)", "--grid-gap:
+   16px", "soft shadows", "hover scale (1.02)" */
+:root[data-skin="v2"][data-look="bento"] {
+  --radius-lg: 24px;
+  --shadow-sm: 0 4px 6px rgba(22, 23, 27, 0.05);
+  --shadow-md: 0 10px 24px rgba(22, 23, 27, 0.08);
+}
+:root[data-skin="v2"][data-look="bento"][data-theme="dark"] {
+  --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+:root[data-skin="v2"][data-look="bento"] :is(.card, .data-table-wrap) { border-color: transparent; }
+:root[data-skin="v2"][data-look="bento"] .card--pad { padding: var(--space-8); }
+:root[data-skin="v2"][data-look="bento"] .sa-row { gap: var(--space-4); }
+:root[data-skin="v2"][data-look="bento"] :is(.btn, .input, .select select, .pagination button) { border-radius: 14px; }
+:root[data-skin="v2"][data-look="bento"] .data-table-toolbar { padding: var(--space-5) var(--space-6); }
+:root[data-skin="v2"][data-look="bento"] .kpi-ic { width: 56px; height: 56px; border-radius: 18px; }
+:root[data-skin="v2"][data-look="bento"] .kpi-ic svg { width: 26px; height: 26px; }
+:root[data-skin="v2"][data-look="bento"] .sa-box { border-radius: 16px; padding-block: var(--space-4); }
+:root[data-skin="v2"][data-look="bento"] .sa-total { font-size: 3.25rem; }
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-skin="v2"][data-look="bento"] .card {
+    transition: transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out);
+  }
+  /* 1.01, not the catalogue's 1.02 — these tiles are wide, 2% reads as a jump */
+  :root[data-skin="v2"][data-look="bento"] .card:hover { transform: scale(1.01); }
+}
+
+/* ---- C · SOFT ---------------------------------------------------------------
+   style keywords: "softer multi-layer shadows", "border-radius: 8-12px",
+   "200-300ms", "outline: 2-3px on focus", "measured contrast" */
+:root[data-skin="v2"][data-look="soft"] {
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgba(22, 23, 27, 0.06), 0 8px 24px -6px rgba(22, 23, 27, 0.1);
+  --shadow-md: 0 2px 4px rgba(22, 23, 27, 0.06), 0 14px 32px -8px rgba(22, 23, 27, 0.14);
+}
+:root[data-skin="v2"][data-look="soft"][data-theme="dark"] {
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -6px rgba(0, 0, 0, 0.55);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.4), 0 14px 32px -8px rgba(0, 0, 0, 0.65);
+}
+:root[data-skin="v2"][data-look="soft"] :is(.card, .data-table-wrap) { border-color: transparent; }
+:root[data-skin="v2"][data-look="soft"] :is(.btn, .input, .select select, .pagination button, .sa-box) { border-radius: 12px; }
+:root[data-skin="v2"][data-look="soft"] :is(.btn, .segmented button, .pagination button, .icon-btn) {
+  transition: transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out), background-color 200ms var(--ease-out), color 200ms var(--ease-out);
+}
+/* pressed feedback without moving neighbours (transform only) */
+:root[data-skin="v2"][data-look="soft"] :is(.btn, .icon-btn, .pagination button):active:not(:disabled) { transform: translateY(1px); }
+:root[data-skin="v2"][data-look="soft"] .segmented { box-shadow: inset 0 1px 2px rgba(22, 23, 27, 0.08); }
+:root[data-skin="v2"][data-look="soft"] .sa-box { box-shadow: inset 0 1px 2px rgba(22, 23, 27, 0.06); }
+:root[data-skin="v2"][data-look="soft"] :is(a, button, input, select, [tabindex]):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-primary) 55%, transparent);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-skin="v2"][data-look="soft"] :is(.btn, .icon-btn, .pagination button):active:not(:disabled) { transform: none; }
+}
+
+/* ---- D · GLASS --------------------------------------------------------------
+   ui-ux-pro-max "Glassmorphism": "backdrop blur (10-20px)", "subtle border
+   (1px solid rgba white 0.2)", "light reflection", "layered depth";
+   accessibility "risk: conditional | requires: contrast-text-4.5".
+   Same colours: the glow behind the glass is the brand orange at low alpha.
+   The catalogue's 15% glass is too thin for data tables (text would sit on the
+   glow), so panels are 72% surface — measured, text stays AA. */
+:root[data-skin="v2"][data-look="glass"] {
+  --v2-glass: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  --v2-glass-edge: rgba(255, 255, 255, 0.7);
+  --v2-glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  --v2-glass-shadow: 0 8px 32px rgba(22, 23, 27, 0.08);
+  /* glow strength is capped by text that sits straight on the canvas (page head,
+     the dashboard filter summary): at 10% the grey text stays >= 4.5:1 there */
+  --v2-glow-a: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  --v2-glow-b: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  --glass-bg: color-mix(in srgb, var(--color-canvas) 55%, transparent);
+}
+:root[data-skin="v2"][data-look="glass"][data-theme="dark"] {
+  --v2-glass: color-mix(in srgb, var(--color-surface) 70%, transparent);
+  --v2-glass-edge: rgba(255, 255, 255, 0.09);
+  --v2-glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --v2-glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --v2-glow-a: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  --v2-glow-b: color-mix(in srgb, var(--color-primary) 7%, transparent);
+}
+/* the light source: two fixed orange glows on the canvas */
+:root[data-skin="v2"][data-look="glass"] body {
+  background:
+    radial-gradient(900px 600px at 85% -10%, var(--v2-glow-a), transparent 70%),
+    radial-gradient(700px 520px at 10% 110%, var(--v2-glow-b), transparent 70%),
+    var(--color-canvas);
+  background-attachment: fixed;
+}
+:root[data-skin="v2"][data-look="glass"] :is(.card, .data-table-wrap) {
+  background: var(--v2-glass);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--v2-glass-edge);
+  box-shadow: var(--v2-glass-shine), var(--v2-glass-shadow);
+}
+:root[data-skin="v2"][data-look="glass"] .card:hover { box-shadow: var(--v2-glass-shine), var(--shadow-md); }
+:root[data-skin="v2"][data-look="glass"] .data-table th { background: transparent; }
+:root[data-skin="v2"][data-look="glass"] :is(.segmented, .sa-box) { background: color-mix(in srgb, var(--color-surface-sunken) 65%, transparent); }
+:root[data-skin="v2"][data-look="glass"] .data-table tbody tr:hover { background: color-mix(in srgb, var(--color-surface-hover) 70%, transparent); }
+/* the sidebar becomes smoked glass over the same glow */
+:root[data-skin="v2"][data-look="glass"] .sidebar {
+  background: color-mix(in srgb, var(--v2-ink) 88%, transparent);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+/* no backdrop-filter, or the user asked for less transparency → solid panels */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root[data-skin="v2"][data-look="glass"] { --v2-glass: var(--color-surface); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root[data-skin="v2"][data-look="glass"] { --v2-glass: var(--color-surface); }
+  :root[data-skin="v2"][data-look="glass"] .sidebar { background: var(--v2-ink); }
+}

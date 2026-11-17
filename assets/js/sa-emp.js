@@ -35,20 +35,33 @@
     return (job._perm = out);
   };
 
-  /* activity log (GET /activity-logs) */
+  /* activity log (GET /activity-logs, /activity-logs/{id}, /activity-logs/filters).
+     Row shape as the API sends it:
+       { id, created_at, module:{value,label}, action:{value,label,color}, performed_by:{id,name,role,email,phone},
+         acting_as:{value,label,company_name}|null, record:{id,label,exists},
+         changes:{ mode:"diff"|"snapshot", count, fields:[
+           {field, label, before:{value,label}, after:{value,label}}   ← diff (updates)
+           {field, label, value:{value,label}} ] } }                   ← snapshot (create / delete / login …)
+     action.color (green · blue · red · amber) decides the badge; action / module labels are the API's
+     own strings (English) — the design system shows them translated in Arabic. */
   const MODS = [["partners", "Partners", "Partners"], ["units", "Units", "Partners"], ["packages", "Packages", "Partners"], ["users", "Users", "Users"], ["wallet_funds", "Wallet funds", "Finance"], ["currencies", "Currencies", "Finance"], ["employees", "Employees", "Employees"], ["jobs", "Jobs", "Employees"], ["comments", "Comments", "Operations"]];
   S.logModules = MODS.map((m) => ({ value: m[0], label: m[1], group: m[2] }));
-  S.logActions = ["created", "updated", "deleted", "login", "translated"];
+  S.logActions = [["created", "Created", "green"], ["updated", "Updated", "blue"], ["deleted", "Deleted", "red"], ["login", "Login", "amber"], ["translated", "Translated", "amber"]].map((a) => ({ value: a[0], label: a[1], color: a[2] }));
   S.actingAs = S.partners.slice(0, 5).map((p) => ({ value: String(p.id), label: p.owner_name || p.company_name, company: p.company_name }));
+  const w = (value, label) => ({ value, label: label === undefined ? (value == null ? null : String(value)) : label });
   S.activityLogs = Array.from({ length: 46 }, (_, i) => {
     const m = MODS[i % MODS.length], act = S.logActions[i % 4 === 3 ? 2 : i % 3 === 0 ? 0 : 1], emp = S.employees[i % 6], p = i % 5 === 1 ? S.actingAs[i % S.actingAs.length] : null;
     const rec = m[0] === "users" ? S.users[i % S.users.length] : m[0] === "partners" ? S.partners[i % S.partners.length] : null;
-    const fields = act === "updated"
-      ? (m[0] === "users" ? [{ field: "attribute", label: "Attribute", before: null, after: i % 2 ? "blocked_from_booking" : "verified" }, { field: "player_id", label: "Player", before: null, after: rec.id }]
-        : [{ field: "name", label: "Name", before: "Old name", after: rec ? rec.name || rec.company_name : `${m[1]} #${300 + i}` }, { field: "active", label: "Active", before: 0, after: 1 }, { field: "updated_at", label: "Updated at", before: "2026-10-01T09:00:00Z", after: "2026-11-1" + (i % 6) + "T12:30:00Z" }])
-      : [{ field: "name", label: "Name", value: rec ? rec.name || rec.company_name : `${m[1]} #${300 + i}` }, { field: "is_featured", label: "Is featured", value: i % 2 }, { field: "created_at", label: "Created at", value: "2026-11-0" + (1 + (i % 9)) + "T08:15:00Z" }];
+    const recName = rec ? rec.name || rec.company_name : `${m[1]} #${300 + i}`;
+    const fields = act.value === "updated"
+      ? (m[0] === "users" ? [{ field: "attribute", label: "Attribute", before: w(null), after: w(i % 2 ? "blocked_from_booking" : "verified") }, { field: "player_id", label: "Player id", before: w(null), after: w(rec.id, rec.name) }]
+        : [{ field: "name", label: "Name", before: w("Old name"), after: w(recName) }, { field: "active", label: "Active", before: w(0), after: w(1) },
+          { field: "active_action_by", label: "Active action by", before: w(null), after: w(1, "Super Admin") }, { field: "start_date", label: "Start date", before: w("2026-10-01"), after: w("2026-11-20") },
+          { field: "updated_at", label: "Updated at", before: w("2026-10-01T09:00:00Z"), after: w("2026-11-1" + (i % 6) + "T12:30:00Z") }])
+      : [{ field: "name", label: "Name", value: w(recName) }, { field: "is_featured", label: "Is featured", value: w(i % 2) }, { field: "sessions_count", label: "Sessions count", value: w(1) }, { field: "created_at", label: "Created at", value: w("2026-11-0" + (1 + (i % 9)) + "T08:15:00Z") }];
     return { id: 9000 + i, created_at: `${String(1 + (i % 28)).padStart(2, "0")}/1${i % 2}/2026 ${String(8 + (i % 12)).padStart(2, "0")}:${String((i * 7) % 60).padStart(2, "0")}`,
-      module: { key: m[0], label: m[1] }, action: { value: act, label: act }, performed_by: { name: emp.name, role: emp.job.name, email: emp.email, phone: `${emp.phone_code} ${emp.phone}` }, acting_as: p,
-      record: { id: rec ? rec.id : 300 + i, label: rec ? rec.name || rec.company_name : `${m[1]} #${300 + i}`, exists: act !== "deleted" }, fields };
+      module: { value: m[0], label: m[1] }, action: { value: act.value, label: act.label, color: act.color }, performed_by: { id: emp.id, name: emp.name, role: emp.job.name, email: emp.email, phone: `${emp.phone_code} ${emp.phone}` }, acting_as: p,
+      record: { id: rec ? rec.id : 300 + i, label: recName, exists: act.value !== "deleted" },
+      changes: { mode: act.value === "updated" ? "diff" : "snapshot", count: fields.length, fields } };
   });
 })();

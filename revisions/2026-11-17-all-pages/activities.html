@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>activities · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/sa-translation.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script>
+(() => {
+  /* Activities — mirrors pages/activites:
+       categories  /activites/categories                         activities.html
+       activities  /activites/categories/:catId/activities       ?cat=<id>
+       translation …/:itemId/translation                        ?translation=<id>[&cat=<id>]
+     Create / Edit / Delete modals with the dashboard's validation; feedback is an
+     inline alert inside the modal (no toasts). Status pills all · active · inactive. */
+  const qs = new URLSearchParams(location.search), catId = qs.get("cat"), trId = qs.get("translation");
+  RD.boot({ activeId: "activities", title: "activities" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic, badge } = SA;
+  const mount = document.getElementById("listMount");
+
+  /* ---- data (GET /activity-categories, /activity-categories/{id}/activities) ---- */
+  const S = HF.SA;
+  if (!S._acts) {
+    const TYPES = S.TYPES.map((t, i) => ({ id: i + 1, name: t })), CAPS = S.CAPS.map((c, i) => ({ id: i + 1, name: c })), SERV = ["Changing rooms", "Parking", "Lighting", "Coach", "Equipment"].map((s, i) => ({ id: i + 1, name: s }));
+    S._opts = { TYPES, CAPS, SERV };
+    S._acts = S.CATS.map((c, i) => ({ id: c.id, name: c.name, image: null, created_at: `2026-0${i + 1}-1${i} 10:00:00`, order: i + 1, active: i === 3 ? 0 : 1,
+      activities: (S.ACTS[c.id] || []).map((a, j) => ({ id: c.id * 100 + j, name: a, image: null, created_at: `2026-0${i + 1}-2${j} 12:00:00`, order: j + 1, active: j === 3 ? 0 : 1, activity_category_id: c.id,
+        types: TYPES.slice(j % 2, (j % 2) + 2), capacities: j % 3 ? CAPS.slice(0, 2) : [], services: SERV.slice(j % 3, (j % 3) + 2) })) }));
+  }
+  const cats = S._acts, cat = catId ? cats.find((c) => String(c.id) === catId) || cats[0] : null;
+
+  /* ---- translation (shared module) ---- */
+  if (trId) {
+    const item = cat ? cat.activities.find((a) => String(a.id) === trId) || cat.activities[0] : cats.find((c) => String(c.id) === trId) || cats[0];
+    document.getElementById("pageHead").hidden = true;
+    SATR.render(mount, { key: (cat ? "activity" : "activity-category") + item.id, itemName: item.name, editTitle: L("edit translates", "تعديل الترجمات"), cols: [["name", L("name", "الاسم")]], src: { name: item.name }, backHref: cat ? `activities.html?cat=${cat.id}` : "activities.html" });
+    return;
+  }
+
+  const nameCell = (r) => `<div class="cell-user"><span class="cell-thumb">${ic(cat ? "star" : "layers")}</span><div><b>${esc(r.name)}</b><div class="t-xs text-tertiary">${esc(r.created_at)}</div></div></div>`;
+  const status = (r) => (r.active ? badge("primary", L("active", "نشط")) : badge("danger", L("inactive", "غير نشط")));
+  const chips = (arr) => (arr.length ? `<div class="row gap-1" style="flex-wrap:wrap;justify-content:center">${arr.map((x) => badge("", x.name)).join("")}</div>` : "---");
+  const actions = (r) => `<div class="row gap-1" style="justify-content:center"><a class="icon-btn" href="activities.html?${cat ? `cat=${cat.id}&` : ""}translation=${r.id}" aria-label="${L("translation", "ترجمة")}" title="${L("translation", "ترجمة")}">${ic("globe")}</a>${SA.iconBtn("edit", L("edit", "تعديل"), `data-edit="${r.id}"`)}${SA.iconBtn("trash", L("Delete", "حذف"), `data-del="${r.id}"`)}</div>`;
+
+  SA.head(document.getElementById("pageHead"), cat
+    ? { title: [`${cat.name} activities`, `أنشطة ${cat.name}`], crumbs: [["activities categories", "فئات الأنشطة", "activities.html"]], actions: PP.btn(L("add new", "إضافة جديد"), "plus", "data-add") }
+    : { title: ["activities categories", "فئات الأنشطة"], actions: PP.btn(L("add new", "إضافة جديد"), "plus", "data-add") });
+  const data = cat ? cat.activities : cats;
+  const ctl = SA.list({
+    mount, data,
+    pills: [{ key: "all", label: ["all", "الكل"] }, { key: "1", label: ["active", "نشط"] }, { key: "0", label: ["inactive", "غير نشط"] }],
+    pillMatch: (r, k) => k === "all" || String(r.active) === k,
+    search: ["search by name", "البحث بالاسم"], searchMatch: (r, q) => r.name.toLowerCase().includes(q),
+    empty: ["There is no data to display.", "لا توجد بيانات للعرض."],
+    /* "States / المحافظات" is the dashboard's own header for the status column — kept 1:1 */
+    columns: cat ? [
+      { head: ["name", "الاسم"], cell: nameCell },
+      { head: ["order", "الترتيب"], align: "center", cell: (r) => r.order },
+      { head: ["type", "النوع"], align: "center", cell: (r) => chips(r.types) },
+      { head: ["capacity", "القدرة"], align: "center", cell: (r) => chips(r.capacities) },
+      { head: ["services", "الخدمات"], align: "center", cell: (r) => chips(r.services) },
+      { head: ["States", "المحافظات"], align: "center", cell: status },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: actions },
+    ] : [
+      { head: ["name", "الاسم"], cell: nameCell },
+      { head: ["order", "الترتيب"], align: "center", cell: (r) => r.order },
+      { head: ["activities", "أنشطة"], align: "center", cell: (r) => `<a href="activities.html?cat=${r.id}" style="color:var(--color-text-link);font-weight:var(--weight-semibold)">${r.activities.length || 0} ${L("Activity", "النشاط")}</a>` },
+      { head: ["States", "المحافظات"], align: "center", cell: status },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: actions },
+    ],
+  });
+
+  /* ---------- Create / Edit ---------- */
+  const multi = (k, opts, sel) => `<div class="row gap-3" style="flex-wrap:wrap">${opts.map((o) => `<label class="check"><input type="checkbox" data-m="${k}" value="${o.id}" ${sel.some((s) => s.id === o.id) ? "checked" : ""}><span class="check__box">${ic("check")}</span>${esc(o.name)}</label>`).join("")}</div>`;
+  function form(row) {
+    const isNew = !row, O = S._opts;
+    const title = cat ? (isNew ? L("create new activity", "إنشاء نشاط جديد") : L("edit Activity", "تعديل النشاط")) : isNew ? L("create new category", "إنشاء فئة جديدة") : L("edit category", "تعديل الفئة");
+    const el = SA.modal({ id: "acForm", wide: !!cat, title, body: `<div class="stack gap-4"><div data-alert></div>
+        <div class="field"><label class="field__label">${L("Image", "صورة")}:</label><div class="row gap-3" style="align-items:center"><span class="cell-thumb" style="width:125px;height:125px;border-radius:var(--radius-lg)">${ic("camera")}</span>
+          <div class="stack gap-2"><label class="btn btn--sm btn--secondary">${ic("edit")}<span>${L("Change image", "تغيير الصورة")}</span><input type="file" accept=".png,.jpg,.jpeg" data-img hidden></label>
+          <span class="t-xs text-tertiary">${L("Max size 1MB for images", "الحد الأقصى للصور 1 ميجابايت")}</span><span class="t-xs" style="color:var(--color-warning)">${ic("info")} ${L("The image should be an icon with a transparent background.", "يجب أن تكون الصورة أيقونة ذات خلفية شفافة.")}</span><span data-e="img"></span></div></div></div>
+        <div class="field"><label class="field__label">${L("name", "الاسم")}</label><input class="input" data-n value="${esc(row ? row.name : "")}" placeholder="${cat ? L("enter name", "أدخل الاسم") : L("enter type name", "أدخل اسم النوع")}"><span data-e="n"></span></div>
+        <div class="field"><label class="field__label">${L("order", "الترتيب")}</label><input class="input" type="number" min="1" data-o value="${row ? row.order : ""}" placeholder="${cat ? L("enter order", "أدخل الترتيب") : L("enter type order", "أدخل ترتيب النوع")}"><span data-e="o"></span></div>
+        <div class="field"><label class="field__label">${L("status", "الحالة")}</label>${SA.select([["", L("select status", "اختر الحالة"), !row], ["1", L("active", "نشط"), row && row.active === 1], ["0", L("inactive", "غير نشط"), row && row.active === 0]], "data-s")}<span data-e="s"></span></div>
+        ${cat ? `${row ? SA.field(["Categories", "الفئات"], SA.select(cats.map((c) => [c.id, c.name, c.id === row.activity_category_id]), "data-cat")) : ""}
+          ${SA.field(["types", "الأنواع"], multi("types", O.TYPES, row ? row.types : []))}${SA.field(["capacities", "السعة"], multi("capacities", O.CAPS, row ? row.capacities : []))}${SA.field(["services", "الخدمات"], multi("services", O.SERV, row ? row.services : []))}` : ""}</div>`,
+      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${isNew ? L("create", "إنشاء") : L("update", "تحديث")}</button>` });
+    el.querySelector(".modal__foot").style.justifyContent = "space-between";
+    const err = (k, m) => (el.querySelector(`[data-e="${k}"]`).innerHTML = m ? `<span class="field__error">${ic("warn")} ${m}</span>` : "");
+    el.querySelector("[data-img]").onchange = (e) => err("img", e.target.files[0] && e.target.files[0].size > 1024 * 1024 ? L("Max size 1MB for images", "الحد الأقصى للصور 1 ميجابايت") : "");
+    el.querySelector("[data-ok]").onclick = (e) => {
+      const n = el.querySelector("[data-n]").value.trim(), o = el.querySelector("[data-o]").value.trim(), s = el.querySelector("[data-s]").value;
+      const REQ = L("this field is required", "هذا الحقل مطلوب"), MIN = L("Minimum 3 symbols", "الحد الأدنى 3 رموز");
+      err("n", !n ? REQ : n.length < 2 ? MIN : n.length > 50 ? L("Maximum 50 symbols", "الحد الأقصى 50 رمز") : "");
+      err("o", !o ? REQ : o.length > 10 ? L("Maximum 10 symbols", "الحد الأقصى 10 رموز") : !/^[0-9]+$/.test(o) ? L("number is not valid", "الرقم غير صحيح") : "");
+      err("s", s === "" ? REQ : "");
+      if (el.querySelector(".field__error")) return;
+      const b = e.currentTarget; b.disabled = true; b.textContent = isNew ? L("creating", "جاري الإنشاء") : L("updating", "جاري التحديث");
+      const pick = (k, src) => [...el.querySelectorAll(`[data-m="${k}"]:checked`)].map((x) => src.find((y) => String(y.id) === x.value));
+      setTimeout(() => {
+        const vals = { name: n, order: +o, active: +s };
+        if (cat) Object.assign(vals, { types: pick("types", S._opts.TYPES), capacities: pick("capacities", S._opts.CAPS), services: pick("services", S._opts.SERV) });
+        if (isNew) data.push(Object.assign({ id: Date.now() % 100000, image: null, created_at: "2026-11-15 12:00:00", activities: [], activity_category_id: cat ? cat.id : undefined }, vals));
+        else {
+          Object.assign(row, vals);
+          const to = el.querySelector("[data-cat]");
+          if (to && +to.value !== row.activity_category_id) { cat.activities.splice(cat.activities.indexOf(row), 1); row.activity_category_id = +to.value; cats.find((c) => c.id === +to.value).activities.push(row); }
+        }
+        /* category create closes silently; everything else shows the success alert first */
+        if (isNew && !cat) { SA.close(el); return ctl.paint(); }
+        el.querySelector("[data-alert]").innerHTML = `<div class="alert alert--success"><span class="alert__icon">${ic("check")}</span><div class="alert__body">${isNew ? L("created successfully", "تم الإنشاء بنجاح") : L("updated successfully", "تم التحديث بنجاح")}</div></div>`;
+        setTimeout(() => { SA.close(el); ctl.paint(); }, 1500);
+      }, 400);
+    };
+  }
+  function del(row) {
+    const el = SA.modal({ id: "acDel", title: L("delete item", "حذف العنصر"), body: `<div class="stack gap-2"><div data-alert></div><p class="t-sm text-secondary">${L("Please confirm that you want to delete this item", "يرجى تأكيد أنك تريد حذف هذا العنصر")}</p>
+        <p class="t-sm" style="color:var(--color-danger)">${L("You Can Not Delete Any type That Is Linked To Any unit", "لا يمكنك حذف أي نوع مرتبط بأي وحدة")}</p></div>`,
+      foot: `<button class="btn btn--secondary" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${L("Confirm", "تأكيد")}</button>` });
+    el.querySelector("[data-ok]").onclick = (e) => {
+      e.currentTarget.disabled = true;
+      setTimeout(() => { data.splice(data.indexOf(row), 1); el.querySelector("[data-alert]").innerHTML = `<div class="alert alert--success"><span class="alert__icon">${ic("check")}</span><div class="alert__body">${L("deleted successfully", "تم الحذف بنجاح")}</div></div>`;
+        setTimeout(() => { SA.close(el); ctl.paint(); }, 1500); }, 400);
+    };
+  }
+  document.addEventListener("click", (e) => {
+    const find = (id) => data.find((x) => String(x.id) === String(id));
+    if (e.target.closest("[data-add]")) return form(null);
+    const ed = e.target.closest("[data-edit]"); if (ed) return form(find(ed.dataset.edit));
+    const d = e.target.closest("[data-del]"); if (d) del(find(d.dataset.del));
+  });
+})();
+</script>
+</body>
+</html>

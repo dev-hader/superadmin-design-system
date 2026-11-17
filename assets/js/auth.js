@@ -300,5 +300,5 @@ window.AUTH = (function () {
     /* MARK is exported so a page rendering its own custom rail
        (login-live.html) shows the identical brand mark instead of a
        second, differently-drawn one. */
-    return { init, otp, countdown, LOGO, BIGLOGO, MARK };
+    return { init, otp, countdown, LOGO, BIGLOGO, MARK, tools: mountTools };
 })();

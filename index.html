@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
 <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
@@ -14,6 +15,8 @@
 <link rel="stylesheet" href="assets/css/app.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
 <style>
   /* Dashboard rows mirror the Super Admin layout: stats card (col-xl-4) beside
      its chart card (col-xl-8); stacked below 1200px like Bootstrap's xl. */
@@ -32,6 +35,47 @@
   @media (max-width: 768px) { .sa-donuts { grid-template-columns: minmax(0, 1fr); } }
   .sa-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: var(--space-3); align-items: end; }
   .sa-chart { width: 100%; display: block; }
+
+  /* ---- redesign layout (2026-11-17) — page layout only, registry components inside ---- */
+  .db-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+  .db-kpis { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  @media (max-width: 1200px) { .db-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 640px) {
+    .db-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    /* two tiles per row leave ~150px each: icon on top so the label keeps one line */
+    .db-kpi { flex-direction: column; align-items: flex-start; gap: var(--space-2); padding: var(--space-3); }
+    .db-kpi .kpi-ic { width: 36px; height: 36px; }
+    .db-kpi .kpi-ic svg { width: 18px; height: 18px; }
+    /* an odd tile out takes the full row instead of leaving a hole */
+    .db-kpi:last-child:nth-child(odd) { grid-column: 1 / -1; flex-direction: row; align-items: center; }
+  }
+  .db-kpi { text-decoration: none; }
+  .db-kpi .stat-tile__val { font-variant-numeric: tabular-nums; }
+  .db-kpi__sub { display: block; margin-top: 2px; }
+  .db-section__title { font-size: var(--text-xs); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--color-text-tertiary); margin-bottom: var(--space-3); }
+  /* cards in a row share one height; each card pins its breakdown to the bottom so
+     the proportion rows of neighbouring cards line up */
+  .db-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); align-items: stretch; }
+  .db-grid > .db-card:not([style]) { grid-column: span 1; }
+  .db-section:first-of-type .db-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 1199px) {
+    .db-grid, .db-section:first-of-type .db-grid { grid-template-columns: minmax(0, 1fr); }
+    .db-grid > .db-card { grid-column: 1 / -1 !important; }
+  }
+  .db-card { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+  .db-card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+  .db-card__ic { width: 36px; height: 36px; }
+  .db-card__ic svg { width: 18px; height: 18px; }
+  .db-meter { display: grid; gap: var(--space-3); }
+  .db-card > .db-meter:last-child { margin-top: auto; }
+  .db-card > .db-donut { margin-block: auto; }
+  .db-meter__row { display: grid; grid-template-columns: minmax(0, 1fr) auto 3.5em; align-items: center; gap: var(--space-1) var(--space-3); font-size: var(--text-sm); }
+  .db-meter__row b { font-variant-numeric: tabular-nums; }
+  .db-meter__label { display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; }
+  .db-meter__pct { text-align: end; font-variant-numeric: tabular-nums; }
+  .db-meter__bar { grid-column: 1 / -1; height: 6px; }
+  .db-col { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-2); text-align: center; }
+  .db-col__total { font-size: var(--text-h3); font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
@@ -44,12 +88,15 @@
 
     <main class="content"><div class="content__inner" style="max-width:none">
 
-      <header class="row between gap-4 animate-in" style="margin-bottom:var(--space-6);flex-wrap:wrap;align-items:center">
-        <h1 class="t-h3" id="pageTitle"></h1>
-        <span class="row gap-3" style="align-items:center">
-          <span class="t-sm text-tertiary" id="filterInfo"></span>
-          <button class="btn btn--sm" id="filterBtn" aria-haspopup="dialog" aria-expanded="false"></button>
-        </span>
+      <header class="db-head animate-in">
+        <div>
+          <h1 class="t-h3" id="pageTitle"></h1>
+          <p class="t-sm text-secondary" id="pageSub" style="margin-top:var(--space-1)"></p>
+        </div>
+        <div class="row gap-3" style="align-items:center;flex-wrap:wrap">
+          <div class="filterbar" id="filterInfo"></div>
+          <button class="btn btn--sm btn--secondary" id="filterBtn" aria-haspopup="dialog" aria-expanded="false"></button>
+        </div>
       </header>
 
       <div class="popover" id="filterPop" role="dialog" aria-labelledby="filterPopTitle" style="width:300px">
@@ -61,7 +108,7 @@
         </div>
       </div>
 
-      <div class="stack gap-6" id="rows"></div>
+      <div class="stack gap-8" id="rows"></div>
 
     </div></main>
   </div>
@@ -81,7 +128,7 @@
   const fmt = (n) => Number(n || 0).toLocaleString("en-US");
   const showAll = (id) => {
     const it = RD.navPick([id])[0];
-    return `<div style="text-align:center;margin-top:auto;padding-top:var(--space-5)"><a class="btn btn--sm" href="${it ? it.href : "index.html"}">${L("show all", "عرض الكل")}</a></div>`;
+    return `<div style="text-align:center;margin-top:auto;padding-top:var(--space-5)"><a class="btn btn--sm" href="${it ? it.href : "index.html"}">${L("Show all", "عرض الكل")}</a></div>`;
   };
 
   /* ---------------- chart helpers (SVG, token colours only) ---------------- */
@@ -144,42 +191,60 @@
   }
   const pct = (part, total) => (total ? parseInt((part / total) * 100, 10) : 0);
   function pctList(segs, total, withAll) {
-    const rows = (withAll ? [{ label: L("all", "الكل"), color: C.grey, value: total, all: true }] : []).concat(segs);
+    const rows = (withAll ? [{ label: L("All", "الكل"), color: C.grey, value: total, all: true }] : []).concat(segs);
     return `<div style="margin-top:var(--space-4)">${rows.map((s) => `
       <div class="sa-pct"><span class="sa-swatch" style="background:${s.color}"></span><span>${s.label}</span>
         <b>${s.all ? 100 : pct(s.value, total)}%</b><span class="text-tertiary">${fmt(s.value)}</span></div>`).join("")}</div>`;
   }
 
-  /* ---------------- shared pieces ---------------- */
-  const statsHead = (icon, total, label) => `
-    <div class="row gap-4" style="align-items:center;margin-bottom:var(--space-5)">
-      <span class="kpi-ic" style="width:56px;height:56px">${ic(icon)}</span>
-      <div><div class="sa-total">${fmt(total)}</div><div class="sa-caps">${label}</div></div>
-    </div>`;
-  const boxes = (items) => `<div class="sa-boxes">${items.map((b) => `<div class="sa-box"><b>${fmt(b[1])}</b><span>${b[0]}</span></div>`).join("")}</div>`;
-  const chartHead = (title, sub, extra) => `
-    <div class="row between gap-4" style="flex-wrap:wrap;margin-bottom:var(--space-5)">
-      <div><b class="t-title">${title}</b><p class="t-sm text-tertiary" style="margin-top:2px">${sub}</p></div>${extra || ""}
-    </div>`;
+  /* ---------------- shared pieces ----------------
+     Redesign (2026-11-17): same statistics, filters and links as the dashboard —
+     re-composed. The headline totals moved into one KPI strip (each tile links to
+     its list, like "show all"); every domain is ONE card (chart + its breakdown)
+     instead of a stats card beside a chart card; breakdowns are proportion rows
+     instead of dashed boxes; sections are grouped under titles; the location
+     filter shows as removable chips. Previous layout:
+     revisions/index-2026-11-17-before-redesign.html */
+  const hrefOf = (id) => { const it = RD.navPick([id])[0]; return it ? it.href : "index.html"; };
+  const showAllLink = (id) => `<a class="btn btn--sm btn--ghost" href="${hrefOf(id)}">${L("Show all", "عرض الكل")}${ic("chevronRight")}</a>`;
   const period = (id, active) => `
     <div class="row gap-2" style="align-items:center;flex-wrap:wrap">
       <div class="segmented" data-period="${id}">
-        ${[["all", L("all", "الكل")], ["year", L("year", "سنة")], ["month", L("month", "شهر")]]
+        ${[["all", L("All", "الكل")], ["year", L("Year", "سنة")], ["month", L("Month", "شهر")]]
           .map(([k, t]) => `<button type="button" data-k="${k}" class="${k === active ? "is-active" : ""}">${t}</button>`).join("")}
       </div>
       <span data-picker="${id}">${picker(active)}</span>
     </div>`;
   function picker(k) {
-    if (k === "year") return `<div class="select" style="min-width:110px"><select aria-label="${L("year", "سنة")}">${[2026, 2025, 2024, 2023].map((y) => `<option>${y}</option>`).join("")}</select><span class="select__caret">${ic("chevronDown")}</span></div>`;
-    if (k === "month") return `<input class="input" type="month" value="2026-11" aria-label="${L("month", "شهر")}" style="min-width:150px">`;
+    if (k === "year") return `<div class="select" style="min-width:110px"><select aria-label="${L("Year", "سنة")}">${[2026, 2025, 2024, 2023].map((y) => `<option>${y}</option>`).join("")}</select><span class="select__caret">${ic("chevronDown")}</span></div>`;
+    if (k === "month") return `<input class="input" type="month" value="2026-11" aria-label="${L("Month", "شهر")}" style="min-width:150px">`;
     return "";
   }
   const sel = (label, opts) => `
     <div class="field"><label class="field__label">${label}</label>
-      <div class="select"><select>${[L("all", "الكل")].concat(opts).map((o) => `<option>${o}</option>`).join("")}</select><span class="select__caret">${ic("chevronDown")}</span></div></div>`;
+      <div class="select"><select>${[L("All", "الكل")].concat(opts).map((o) => `<option>${o}</option>`).join("")}</select><span class="select__caret">${ic("chevronDown")}</span></div></div>`;
   const CATS = ["Sports", "Kids", "Entertainment"];
   const ACTS = ["Padel", "Football", "Bowling", "Swimming"];
-  const card = (body, extraStyle) => `<section class="card card--pad animate-in" style="display:flex;flex-direction:column;${extraStyle || ""}">${body}</section>`;
+
+  /* one card per domain: icon + title + sub on the start side, controls + show all on the end */
+  const card = (o) => `<section class="card card--pad db-card animate-in"${o.span ? ` style="grid-column:${o.span}"` : ""}>
+      <header class="db-card__head">
+        <div class="row gap-3" style="align-items:center;min-width:0">
+          ${o.icon ? `<span class="kpi-ic db-card__ic">${ic(o.icon)}</span>` : ""}
+          <div style="min-width:0"><b class="t-title">${o.title}</b>${o.sub ? `<p class="t-sm text-tertiary" style="margin-top:2px">${o.sub}</p>` : ""}</div>
+        </div>
+        <div class="row gap-2" style="align-items:center;flex-wrap:wrap">${o.extra || ""}${o.all ? showAllLink(o.all) : ""}</div>
+      </header>
+      ${o.body}
+    </section>`;
+  /* proportion rows: swatch · label · value · % over a full-width bar */
+  const meter = (rows, total) => `<div class="db-meter">${rows.map(([label, value, color]) => `
+      <div class="db-meter__row">
+        <span class="db-meter__label"><span class="sa-swatch" style="background:${color}"></span>${label}</span>
+        <b>${fmt(value)}</b><span class="t-xs text-tertiary db-meter__pct">${pct(value, total)}%</span>
+        <div class="progress db-meter__bar"><div class="progress__bar" style="width:${pct(value, total)}%;background:${color}"></div></div>
+      </div>`).join("")}</div>`;
+  const section = (title, body) => `<section class="db-section"><h2 class="db-section__title">${title}</h2><div class="db-grid">${body}</div></section>`;
 
   /* ---------------- sample data (shapes = the /statistics/* responses) ---------------- */
   const MONTHS = AR
@@ -206,48 +271,37 @@
       public_events_players: { joined: 5210, lefted: 640, removed: 112 } },
   };
 
-  /* ---------------- rows ---------------- */
-  const rows = [];
+  /* ---------------- KPI strip: the five headline totals ---------------- */
+  const kpi = (id, icon, value, label, sub) => `<a class="stat-tile db-kpi" href="${hrefOf(id)}">
+      <span class="kpi-ic">${ic(icon)}</span>
+      <span class="stat-tile__txt"><span class="stat-tile__val">${fmt(value)}</span><span class="stat-tile__label">${label}</span><span class="t-xs text-tertiary db-kpi__sub">${sub}</span></span>
+    </a>`;
+  const kpis = `<div class="stat-strip db-kpis animate-in">
+      ${kpi("partners", "hotel", D.partners.total, L("Partners", "شركاء"), L(`${fmt(D.partners.pending)} pending`, `${fmt(D.partners.pending)} معلق`))}
+      ${kpi("units", "box", D.units.total, L("Units", "وحدات"), L(`${fmt(D.units.pending)} pending`, `${fmt(D.units.pending)} معلق`))}
+      ${kpi("users", "users", D.users.total, L("Users", "المستخدمون"), L(`${fmt(D.users.very_active)} very active`, `${fmt(D.users.very_active)} نشط جداً`))}
+      ${kpi("bookings", "booking", D.bookings.total, L("Bookings", "الحجوزات"), L(`${fmt(D.bookings.coming.total)} coming`, `${fmt(D.bookings.coming.total)} قادمة`))}
+      ${kpi("public-events", "ticket", D.events.total, L("Public events", "الفعاليات العامة"), L(`${fmt(D.events.coming)} coming`, `${fmt(D.events.coming)} قادمة`))}
+    </div>`;
 
-  // 1 · Partners
-  rows.push(`<div class="sa-row">
-    ${card(statsHead("hotel", D.partners.total, L("Partners", "شركاء")) +
-      boxes([[L("Pending", "معلق"), D.partners.pending], [L("Activated", "مفعَّل"), D.partners.active], [L("Inactivated", "غير مفعَّل"), D.partners.inactive]]) +
-      showAll("partners"))}
-    ${card(chartHead(L("partners statistics", "إحصائيات الشركاء"), L("number of registered partners.", "عدد الشركاء المسجلين."), period("partners", "all")) +
-      lineChart(YEARS, [
+  /* ---------------- section 1 · partners & units ---------------- */
+  const s1 =
+    card({ icon: "hotel", title: L("Partners statistics", "إحصائيات الشركاء"), sub: L("Number of registered partners.", "عدد الشركاء المسجلين."), all: "partners",
+      extra: period("partners", "all"),
+      body: lineChart(YEARS, [
         { name: L("Partners", "شركاء"), color: C.primary, values: D.partners.statistics.partners },
         { name: L("Activated", "مفعَّل"), color: C.blue, values: D.partners.statistics.active },
-      ]))}
-  </div>`);
+      ]) + meter([[L("Pending", "معلق"), D.partners.pending, C.amber], [L("Activated", "مفعَّل"), D.partners.active, C.blue], [L("Inactivated", "غير مفعَّل"), D.partners.inactive, C.red]], D.partners.total) }) +
+    card({ icon: "box", title: L("Units statistics", "إحصائيات الوحدات"), sub: L("Number of units based on activity.", "عدد الوحدات بناءً على النشاط."), all: "units",
+      body: `<div class="sa-filters" style="margin-bottom:var(--space-4)">${sel(L("Category", "الفئة"), CATS)}${sel(L("Activity", "النشاط"), ACTS)}</div>` +
+        barChart([
+          { label: L("All", "الكل"), value: D.units.total, color: C.grey },
+          { label: L("Pending", "معلق"), value: D.units.pending, color: C.amber },
+          { label: L("Approved", "معتمد"), value: D.units.active, color: C.blue },
+          { label: L("Not Approved", "غير معتمد"), value: D.units.inactive, color: C.red },
+        ]) + meter([[L("Pending", "معلق"), D.units.pending, C.amber], [L("Approved", "معتمد"), D.units.active, C.blue], [L("Not Approved", "غير معتمد"), D.units.inactive, C.red]], D.units.total) });
 
-  // 2 · Units
-  rows.push(`<div class="sa-row">
-    ${card(statsHead("box", D.units.total, L("units", "وحدات")) +
-      boxes([[L("Pending", "معلق"), D.units.pending], [L("Approved", "معتمد"), D.units.active], [L("Not Approved", "غير معتمد"), D.units.inactive]]) +
-      showAll("units"))}
-    ${card(chartHead(L("units statistics", "إحصائيات الوحدات"), L("number of units based on activity.", "عدد الوحدات بناءً على النشاط.")) +
-      `<div class="sa-filters" style="margin-bottom:var(--space-5)">${sel(L("category", "الفئة"), CATS)}${sel(L("activity", "النشاط"), ACTS)}</div>` +
-      barChart([
-        { label: L("all", "الكل"), value: D.units.total, color: C.grey },
-        { label: L("Pending", "معلق"), value: D.units.pending, color: C.amber },
-        { label: L("Approved", "معتمد"), value: D.units.active, color: C.blue },
-        { label: L("Not Approved", "غير معتمد"), value: D.units.inactive, color: C.red },
-      ]))}
-  </div>`);
-
-  // 3 · Users
-  rows.push(`<div class="sa-row">
-    ${card(statsHead("users", D.users.total, L("users", "المستخدمون")) +
-      boxes([[L("very active", "نشط جداً"), D.users.very_active], [L("active", "نشط"), D.users.active], [L("inactive", "غير نشط"), D.users.inactive]]) +
-      `<div class="row gap-3" style="align-items:center;margin:var(--space-6) 0 var(--space-4)"><span class="kpi-ic">${ic("heart")}</span><span class="sa-caps">${L("user engagement", "تفاعل المستخدمين")}</span></div>` +
-      boxes([[L("booked only", "حجز فقط"), D.engagement.booked], [L("joined only", "انضم فقط"), D.engagement.joined], [L("joined & booked", "انضم وحجز"), D.engagement.booked_joined], [L("not tried any", "لم يجرب أي شيء"), D.engagement.not_try]]) +
-      showAll("users"))}
-    ${card(chartHead(L("users statistics", "إحصائيات المستخدمين"), L("number of registered users.", "عدد المستخدمين المسجلين."), period("users", "all")) +
-      lineChart(YEARS, [{ name: L("users", "المستخدمون"), color: C.blue, values: D.users.statistics }]))}
-  </div>`);
-
-  // 4 · Gender + age groups
+  /* ---------------- section 2 · users ---------------- */
   const g = D.genders;
   const gSegs = [
     { label: L("Male", "ذكر"), color: C.blue, value: g.males },
@@ -257,70 +311,66 @@
   const cellBar = (part, total, tone) => `
     <div class="row between t-xs"><b>${pct(part, total)}%</b><span class="text-tertiary">${fmt(part)}</span></div>
     <div class="progress" style="margin-top:var(--space-1)"><div class="progress__bar" style="width:${pct(part, total)}%;background:${tone}"></div></div>`;
-  rows.push(`<div class="sa-row">
-    ${card(`<div class="row gap-3" style="align-items:center;margin-bottom:var(--space-5)"><span class="kpi-ic">${ic("users")}</span><span class="sa-caps">${L("gender of users", "نوع المستخدمين")}</span></div>` +
-      donut(gSegs, false) + pctList(gSegs, g.total, false))}
-    ${card(`<b class="t-title" style="margin-bottom:var(--space-4)">${L("number of users based on age groups and gender", "عدد المستخدمين بناءً على الفئات العمرية والنوع")}</b>
-      <div class="data-table-scroll"><table class="data-table">
-        <thead><tr><th>${L("age group", "الفئة العمرية")}</th><th>${L("all", "الكل")}</th><th>${L("Male", "ذكر")}</th><th>${L("Female", "أنثى")}</th><th>${L("N/A", "غير متاح")}</th></tr></thead>
+  const eng = D.engagement, engTotal = eng.booked + eng.joined + eng.booked_joined + eng.not_try;
+  const s2 =
+    card({ icon: "users", title: L("Users statistics", "إحصائيات المستخدمين"), sub: L("Number of registered users.", "عدد المستخدمين المسجلين."), all: "users", span: "span 2",
+      extra: period("users", "all"),
+      body: lineChart(YEARS, [{ name: L("Users", "المستخدمون"), color: C.blue, values: D.users.statistics }]) +
+        meter([[L("Very active", "نشط جداً"), D.users.very_active, C.teal], [L("Active", "نشط"), D.users.active, C.blue], [L("Inactive", "غير نشط"), D.users.inactive, C.grey]], D.users.total) }) +
+    card({ icon: "heart", title: L("User engagement", "تفاعل المستخدمين"),
+      body: `<div class="db-donut">${donut([
+          { label: L("Booked only", "حجز فقط"), value: eng.booked, color: C.teal },
+          { label: L("Joined only", "انضم فقط"), value: eng.joined, color: C.amber },
+          { label: L("Joined & booked", "انضم وحجز"), value: eng.booked_joined, color: C.primary },
+          { label: L("Not tried any", "لم يجرب أي شيء"), value: eng.not_try, color: C.grey },
+        ], true)}</div>` + meter([[L("Booked only", "حجز فقط"), eng.booked, C.teal], [L("Joined only", "انضم فقط"), eng.joined, C.amber], [L("Joined & booked", "انضم وحجز"), eng.booked_joined, C.primary], [L("Not tried any", "لم يجرب أي شيء"), eng.not_try, C.grey]], engTotal) }) +
+    card({ icon: "users", title: L("Gender of users", "نوع المستخدمين"),
+      body: donut(gSegs, false) + pctList(gSegs, g.total, false) }) +
+    card({ title: L("Number of users based on age groups and gender", "عدد المستخدمين بناءً على الفئات العمرية والنوع"), span: "span 2",
+      body: `<div class="data-table-scroll"><table class="data-table">
+        <thead><tr><th>${L("Age group", "الفئة العمرية")}</th><th>${L("All", "الكل")}</th><th>${L("Male", "ذكر")}</th><th>${L("Female", "أنثى")}</th><th>${L("N/A", "غير متاح")}</th></tr></thead>
         <tbody>${g.age_groups.map((a) => `<tr>
           <td><div class="cell-user"><span class="cell-thumb">${ic("users")}</span><b>${a.name}</b></div></td>
-          <td data-label="${L("all", "الكل")}"><b>${fmt(a.users.total)}</b></td>
+          <td data-label="${L("All", "الكل")}"><b>${fmt(a.users.total)}</b></td>
           <td data-label="${L("Male", "ذكر")}" style="min-width:120px">${cellBar(a.users.males, a.users.total, C.blue)}</td>
           <td data-label="${L("Female", "أنثى")}" style="min-width:120px">${cellBar(a.users.females, a.users.total, C.red)}</td>
           <td data-label="${L("N/A", "غير متاح")}" style="min-width:120px">${cellBar(a.users.not_determined, a.users.total, C.grey)}</td>
         </tr>`).join("")}</tbody>
-      </table></div>`)}
-  </div>`);
+      </table></div>` });
 
-  // 5 · Bookings
+  /* ---------------- section 3 · bookings & public events ---------------- */
   const b = D.bookings;
-  const bCol = (label, o) => `<div class="stack gap-2" style="text-align:center">
-      <span class="sa-caps">${label}</span><b class="t-h3">${fmt(o.total)}</b>
-      <div class="sa-box"><b>${fmt(o.online)}</b><span>${L("Online", "عبر الإنترنت")}</span></div>
-      <div class="sa-box"><b>${fmt(o.manual)}</b><span>${L("Manual", "يدوي")}</span></div></div>`;
-  const bDonut = (label, o) => {
-    const segs = [{ label: L("Online", "عبر الإنترنت"), color: C.teal, value: o.online }, { label: L("Manual", "يدوي"), color: C.amber, value: o.manual }];
-    return `<div><div class="t-sm" style="text-align:center;font-weight:var(--weight-semibold);margin-bottom:var(--space-3)">${label}</div>${donut(segs, true)}${pctList(segs, o.total, true)}</div>`;
-  };
   const filterRow = (id, active) => `<div class="sa-filters" style="margin-bottom:var(--space-5)">
-      ${sel(L("category", "الفئة"), CATS)}${sel(L("activity", "النشاط"), ACTS)}
-      <div class="field"><label class="field__label">${L("date type", "نوع التاريخ")}</label>${period(id, active)}</div>
+      ${sel(L("Category", "الفئة"), CATS)}${sel(L("Activity", "النشاط"), ACTS)}
+      <div class="field"><label class="field__label">${L("Date type", "نوع التاريخ")}</label>${period(id, active)}</div>
     </div>`;
-  rows.push(`<div class="sa-row">
-    ${card(statsHead("booking", b.total, L("bookings", "الحجوزات")) +
-      `<div class="sa-boxes" style="grid-template-columns:repeat(3,minmax(0,1fr))">${bCol(L("Coming", "قادمة"), b.coming)}${bCol(L("Ended", "منتهية"), b.ended)}${bCol(L("Canceled", "ملغاة"), b.cancelled)}</div>` +
-      showAll("bookings"))}
-    ${card(chartHead(L("bookings statistics", "إحصائيات الحجوزات"), L("booking statistics for the current month.", "إحصائيات الحجوزات للشهر الحالي.")) +
-      filterRow("bookings", "month") +
-      `<div class="sa-donuts">${bDonut(L("Coming", "قادمة"), b.coming)}${bDonut(L("Ended", "منتهية"), b.ended)}${bDonut(L("Canceled", "ملغاة"), b.cancelled)}</div>`)}
-  </div>`);
-
-  // 6 · Public events
-  const e = D.events;
-  const eDonut = (caption, segs) => {
-    const total = segs.reduce((a, s) => a + s.value, 0);
-    return `<div><div class="t-sm" style="text-align:center;font-weight:var(--weight-semibold);margin-bottom:var(--space-3)">${caption} (${fmt(total)})</div>${donut(segs, true)}${pctList(segs, total, false)}</div>`;
+  /* one column per status: its total, the online/manual donut and split */
+  const bCol = (label, o) => {
+    const segs = [{ label: L("Online", "عبر الإنترنت"), color: C.teal, value: o.online }, { label: L("Manual", "يدوي"), color: C.amber, value: o.manual }];
+    return `<div class="db-col"><span class="sa-caps">${label}</span><b class="db-col__total">${fmt(o.total)}</b>${donut(segs, true)}${pctList(segs, o.total, true)}</div>`;
   };
+  const e = D.events;
   const tri = (a, bb, c) => [{ label: a[0], value: a[1], color: C.amber }, { label: bb[0], value: bb[1], color: C.teal }, { label: c[0], value: c[1], color: C.pink }];
-  rows.push(`<div class="sa-row">
-    ${card(statsHead("ticket", e.total, L("public events", "الفعاليات العامة")) +
-      `<div class="stack gap-2">
-        ${boxes([[L("Coming", "قادمة"), e.coming], [L("Ended", "منتهية"), e.ended], [L("Canceled", "ملغاة"), e.cancelled]])}
-        ${boxes([[L("Full", "ممتلئة"), e.public_events_status.full], [L("Missing", "مفقودة"), e.public_events_status.missing], [L("Empty", "فارغة"), e.public_events_status.blank]])}
-        ${boxes([[L("Joined", "انضم"), e.public_events_players.joined], [L("Left", "غادر"), e.public_events_players.lefted], [L("Removed", "أُزيل"), e.public_events_players.removed]])}
-      </div>` +
-      showAll("public-events"))}
-    ${card(chartHead(L("public events statistics", "إحصائيات الفعاليات العامة"), L("public events statistics for the current month.", "إحصائيات الفعاليات العامة للشهر الحالي.")) +
-      filterRow("events", "all") +
-      `<div class="sa-donuts">
-        ${eDonut(L("public events", "الفعاليات العامة"), tri([L("Coming", "قادمة"), e.coming], [L("Ended", "منتهية"), e.ended], [L("Canceled", "ملغاة"), e.cancelled]))}
-        ${eDonut(L("success performance", "أداء النجاح"), tri([L("Full", "ممتلئة"), e.public_events_status.full], [L("Missing", "مفقودة"), e.public_events_status.missing], [L("Empty", "فارغة"), e.public_events_status.blank]))}
-        ${eDonut(L("in & out users", "المستخدمون الداخلون والخارجون"), tri([L("Joined", "انضم"), e.public_events_players.joined], [L("Left", "غادر"), e.public_events_players.lefted], [L("Removed", "أُزيل"), e.public_events_players.removed]))}
-      </div>`)}
-  </div>`);
+  const eCol = (caption, segs) => {
+    const total = segs.reduce((acc, s) => acc + s.value, 0);
+    return `<div class="db-col"><span class="sa-caps">${caption}</span><b class="db-col__total">${fmt(total)}</b>${donut(segs, true)}${pctList(segs, total, false)}</div>`;
+  };
+  const s3 =
+    card({ icon: "booking", title: L("Bookings statistics", "إحصائيات الحجوزات"), sub: L("Booking statistics for the current month.", "إحصائيات الحجوزات للشهر الحالي."), all: "bookings", span: "1 / -1",
+      body: filterRow("bookings", "month") +
+        `<div class="sa-donuts">${bCol(L("Coming", "قادمة"), b.coming)}${bCol(L("Ended", "منتهية"), b.ended)}${bCol(L("Canceled", "ملغاة"), b.cancelled)}</div>` }) +
+    card({ icon: "ticket", title: L("Public events statistics", "إحصائيات الفعاليات العامة"), sub: L("Public events statistics for the current month.", "إحصائيات الفعاليات العامة للشهر الحالي."), all: "public-events", span: "1 / -1",
+      body: filterRow("events", "all") +
+        `<div class="sa-donuts">
+          ${eCol(L("Public events", "الفعاليات العامة"), tri([L("Coming", "قادمة"), e.coming], [L("Ended", "منتهية"), e.ended], [L("Canceled", "ملغاة"), e.cancelled]))}
+          ${eCol(L("Success performance", "أداء النجاح"), tri([L("Full", "ممتلئة"), e.public_events_status.full], [L("Missing", "مفقودة"), e.public_events_status.missing], [L("Empty", "فارغة"), e.public_events_status.blank]))}
+          ${eCol(L("In & out users", "المستخدمون الداخلون والخارجون"), tri([L("Joined", "انضم"), e.public_events_players.joined], [L("Left", "غادر"), e.public_events_players.lefted], [L("Removed", "أُزيل"), e.public_events_players.removed]))}
+        </div>` });
 
-  document.getElementById("rows").innerHTML = rows.join("");
+  document.getElementById("rows").innerHTML = kpis +
+    section(L("Partners & units", "الشركاء والوحدات"), s1) +
+    section(L("Users", "المستخدمون"), s2) +
+    section(L("Bookings & public events", "الحجوزات والفعاليات العامة"), s3);
 
   /* period toggles: all / year / month swap the picker beside them */
   document.getElementById("rows").addEventListener("click", (ev) => {
@@ -334,6 +384,7 @@
 
   /* ---------------- toolbar: title + location filter ---------------- */
   document.getElementById("pageTitle").textContent = L("Dashboard", "لوحة القيادة");
+  document.getElementById("pageSub").textContent = L("Overview of partners, units, users, bookings and public events.", "نظرة عامة على الشركاء والوحدات والمستخدمين والحجوزات والفعاليات العامة.");
   const filterBtn = document.getElementById("filterBtn");
   filterBtn.innerHTML = `${ic("sliders")}<span>${L("Filter", "تصفية")}</span>`;
   document.getElementById("filterPopTitle").textContent = L("Filter Options", "خيارات التصفية");
@@ -344,7 +395,7 @@
     [L("Saudi Arabia", "السعودية")]: { [L("Riyadh Region", "منطقة الرياض")]: [L("Riyadh", "الرياض"), L("Al Kharj", "الخرج")], [L("Makkah Region", "منطقة مكة")]: [L("Jeddah", "جدة"), L("Makkah", "مكة")] },
     [L("Egypt", "مصر")]: { [L("Cairo", "القاهرة")]: [L("Nasr City", "مدينة نصر"), L("Maadi", "المعادي")], [L("Giza", "الجيزة")]: [L("Dokki", "الدقي"), L("6th of October", "السادس من أكتوبر")] },
   };
-  const ALL = L("all", "الكل");
+  const ALL = L("All", "الكل");
   let applied = { country: ALL, state: ALL, city: ALL };
   let draft = Object.assign({}, applied);
   const geoSel = (key, label, opts) => `
@@ -354,11 +405,25 @@
     const states = draft.country !== ALL ? Object.keys(GEO[draft.country]) : [];
     const cities = draft.country !== ALL && draft.state !== ALL ? GEO[draft.country][draft.state] : [];
     document.getElementById("filterFields").innerHTML =
-      geoSel("country", L("country:", "البلد:"), Object.keys(GEO)) +
-      geoSel("state", L("state:", "الولاية:"), states) +
-      geoSel("city", L("city:", "المدينة:"), cities);
+      geoSel("country", L("Country:", "البلد:"), Object.keys(GEO)) +
+      geoSel("state", L("State:", "الولاية:"), states) +
+      geoSel("city", L("City:", "المدينة:"), cities);
   }
-  const paintInfo = () => (document.getElementById("filterInfo").textContent = `${applied.country} - ${applied.state} - ${applied.city}`);
+  /* applied location as removable chips (removing a level clears the levels below it) */
+  const LEVELS = [["country", L("Country", "البلد")], ["state", L("State", "الولاية")], ["city", L("City", "المدينة")]];
+  const paintInfo = () => {
+    const set = LEVELS.filter(([k]) => applied[k] !== ALL);
+    document.getElementById("filterInfo").innerHTML = set.length
+      ? set.map(([k, label]) => `<span class="filter-chip"><span class="filter-chip__key">${label}</span><span class="filter-chip__op">${L("is", "=")}</span><span class="filter-chip__val">${applied[k]}</span><button type="button" class="filter-chip__x" data-unloc="${k}" aria-label="${L("Remove", "إزالة")} ${label}">${ic("close")}</button></span>`).join("")
+      : `<span class="t-sm text-tertiary">${L("All locations", "كل المواقع")}</span>`;
+  };
+  document.getElementById("filterInfo").addEventListener("click", (ev) => {
+    const x = ev.target.closest("[data-unloc]");
+    if (!x) return;
+    const i = LEVELS.findIndex(([k]) => k === x.dataset.unloc);
+    LEVELS.slice(i).forEach(([k]) => (applied[k] = ALL));
+    paintInfo();
+  });
   document.getElementById("filterFields").addEventListener("change", (ev) => {
     const k = ev.target.dataset.geo;
     if (!k) return;

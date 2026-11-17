@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Pages · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+  /* redesign 2026-11-17 — sub-navigation between the pages of this sidebar group (same bar on every sibling page) */
+  .sa-tabbar { margin-top: calc(var(--space-2) * -1); margin-bottom: var(--space-5); scrollbar-width: none; }
+  .sa-tabbar .tabs > a { flex: none; }
+  .sa-tabbar .tabs svg { width: 16px; height: 16px; }
+  /* pages content form: short fields side by side, labels above */
+  .sa-fgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: var(--space-4); }
+  [data-editor] ul, .sa-content ul { list-style: disc; padding-inline-start: 1.5em; }
+  [data-editor] ol, .sa-content ol { list-style: decimal; padding-inline-start: 1.5em; }
+  [data-editor]:empty::before { content: attr(data-placeholder); color: var(--color-text-tertiary); }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/sa-translation.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/sa-crud.js"></script>
+<script>
+(() => {
+  /* Pages Content — pages/pages-content:
+       pages-content-pages.html         list (gallery button, no add — commented out in the dashboard) · ?edit= · ?view= · ?gallery=1
+       pages-content-help-center.html   list (+ add new) · ?parent=<id> children · ?new=1 · ?edit= · ?view= · ?gallery=1
+     Content uses a rich-text editor (CKEditor 5 Classic in the dashboard — here a small editable box
+     with bold / italic / heading / lists / link / image / media embed). Validation copy is hard-coded English, as in the dashboard.
+     API: GET /pages · /pages/{id} · POST /pages/{id} (FormData, _method=put) · DELETE …;
+          GET /help-centers (top-level) · /help-centers/{id} (children) · POST /help-centers · /help-centers/{id};
+          editor image uploads: POST /pages/image/upload · POST /help-centers/image/upload ({ image } → data.url).
+     Page image: Edit uses UploadCropImage (1MB checked on pick, 1:1 crop, Remove photo back to the saved image);
+     Create has the plain picker (Change photo / Remove photo, no crop or size check) — as in the dashboard.
+     Permissions (dashboard job permissions; demo ?perm=limited | ?perm=none):
+       pages        list view_pages · Edit (row + ?edit=) update_pages
+       help center  list view_help_centers · Add + ?new= add_help_centers · Edit (row + ?edit=) update_help_centers ·
+                    Delete delete_help_centers
+       The children list (?parent=), view, gallery and translation pages have no permission check in the
+       dashboard — left open here too. */
+  const file = location.pathname.split("/").pop().replace(/^_preview-/, "").replace(".html", "");
+  const isHC = file === "pages-content-help-center", qs = new URLSearchParams(location.search);
+  const sub = qs.get("parent");
+  const pcPerm = qs.get("translation") || qs.get("gallery") || qs.get("view") ? undefined
+    : qs.get("edit") ? (isHC ? "update_help_centers" : "update_pages")
+    : qs.get("new") ? (isHC ? "add_help_centers" : undefined)
+    : isHC ? (sub ? undefined : "view_help_centers") : "view_pages";
+  RD.boot({ activeId: isHC ? "pc-help-center" : "pc-pages", title: "pages content", perm: pcPerm });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic, badge } = SA;
+  const S = HF.SA, mount = document.getElementById("listMount"), base = file + ".html";
+  const listTitle = isHC ? ["Help Center", "مركز المساعدة"] : ["Pages", "الصفحات"];
+  /* redesign 2026-11-17: tab bar between Pages · Help center on the lists; forms with labels above
+     fields in two cards (details · content); gallery as image tiles; sentence-case copy, natural
+     Arabic. Data, fields, validation and flows unchanged. */
+  const chev = () => ic(document.documentElement.dir === "rtl" ? "chevronLeft" : "chevronRight");
+  const TARGET = { player: ["Player", "لاعب"], partner: ["Partner", "شريك"] };
+  const crumbs = [[listTitle[0], listTitle[1], base]];
+
+  /* ---- data (GET /pages · /help-centers) ---- */
+  if (!S._content) {
+    const html = (t) => `<h3>${t}</h3><p>This page explains <b>${t.toLowerCase()}</b> for HighFive users and partners.</p><ul><li>Read the terms before booking.</li><li>Contact support for help.</li></ul>`;
+    S._content = {
+      pages: [["Terms & Conditions", "terms", "player"], ["Privacy Policy", "privacy", "player"], ["Partner Agreement", "partner-agreement", "partner"], ["About HighFive", "about", "player"], ["Refund Policy", "refunds", "partner"]].map((p, i) => ({ id: i + 1, title: p[0], slug: p[1], target: p[2], status: i === 3 ? "unpublish" : "publish", image: null, content: html(p[0]) })),
+      help: [["Getting started", 0], ["Bookings", 0], ["Payments & wallet", 0], ["Account", 0], ["How to book a court", 2], ["Cancel a booking", 2], ["Top up your wallet", 3]].map((h, i) => ({ id: i + 1, title: h[0], slug: h[0].toLowerCase().replace(/[^a-z0-9]+/g, "-"), parent_id: h[1], order: i + 1, status: i === 3 ? 0 : 1, content: html(h[0]) })),
+      gallery: { pages: [1, 2, 3, 4].map((id) => ({ id })), help: [1, 2].map((id) => ({ id })) },
+    };
+  }
+  const C = S._content, rows = isHC ? C.help : C.pages;
+  const childCount = (r) => C.help.filter((x) => x.parent_id === r.id).length;
+
+  /* ---- rich-text editor (stands in for CKEditor 5 Classic) ---- */
+  const editor = (v) => `<div class="stack" style="border:var(--border-thin) solid var(--input-border);border-radius:var(--radius-md);overflow:hidden">
+      <div class="row gap-1" style="padding:6px;border-bottom:var(--border-thin) solid var(--color-border);background:var(--color-surface-sunken);flex-wrap:wrap">${[["bold", "B"], ["italic", "I"], ["formatBlock:H3", "H"], ["insertUnorderedList", L("• List", "• قائمة")], ["insertOrderedList", L("1. List", "1. قائمة مرقمة")], ["createLink", L("Link", "رابط")], ["image", L("Image", "صورة")], ["media", L("Media", "وسائط")]].map((b) => `<button type="button" class="btn btn--sm btn--ghost" data-cmd="${b[0]}" style="${b[1] === "B" ? "font-weight:800" : b[1] === "I" ? "font-style:italic" : ""}">${b[1]}</button>`).join("")}</div>
+      <div contenteditable="true" data-editor style="min-height:200px;padding:var(--space-3);outline:none" data-placeholder="${L("Enter content here…", "أدخل المحتوى هنا…")}">${v || ""}</div>
+      <input type="file" accept="image/*" data-edimg hidden></div>`;
+  /* Image → uploads to /pages/image/upload (or /help-centers/image/upload) and inserts the returned url;
+     Media → CKEditor's media embed (a URL, e.g. YouTube) */
+  const wireEditor = (root) => {
+    const ed = root.querySelector("[data-editor]"), pick = root.querySelector("[data-edimg]");
+    let range = null;
+    const keep = () => { const sel = getSelection(); if (sel.rangeCount && ed.contains(sel.anchorNode)) range = sel.getRangeAt(0); };
+    const back = () => { ed.focus(); if (range) { const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range); } };
+    ed.addEventListener("keyup", keep); ed.addEventListener("mouseup", keep);
+    pick.onchange = () => { const f0 = pick.files[0]; pick.value = ""; if (!f0) return; back(); document.execCommand("insertHTML", false, `<img src="${URL.createObjectURL(f0)}" alt="" style="max-width:100%;border-radius:var(--radius-md)">`); };
+    root.addEventListener("click", (e) => { const b = e.target.closest("[data-cmd]"); if (!b) return; const [cmd, arg] = b.dataset.cmd.split(":"); keep();
+      if (cmd === "image") return pick.click();
+      if (cmd === "media") { const u = prompt(L("Media URL", "رابط الوسائط"), "https://"); if (!u || u === "https://") return; back(); return document.execCommand("insertHTML", false, `<figure class="media" style="margin:var(--space-2) 0;padding:var(--space-3);border:var(--border-thin) dashed var(--color-border);border-radius:var(--radius-md)"><a href="${esc(u)}" dir="ltr">${esc(u)}</a></figure><p></p>`); }
+      ed.focus(); document.execCommand(cmd, false, cmd === "createLink" ? prompt("URL", "https://") : arg ? `<${arg}>` : null); });
+  };
+  const row = (lab, ctl, k, req) => `<div class="field" style="margin:0"><label class="field__label">${lab}${req ? ' <span class="req">*</span>' : ""}</label>${ctl}<span data-e="${k}"></span></div>`;
+  const status = (r) => (isHC ? (+r.status !== 0 ? badge("success", L("Active", "نشط")) : badge("danger", L("Inactive", "غير نشط"))) : String(r.status).toLowerCase() === "publish" ? badge("success", L("Published", "منشورة")) : badge("danger", L("Unpublished", "غير منشورة")));
+
+  /* ================= translation (shared Translation module) ================= */
+  if (qs.get("translation")) {
+    const r = rows.find((x) => String(x.id) === qs.get("translation")) || rows[0];
+    document.getElementById("pageHead").hidden = true;
+    SATR.render(mount, { key: (isHC ? "help" : "page") + r.id, itemName: r.title, editTitle: L("Edit translations", "تعديل الترجمات"), cols: [["title", L("Title", "العنوان")], ["content", L("Content", "المحتوى")]], src: { title: r.title, content: r.content.replace(/<[^>]+>/g, " ").trim().slice(0, 60) + "…" }, backHref: base });
+    return;
+  }
+
+  /* ================= gallery (images arrive only through editor uploads — no upload UI) ================= */
+  if (qs.get("gallery")) {
+    const G = isHC ? C.gallery.help : C.gallery.pages;
+    SA.head(document.getElementById("pageHead"), { title: ["Gallery", "معرض الصور"], crumbs });
+    const paint = () => (mount.innerHTML = G.length ? `<section class="card card--pad stack gap-4 animate-in"><div class="row between gap-3" style="align-items:center;flex-wrap:wrap"><h2 class="t-title" style="margin:0">${L("Images", "الصور")}</h2><span class="t-sm text-tertiary">${L(`${G.length} ${G.length === 1 ? "image" : "images"} · added from the content editor`, `${G.length} ${G.length === 1 ? "صورة" : "صور"} · تُضاف من محرر المحتوى`)}</span></div>
+        <div class="sa-gallery">${G.map((g, i) => `<figure class="sa-tile"><div class="sa-tile__media">${ic("camera")}<span class="t-xs">${L(`Image ${i + 1}`, `صورة ${i + 1}`)}</span></div>
+        <figcaption class="row gap-1"><a class="icon-btn" href="#" aria-label="${L("View", "عرض")}" data-tip="${L("View", "عرض")}">${ic("eye")}</a><button type="button" class="icon-btn" data-del="${g.id}" aria-label="${L("Remove photo", "إزالة الصورة")}" data-tip="${L("Remove photo", "إزالة الصورة")}">${ic("trash")}</button></figcaption></figure>`).join("")}</div></section>`
+      : `<section class="card card--pad empty-state stack gap-2" style="align-items:center;text-align:center"><span class="kpi-ic" style="background:var(--color-surface-sunken);color:var(--color-text-tertiary);box-shadow:none">${ic("camera")}</span><b>${L("No photos have been added", "لم تتم إضافة أي صور")}</b></section>`);
+    mount.addEventListener("click", (e) => { const b = e.target.closest("[data-del]"); if (!b) return; CRUD.del({ data: G, del: {} }, G.find((x) => String(x.id) === b.dataset.del), paint); });
+    paint(); return;
+  }
+
+  /* ================= view ================= */
+  if (qs.get("view")) {
+    const r = rows.find((x) => String(x.id) === qs.get("view")) || rows[0];
+    SA.head(document.getElementById("pageHead"), { title: isHC ? [r.title, r.title] : listTitle, crumbs: isHC ? crumbs : [] });
+    /* the dashboard's view: pages = image · title · content; help center = content (the title is the page title) */
+    mount.innerHTML = `<article class="card card--pad stack gap-4 animate-in" style="max-width:820px;margin-inline:auto">${isHC ? "" : r.image ? `<img src="${esc(r.image)}" alt="" style="width:100%;max-height:320px;object-fit:cover;border-radius:var(--radius-lg)">` : `<span class="cell-thumb" style="width:100%;height:180px;border-radius:var(--radius-lg)">${ic("camera")}</span>`}
+      ${isHC ? "" : `<h2 class="t-h3" style="margin:0">${esc(r.title)}</h2>`}
+      <div class="stack gap-2 sa-content">${r.content}</div>
+      <div class="row gap-2"><a class="btn btn--secondary" href="${base}">${ic(document.documentElement.dir === "rtl" ? "chevronRight" : "chevronLeft")}<span>${L("Back", "رجوع")}</span></a></div></article>`;
+    return;
+  }
+
+  /* ================= create / edit ================= */
+  if (qs.get("edit") || qs.get("new")) {
+    const r = qs.get("edit") ? rows.find((x) => String(x.id) === qs.get("edit")) : null;
+    SA.head(document.getElementById("pageHead"), { title: r ? [r.title, r.title] : isHC ? ["Create new help center", "إنشاء مركز مساعدة جديد"] : ["Create new page", "إنشاء صفحة جديدة"], crumbs });
+    const f = r ? Object.assign({}, r) : { title: "", slug: "", status: isHC ? 1 : "", target: "", order: 1, parent_id: undefined, content: "" };
+    const sel = (k, opts, ph) => SA.select([["", ph]].concat(opts.map((o) => [o[0], o[1], String(f[k]) === String(o[0])])), `data-k="${k}"`);
+    /* image picker in the same look as the CRUD engine's (dashed box · thumb · Choose image · file name) */
+    const picker = `<div class="row gap-4" style="align-items:center;padding:var(--space-3);border:var(--border-thin) dashed var(--color-border);border-radius:var(--radius-lg);background:var(--color-surface-sunken)">
+        <span class="cell-thumb" data-thumb style="width:72px;height:72px;border-radius:var(--radius-md);flex:none;background:var(--color-surface);background-size:cover;background-position:center${r && r.image ? `;background-image:url('${esc(r.image)}')` : ""}">${r && r.image ? "" : ic("camera")}</span>
+        <div class="stack gap-1" style="min-width:0"><label class="btn btn--sm btn--secondary" style="align-self:flex-start;cursor:pointer">${ic("upload")}<span>${L("Change photo", "تغيير الصورة")}</span><input type="file" accept=".png,.jpg,.jpeg" data-img style="position:absolute;inline-size:1px;block-size:1px;opacity:0;pointer-events:none"></label>
+          <span class="t-xs text-secondary" data-fname style="overflow-wrap:anywhere">${L("No file chosen", "لم يتم اختيار ملف")}</span>
+          <button type="button" class="btn btn--sm btn--ghost" data-imgdel hidden style="align-self:flex-start;color:var(--color-danger)">${ic("trash")}<span>${L("Remove photo", "إزالة الصورة")}</span></button>
+          ${r ? `<span class="t-xs text-tertiary">${L("Max size 1MB for images", "الحد الأقصى للصور 1 ميجابايت")}</span><span data-imgerr></span>` : ""}</div></div>`;
+    mount.innerHTML = `<div class="stack gap-5 animate-in"><div data-alert></div>
+      <section class="card card--pad stack gap-4"><h2 class="t-title" style="margin:0">${L("Details", "التفاصيل")}</h2>
+      ${isHC ? "" : row(L("Image", "الصورة"), picker, "image")}
+      <div class="sa-fgrid">
+      ${row(L("Title", "العنوان"), `<input class="input" data-k="title" value="${esc(f.title)}" placeholder="${L("Enter title", "أدخل العنوان")}">`, "title", 1)}
+      ${row(L("Slug", "الرابط المختصر"), `<input class="input" data-k="slug" value="${esc(f.slug)}" placeholder="${L("Enter slug", "أدخل الرابط المختصر")}" dir="ltr">`, "slug", 1)}
+      ${row(L("Status", "الحالة"), isHC ? sel("status", [["1", L("Publish", "نشر")], ["0", L("Unpublish", "إلغاء النشر")]], L("Select status", "اختر الحالة")) : sel("status", [["publish", L("Publish", "نشر")], ["unpublish", L("Unpublish", "إلغاء النشر")]], L("Select status", "اختر الحالة")), "status", 1)}
+      ${isHC ? row(L("Parent", "القسم الرئيسي"), sel("parent_id", [["0", L("Parent (top level)", "رئيسي (المستوى الأعلى)")]].concat(C.help.filter((x) => x.parent_id === 0 && (!r || x.id !== r.id)).map((x) => [x.id, x.title])), L("Select parent", "اختر القسم الرئيسي")), "parent_id", 1)
+          + row(L("Order", "الترتيب"), `<input class="input" type="number" min="1" data-k="order" value="${esc(f.order)}" placeholder="${L("Enter order", "أدخل الترتيب")}">`, "order", 1)
+        : row(L("Target", "الفئة المستهدفة"), sel("target", [["player", L("Player", "لاعب")], ["partner", L("Partner", "شريك")]], L("Select target", "اختر الفئة المستهدفة")), "target", 1)}
+      </div></section>
+      <section class="card card--pad stack gap-4"><h2 class="t-title" style="margin:0">${L("Content", "المحتوى")} <span class="req">*</span></h2>${editor(f.content)}<span data-e="content"></span></section>
+      <div class="row between gap-3"><a class="btn btn--ghost" href="${base}">${L("Cancel", "إلغاء")}</a><button type="button" class="btn" data-save>${r ? L("Update", "تحديث") : L("Create", "إنشاء")}</button></div></div>`;
+    const img = mount.querySelector("[data-img]");
+    let picked = null;
+    if (img) {
+      const box = img.closest(".row"), th = box.querySelector("[data-thumb]"), rm = box.querySelector("[data-imgdel]"), er = box.querySelector("[data-imgerr]");
+      const show = (url) => { th.style.backgroundImage = url ? `url("${url}")` : ""; th.innerHTML = url ? "" : ic("camera"); };
+      const reset = () => { picked = null; img.value = ""; box.querySelector("[data-fname]").textContent = L("No file chosen", "لم يتم اختيار ملف"); rm.hidden = true; show(r && r.image); };
+      rm.onclick = reset;
+      img.onchange = async () => {
+        const file0 = img.files[0]; if (!file0) return;
+        /* edit: UploadCropImage — 1MB on pick, then the 1:1 crop; create: plain picker */
+        if (r) { if (file0.size > 1024 * 1024) { reset(); er.innerHTML = `<span class="field__error">${ic("warn")} ${L("Max size 1MB for images", "الحد الأقصى للصور 1 ميجابايت")}</span>`; return; } er.innerHTML = ""; }
+        const url = r ? await SA.crop(file0, { ratio: 1 }) : URL.createObjectURL(file0);
+        if (!url) return reset();
+        picked = url; box.querySelector("[data-fname]").textContent = file0.name; rm.hidden = false; show(url);
+      };
+    }
+    wireEditor(mount);
+    mount.querySelector("[data-save]").onclick = (e) => {
+      const v = (k) => { const el = mount.querySelector(`[data-k="${k}"]`); return el ? el.value.trim() : ""; }, content = mount.querySelector("[data-editor]").innerHTML.trim(), txt = mount.querySelector("[data-editor]").innerText.trim();
+      const len = (x) => (!x ? "This field is required" : x.length < 3 ? "Minimum 3 symbols" : x.length > 200 ? "Maximum 50 symbols" : ""); /* hard-coded English (Yup) in the dashboard */
+      const errs = { title: len(v("title")), slug: len(v("slug")), status: v("status") === "" ? "This field is required" : "", content: !txt ? "This field is required" : txt.length < 3 ? "Minimum 3 symbols" : "" };
+      if (isHC) { errs.parent_id = v("parent_id") === "" ? "This field is required" : ""; errs.order = !v("order") ? "This field is required" : !/^[0-9]+$/.test(v("order")) ? "Number is not valid" : v("order").length > 10 ? "Maximum 50 symbols" : ""; }
+      else errs.target = v("target") === "" ? "This field is required" : "";
+      Object.entries(errs).forEach(([k, m]) => { const s = mount.querySelector(`[data-e="${k}"]`); if (s) s.innerHTML = m ? `<span class="field__error">${ic("warn")} ${m}</span>` : ""; });
+      if (Object.values(errs).some(Boolean)) return;
+      const b = e.currentTarget; b.disabled = true; b.textContent = r ? L("Updating…", "جاري التحديث…") : L("Creating…", "جاري الإنشاء…");
+      setTimeout(() => {
+        const vals = { title: v("title"), slug: v("slug"), status: isHC ? +v("status") : v("status"), content };
+        if (picked) vals.image = picked;
+        if (isHC) Object.assign(vals, { parent_id: +v("parent_id"), order: +v("order") }); else vals.target = v("target");
+        if (r) Object.assign(r, vals); else rows.unshift(Object.assign({ id: Math.max(...rows.map((x) => x.id)) + 1 }, vals));
+        location.href = base;
+      }, 400);
+    };
+    return;
+  }
+
+  /* ================= lists ================= */
+  const parent = isHC && qs.get("parent") ? C.help.find((x) => String(x.id) === qs.get("parent")) : null;
+  SA.head(document.getElementById("pageHead"), { title: parent ? [parent.title, parent.title] : listTitle, crumbs: parent ? crumbs : [],
+    actions: `<a class="btn btn--sm btn--secondary" href="${base}?gallery=1">${ic("camera")}<span>${L("Gallery", "معرض الصور")}</span></a>${isHC ? `<a class="btn btn--sm" href="${base}?new=1"${parent ? "" : ' data-perm="add_help_centers"'}>${ic("plus")}<span>${L("Add new", "إضافة جديد")}</span></a>` : ""}` });
+  if (!parent) {
+    const TABS = [["pages-content-pages", "layout", "Pages", "الصفحات"], ["pages-content-help-center", "info", "Help center", "مركز المساعدة"]];
+    mount.insertAdjacentHTML("beforebegin", `<nav class="sa-tabbar" aria-label="${L("Pages content", "محتوى الصفحات")}"><div class="tabs">${TABS.map((t) => `<a href="${t[0]}.html" class="${t[0] === file ? "is-active" : ""}"${t[0] === file ? ' aria-current="page"' : ""}>${ic(t[1])}<span>${L(t[2], t[3])}</span></a>`).join("")}</div></nav>`);
+  }
+  const data = isHC ? C.help.filter((x) => x.parent_id === (parent ? parent.id : 0)) : C.pages;
+  const isPub = (r) => (isHC ? +r.status !== 0 : r.status === "publish");
+  const ctl = SA.list({
+    mount, data,
+    pills: [{ key: "all", label: ["All", "الكل"] }, { key: "publish", label: ["Published", "منشورة"], icon: "check", tone: "success" }, { key: "unpublish", label: ["Unpublished", "غير منشورة"], icon: "eyeOff", tone: "danger" }],
+    pillMatch: (r, k) => k === "all" || (k === "publish") === isPub(r),
+    search: ["Search by name", "البحث بالاسم"], searchMatch: (r, q) => r.title.toLowerCase().includes(q),
+    empty: ["There is no data to display", "لا توجد بيانات للعرض"],
+    columns: (isHC ? [
+      { head: ["Name", "الاسم"], cell: (r) => `<div class="cell-user"><span class="cell-thumb">${ic(parent ? "list" : "info")}</span><b>${esc(r.title || "---")}</b></div>` },
+      { head: ["Order", "الترتيب"], cell: (r) => `<span style="font-variant-numeric:tabular-nums;font-weight:var(--weight-semibold)">${r.order}</span>` },
+      { hidden: !!parent, head: ["Children", "العناصر الفرعية"], cell: (r) => { const n = childCount(r), w = L(`${n} ${n === 1 ? "child" : "children"}`, `${n} ${n === 1 ? "عنصر فرعي" : "عناصر فرعية"}`); return n ? `<a href="${base}?parent=${r.id}" class="row gap-1" style="display:inline-flex;align-items:center;color:var(--color-text-link);font-weight:var(--weight-semibold)">${w}${chev()}</a>` : `<span class="text-tertiary">${w}</span>`; } },
+    ] : [
+      { head: ["Image", "الصورة"], cell: (r) => (r.image ? `<span class="cell-thumb" role="img" aria-label="${esc(r.title)}" style="background:var(--color-surface) center/cover no-repeat url('${esc(r.image)}')"></span>` : `<span class="cell-thumb">${ic("camera")}</span>`) },
+      { head: ["Name", "الاسم"], cell: (r) => `<b>${esc(r.title || "---")}</b>` },
+      { head: ["Type", "النوع"], align: "center", cell: (r) => (r.target ? badge("info", L(...(TARGET[r.target] || [r.target, r.target]))) : "---") },
+    ]).concat([
+      { head: ["Status", "الحالة"], align: "center", cell: status },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<div class="row gap-1" style="justify-content:center"><a class="icon-btn" href="${base}?translation=${r.id}" data-tip="${L("Translation", "الترجمة")}" aria-label="${L("Translation", "الترجمة")}">${ic("globe")}</a><a class="icon-btn" href="${base}?view=${r.id}" data-tip="${L("View", "عرض")}" aria-label="${L("View", "عرض")}">${ic("eye")}</a><a class="icon-btn" href="${base}?edit=${r.id}"${parent ? "" : ` data-perm="${isHC ? "update_help_centers" : "update_pages"}"`} data-tip="${L("Edit", "تعديل")}" aria-label="${L("Edit", "تعديل")}">${ic("edit")}</a>${isHC ? SA.iconBtn("trash", L("Delete item", "حذف العنصر"), `data-del="${r.id}"${parent ? "" : ' data-perm="delete_help_centers"'}`) : ""}</div>` },
+    ]),
+  });
+  mount.addEventListener("click", (e) => { const b = e.target.closest("[data-del]"); if (b) CRUD.del({ data: C.help, del: {} }, C.help.find((x) => String(x.id) === b.dataset.del), () => { data.splice(0, data.length, ...C.help.filter((x) => x.parent_id === (parent ? parent.id : 0))); ctl.paint(); }); });
+})();
+</script>
+</body>
+</html>

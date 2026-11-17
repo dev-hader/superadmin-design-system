@@ -11,8 +11,8 @@
 
   /* ================= financial ================= */
   const SLOTS = [["online_package", "online_payment"], ["online_package", "cash_payment"], ["walk_in_package", "cash_payment"], ["linked_package", "cash_payment"]];
-  const GRP = { online_package: ["Online Package", "باقة أونلاين"], walk_in_package: ["Walk-In Package", "باقة حضورية"], linked_package: ["Linked Package", "باقة مرتبطة"] };
-  const PW = { online_payment: ["Online Payment", "دفع إلكتروني"], cash_payment: ["Cash Payment", "دفع نقدي"] };
+  const GRP = { online_package: ["Online package", "باقة أونلاين"], walk_in_package: ["Walk-in package", "باقة حضورية"], linked_package: ["Linked package", "باقة مرتبطة"] };
+  const PW = { online_payment: ["Online payment", "دفع إلكتروني"], cash_payment: ["Cash payment", "دفع نقدي"] };
   const rates = (seed) => SLOTS.map((s, j) => ({ g: s[0], p: s[1], percent: seed ? [12, 8, 6, 5][j] + (seed % 3) : 0, fixed: seed ? [5, 0, 0, 2][j] : 0 }));
   KP.fin = function (k) {
     if (k._fin) return k._fin;
@@ -20,9 +20,11 @@
     const country = p ? p.country.name : "Saudi Arabia", city = p ? p.city.name : "Riyadh";
     k._fin = {
       banner: k.partner.disabled ? { tone: "warning", message: L("The partner is disabled — no new sales are taken.", "الشريك موقوف — لا تُقبل مبيعات جديدة.") } : null,
-      taxes: [{ level: "country", title: L(`${country} Taxes`, `ضرائب ${country}`), rows: [{ id: 1, name: "VAT", label: "15.00%", enabled: i % 2 === 0, can_enable: true }] },
-        { level: "city", title: L(`${city} Taxes`, `ضرائب ${city}`), rows: i % 3 ? [{ id: 2, name: L("Municipality fee", "رسوم البلدية"), label: "2.50%", enabled: false, can_enable: i % 3 === 1 }] : [] }],
-      set: i % 4 !== 0, def: { rates: rates(i % 4 ? i : 0), by: "Super Admin", at: "08 Nov 2026 23:58" },
+      taxes: [{ level: "country", title: L(`${country} taxes`, `ضرائب ${country}`), rows: [{ id: 1, name: "VAT", label: "15.00%", enabled: i % 2 === 0, can_enable: true }] },
+        /* the state and the city can share a title ("ضرائب الرياض" twice) — the tab then appends the level */
+        { level: "state", title: L(`${city} taxes`, `ضرائب ${city}`), rows: [] },
+        { level: "city", title: L(`${city} taxes`, `ضرائب ${city}`), rows: i % 3 ? [{ id: 2, name: L("Municipality fee", "رسوم البلدية"), label: "2.50%", enabled: false, can_enable: i % 3 === 1 }] : [] }],
+      set: i % 4 !== 0, def: { rates: rates(i % 4 ? i : 0), by: i % 4 ? "Super Admin" : null, at: i % 4 ? "08 Nov 2026 23:58" : null },
       scheduled: i % 2 ? [{ id: 1, name: L("Ramadan offer", "عرض رمضان"), starts_on: "2027-02-18", ends_on: "2027-03-19", rates: rates(1) }, { id: 2, name: L("Summer push", "دفعة الصيف"), starts_on: "2027-06-01", ends_on: "2027-08-31", rates: rates(2) }] : [],
       history: i % 4 ? [{ who: "Super Admin", when: "08 Nov 2026 23:58", note: L("Aligned with the new partner contract.", "تمت المواءمة مع عقد الشريك الجديد."), changes: [["online_package", "online_payment", "percent", 10, 12 + (i % 3)], ["linked_package", "cash_payment", "fixed", 0, 2]] }] : [],
     };
@@ -42,18 +44,22 @@
     };
     const taxes = () => {
       const named = F.taxes.filter((x) => x.rows.length || true);
-      if (!named.length) return card(L("Taxes", "الضرائب"), "", `<p class="text-tertiary">${L("No Taxes Have Been Generated", "لم يتم إنشاء أي ضرائب")}</p>`);
-      return named.map((sec) => card(esc(sec.title), "", sec.rows.length ? SA.table({ rows: sec.rows, empty: [""], columns: [
+      if (!named.length) return card(L("Taxes", "الضرائب"), "", `<p class="text-tertiary">${L("No taxes have been generated", "لم يتم إنشاء أي ضرائب")}</p>`);
+      /* PACKAGES.FIN_TAX_SECTION_WITH_LEVEL: a title shared by two sections gets its level — "{title} ({level})" */
+      const LEVEL = { country: L("Country", "الدولة"), state: L("State", "المنطقة"), city: L("City", "المدينة") };
+      const counts = named.reduce((c, x) => ((c[x.title] = (c[x.title] || 0) + 1), c), {});
+      const title = (x) => (!x.title ? LEVEL[x.level] || "" : counts[x.title] > 1 && LEVEL[x.level] ? `${x.title} (${LEVEL[x.level]})` : x.title);
+      return named.map((sec) => card(esc(title(sec)), "", sec.rows.length ? SA.table({ rows: sec.rows, empty: [""], columns: [
         { head: ["Name", "الاسم"], cell: (r) => `<b>${esc(r.name)}</b>` },
         { head: ["Tax", "الضريبة"], cell: (r) => r.label },
         { head: ["Actions", "الإجراءات"], align: "end", cell: (r) => `<label class="switch" ${r.can_enable ? "" : `title="${L("Can't be enabled for this package", "لا يمكن تفعيلها لهذه الباقة")}"`}><input type="checkbox" data-tax="${sec.level}:${r.id}" ${r.enabled ? "checked" : ""} ${r.can_enable ? "" : "disabled"} aria-label="${esc(r.name)}"><span class="switch__track"></span></label>` },
-      ] }) : `<p class="text-tertiary">${L("No Taxes Have Been Generated", "لم يتم إنشاء أي ضرائب")}</p>`)).join("");
+      ] }) : `<p class="text-tertiary">${L("No taxes have been generated", "لم يتم إنشاء أي ضرائب")}</p>`)).join("");
     };
-    const commission = () => card(L("Default Commission", "العمولة الافتراضية"),
+    const commission = () => card(L("Default commission", "العمولة الافتراضية"),
         SA.iconBtn("eye", L("View", "عرض"), 'data-cv="default"') + SA.iconBtn("clock", L("History", "السجل"), "data-chist") + SA.iconBtn("edit", L("Edit", "تعديل"), 'data-ce="default"'),
         (F.set ? "" : KP.notice("warning", "warn", L("Commission not set - no commission is taken on this package (0% + 0 fixed) until it is set.", "لم يتم تحديد العمولة - لا تُحتسب عمولة على هذه الباقة (0% + 0 ثابت) حتى يتم تحديدها.")))
-        + ratesView(F.def.rates, cur) + `<p class="t-xs text-tertiary">${F.set ? L(`Last updated by ${F.def.by} on ${F.def.at}`, `آخر تحديث بواسطة ${F.def.by} في ${F.def.at}`) : L("Last updated by --- on ---", "آخر تحديث بواسطة --- في ---")}</p>`)
-      + card(L("Scheduled Commissions", "العمولات المجدولة"), PP.btn(L("New", "جديد"), "plus", 'data-ce="new"', "secondary"),
+        + ratesView(F.def.rates, cur) + (F.def.at || F.def.by ? `<p class="t-xs text-tertiary">${L(`Last updated by ${F.def.by || "---"} on ${F.def.at || "---"}`, `آخر تحديث بواسطة ${F.def.by || "---"} في ${F.def.at || "---"}`)}</p>` : ""))
+      + card(L("Scheduled commissions", "العمولات المجدولة"), PP.btn(L("New", "جديد"), "plus", 'data-ce="new"', "secondary"),
         F.scheduled.length ? `<div class="data-table-scroll"><table class="data-table"><thead><tr><th style="width:40px"></th><th>${L("Name", "الاسم")}</th><th>${L("Period", "الفترة")}</th><th style="text-align:center">${L("Actions", "الإجراءات")}</th></tr></thead><tbody>${F.scheduled.map((s) => `<tr>
             <td>${SA.iconBtn(s._open ? "chevronDown" : "chevronRight", s._open ? L("Hide values", "إخفاء القيم") : L("Show values", "عرض القيم"), `data-cx="${s.id}"`)}</td><td><b>${esc(s.name)}</b></td><td dir="ltr" style="text-align:start">${s.starts_on} → ${s.ends_on}</td>
             <td style="text-align:center"><div class="row gap-1" style="justify-content:center">${SA.iconBtn("eye", L("View", "عرض"), `data-cv="${s.id}"`)}${SA.iconBtn("edit", L("Edit", "تعديل"), `data-ce="${s.id}"`)}${SA.iconBtn("trash", L("Delete", "حذف"), `data-cd="${s.id}" style="color:var(--color-danger)"`)}</div></td></tr>
@@ -72,7 +78,7 @@
           <span class="t-xs" style="color:var(--color-danger)" data-e="${j}"></span>`)).join("")}</div>`).join("");
       const el = SA.modal({ id: "kpComm", wide: true, title, body: `<div class="stack gap-4">
           ${isDef ? "" : `${SA.field(["Name", "الاسم"], `<input class="input" maxlength="255" data-n value="${esc(s.name)}">`, { req: 1 })}<span class="t-xs" style="color:var(--color-danger)" data-e="name"></span>
-            <div class="grid grid-2">${SA.field(["Start date", "تاريخ البداية"], `<input class="input" type="date" min="${today()}" data-sd value="${s.starts_on}">`, { req: 1 })}${SA.field(["End date", "تاريخ النهاية"], `<input class="input" type="date" data-ed value="${s.ends_on}">`, { req: 1 })}</div><span class="t-xs" style="color:var(--color-danger)" data-e="dates"></span>`}
+            <div class="grid grid-2">${SA.field(["Start date", "تاريخ البداية"], `<input class="input" type="date" ${id !== "new" && s.starts_on && s.starts_on < today() ? "" : `min="${today()}"`} data-sd value="${s.starts_on}">`, { req: 1 })}${SA.field(["End date", "تاريخ النهاية"], `<input class="input" type="date" data-ed value="${s.ends_on}">`, { req: 1 })}</div><span class="t-xs" style="color:var(--color-danger)" data-e="dates"></span>`}
           ${groups}<span class="t-xs" style="color:var(--color-danger)" data-e="all"></span></div>`,
         foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${L("Save changes", "حفظ التغييرات")}</button>` });
       el.querySelector("[data-ok]").onclick = () => {
@@ -90,7 +96,7 @@
           const de = el.querySelector('[data-e="dates"]');
           if (!n) { el.querySelector('[data-e="name"]').textContent = L("This field is required.", "هذا الحقل مطلوب."); bad = true; }
           if (!sd || !ed) { de.textContent = L("This field is required.", "هذا الحقل مطلوب."); bad = true; }
-          else if (sd < today()) { de.textContent = L("The start date can't be in the past.", "لا يمكن أن يكون تاريخ البداية في الماضي."); bad = true; }
+          else if (sd < today() && !(id !== "new" && sd === s.starts_on)) { /* an edited one may keep its unchanged past start */ de.textContent = L("The start date can't be in the past.", "لا يمكن أن يكون تاريخ البداية في الماضي."); bad = true; }
           else if (ed < sd) { de.textContent = L("The end date must be on or after the start date.", "يجب أن يكون تاريخ النهاية في يوم البداية أو بعده."); bad = true; }
           else { const o = F.scheduled.find((x) => x !== s && x.starts_on <= ed && sd <= x.ends_on); if (o) { de.textContent = L(`This period overlaps with "${o.name}".`, `هذه الفترة تتداخل مع "${o.name}".`); bad = true; } }
           if (!rs.some((r) => r.percent > 0 || r.fixed > 0)) { el.querySelector('[data-e="all"]').textContent = L("Enter a percentage or a fixed amount greater than 0.", "أدخل نسبة أو مبلغاً ثابتاً أكبر من 0."); bad = true; }
@@ -106,7 +112,7 @@
       const t = e.target.closest("[data-fsub]"); if (t) { cur_sub = t.dataset.fsub; history.replaceState(null, "", KP.href("financial", { sub: cur_sub })); return paint(cur_sub); }
       const cx = e.target.closest("[data-cx]"); if (cx) { const s = findS(cx.dataset.cx); s._open = !s._open; return paint(cur_sub); }
       const cv = e.target.closest("[data-cv]");
-      if (cv) { const s = cv.dataset.cv === "default" ? null : findS(cv.dataset.cv); return SA.modal({ id: "kpCommV", wide: true, title: s ? esc(s.name) : L("Default Commission", "العمولة الافتراضية"), body: (s ? kv([[L("Start date", "تاريخ البداية"), s.starts_on], [L("End date", "تاريخ النهاية"), s.ends_on]]) : "") + ratesView(s ? s.rates : F.def.rates, cur), foot: `<button class="btn btn--ghost" data-close>${L("Close", "إغلاق")}</button>` }); }
+      if (cv) { const s = cv.dataset.cv === "default" ? null : findS(cv.dataset.cv); return SA.modal({ id: "kpCommV", wide: true, title: s ? esc(s.name) : L("Default commission", "العمولة الافتراضية"), body: (s ? kv([[L("Start date", "تاريخ البداية"), s.starts_on], [L("End date", "تاريخ النهاية"), s.ends_on]]) : "") + ratesView(s ? s.rates : F.def.rates, cur), foot: `<button class="btn btn--ghost" data-close>${L("Close", "إغلاق")}</button>` }); }
       if (e.target.closest("[data-chist]")) {
         const fld = (c) => `${L(...GRP[c[0]])} · ${L(...PW[c[1]])} · ${c[2] === "percent" ? L("Percentage", "النسبة") : L("Fixed amount", "مبلغ ثابت")}`;
         return SA.modal({ id: "kpCommH", wide: true, title: L("History", "السجل"), body: F.history.length ? `<div class="stack gap-3">${F.history.map((h) => `<div class="stack gap-2" style="padding:var(--space-3);border:var(--border-thin) dashed var(--color-border);border-radius:var(--radius-md)">
@@ -159,14 +165,15 @@
     const sw = (key, on) => `<label class="switch"><input type="checkbox" data-sw="${key}" ${on ? "checked" : ""} aria-label="${key}"><span class="switch__track"></span></label>`;
     const val = (key, s, ed) => {
       const v = s[key];
-      if (!ed) return key === "dup" ? (v ? `${dur(v[0], "hour")} ${dur(v[1], "minute")}` : off) : v ? dur(v[0], v[1]) : off;
+      /* the duplicate window leaves out a zero part ("30 minutes", not "0 hours 30 minutes") */
+      if (!ed) return key === "dup" ? (v ? [v[0] > 0 ? dur(v[0], "hour") : "", v[1] > 0 ? dur(v[1], "minute") : ""].filter(Boolean).join(" ") : off) : v ? dur(v[0], v[1]) : off;
       if (key === "dup") return `<div class="row gap-2" style="align-items:center;flex-wrap:wrap">${sw(key, v)}${v ? `<input class="input" type="number" min="0" max="23" style="width:80px" data-dh value="${v[0]}"> ${L("Hours", "ساعات")} <input class="input" type="number" min="0" max="59" style="width:80px" data-dm value="${v[1]}"> ${L("Minutes", "دقائق")}` : ""}</div>`;
       return `<div class="row gap-2" style="align-items:center;flex-wrap:wrap">${sw(key, v)}${v ? `<input class="input" type="number" min="1" style="width:90px" data-n="${key}" value="${v[0]}">${SA.select([["minute", L("Minutes", "دقائق"), v[1] === "minute"], ["hour", L("Hours", "ساعات"), v[1] === "hour"], ["day", L("Days", "أيام"), v[1] === "day"]], `data-u="${key}"`)}` : ""}</div>`;
     };
     const barcode = () => {
       const s = editing || Q.settings, ed = !!editing;
       const dirty = ed && JSON.stringify(editing) !== JSON.stringify(Q.settings);
-      return card(L("Barcode Settings", "إعدادات الباركود"), ed ? `<button class="btn btn--sm btn--ghost" data-qcancel>${L("Cancel", "إلغاء")}</button><button class="btn btn--sm" data-qsave ${dirty ? "" : "disabled"}>${L("Save changes", "حفظ التغييرات")}</button>` : PP.btn(L("Edit", "تعديل"), "edit", "data-qedit", "secondary"),
+      return card(L("Barcode settings", "إعدادات الباركود"), ed ? `<button class="btn btn--sm btn--ghost" data-qcancel>${L("Cancel", "إلغاء")}</button><button class="btn btn--sm" data-qsave ${dirty ? "" : "disabled"}>${L("Save changes", "حفظ التغييرات")}</button>` : PP.btn(L("Edit", "تعديل"), "edit", "data-qedit", "secondary"),
         `<div class="stack">${ROWS.map(([key, t, h]) => `<div class="row between gap-4" style="padding-block:var(--space-3);border-bottom:var(--border-thin) dashed var(--color-border);flex-wrap:wrap;align-items:center">
             <div class="stack gap-1" style="flex:1;min-width:220px"><b class="t-sm">${t}</b><span class="t-xs text-tertiary">${h}</span>${key === "reversal" && !s.reversal ? `<span class="t-xs" style="color:var(--color-warning)">${esc(Q.reversal_note)}</span>` : ""}<span class="t-xs" style="color:var(--color-danger)" data-qe="${key}"></span></div>
             <div style="font-weight:var(--weight-semibold)">${val(key, s, ed)}</div></div>`).join("")}
@@ -196,7 +203,8 @@
           <span class="t-xs" style="color:var(--color-danger)" data-ee></span>
           ${SA.field(["Permissions", "الصلاحيات"], `<div class="stack gap-2">${SCAN.map((s) => `<label class="check"><input type="checkbox" value="${s[0]}" ${perms.includes(s[0]) ? "checked" : ""}><span class="check__box">${ic("check")}</span><span><b class="t-sm">${s[1]}</b><span class="t-xs text-tertiary" style="display:block">${s[2]}</span></span></label>`).join("")}</div>`)}
           <span class="t-xs" style="color:var(--color-danger)" data-ep></span></div>`,
-        foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${e ? L("Save changes", "حفظ التغييرات") : L("Assign", "تعيين")}</button>` });
+        /* Assign is disabled when every employee is already assigned (dashboard: !editing && pickable.length === 0) */
+        foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok ${!e && !free.length ? "disabled" : ""}>${e ? L("Save changes", "حفظ التغييرات") : L("Assign", "تعيين")}</button>` });
       el.querySelector("[data-ok]").onclick = () => {
         const pick = el.querySelector("[data-pick]"), ps = [...el.querySelectorAll(".check input:checked")].map((x) => x.value);
         el.querySelector("[data-ee]").textContent = !e && (!pick || !pick.value) ? L("Choose an employee.", "اختر موظفاً.") : "";
@@ -214,7 +222,7 @@
         readEdit();
         let bad = false;
         mount.querySelectorAll("[data-qe]").forEach((x) => (x.textContent = ""));
-        ["before", "after", "reversal"].forEach((key) => { const v = editing[key]; if (!v) return; const max = 365; const err = !Number.isInteger(v[0]) || v[0] < 1 ? L("Enter a whole number of 1 or more.", "أدخل عدداً صحيحاً يساوي 1 أو أكثر.") : v[0] > max ? L(`Value must be ${max} or less.`, `يجب أن تكون القيمة مساوية لـ ${max} أو أصغر.`) : ""; if (err) { mount.querySelector(`[data-qe="${key}"]`).textContent = err; bad = true; } });
+        ["before", "after", "reversal"].forEach((key) => { const v = editing[key]; if (!v) return; const max = 365; const err = !Number.isInteger(v[0]) || v[0] < 1 ? L("Enter a whole number of 1 or more.", "أدخل عدداً صحيحاً يساوي 1 أو أكثر.") : v[0] > max ? (() => { const lbl = ROWS.find((r) => r[0] === key)[1]; return L(`${lbl} must be ${max} or less.`, `يجب أن تكون قيمة ${lbl} مساوية لـ ${max} أو أصغر.`); })() : ""; /* PACKAGES.QR_ERR_MAX */ if (err) { mount.querySelector(`[data-qe="${key}"]`).textContent = err; bad = true; } });
         if (editing.dup) { const [h, m] = editing.dup; const err = !(Number.isInteger(h) && Number.isInteger(m) && h >= 0 && h <= 23 && m >= 0 && m <= 59) ? L("Hours must be 0-23 and minutes 0-59 (whole numbers).", "يجب أن تكون الساعات بين 0 و23 والدقائق بين 0 و59 (أعداد صحيحة).") : h === 0 && m === 0 ? L("Set a window longer than 0 minutes, or turn it off.", "حدد مدة أطول من 0 دقيقة، أو أوقف الخيار.") : ""; if (err) { mount.querySelector('[data-qe="dup"]').textContent = err; bad = true; } }
         if (bad) return;
         Q.settings = editing; editing = null; Q.updated_by = "Super Admin"; Q.updated_at = "Nov 15, 2026 12:00 PM";
@@ -262,7 +270,7 @@
 
   /* ================= activity log ================= */
   const CAT = { approval: ["Approval", "الاعتماد"], edits: ["Edits", "التعديلات"], status: ["Status", "الحالة"], comments: ["Comments", "التعليقات"], renewal: ["Renewal", "التجديد"] };
-  const EVT = { commission_changed: ["Commission Changed", "تم تغيير العمولة"], qr_settings_changed: ["QR Settings Changed", "تم تغيير إعدادات QR"], qr_employee_changed: ["QR Employee Changed", "تم تغيير موظف QR"], comment_deleted: ["Comment Deleted", "تم حذف التعليق"], comment_restored: ["Comment Restored", "تمت استعادة التعليق"], deletion_request_approved: ["Deletion Request Approved", "تم قبول طلب الحذف"], deletion_request_declined: ["Deletion Request Declined", "تم رفض طلب الحذف"] };
+  const EVT = { commission_changed: ["Commission changed", "تم تغيير العمولة"], qr_settings_changed: ["QR settings changed", "تم تغيير إعدادات QR"], qr_employee_changed: ["QR employee changed", "تم تغيير موظف QR"], comment_deleted: ["Comment deleted", "تم حذف التعليق"], comment_restored: ["Comment restored", "تمت استعادة التعليق"], deletion_request_approved: ["Deletion request approved", "تم قبول طلب الحذف"], deletion_request_declined: ["Deletion request declined", "تم رفض طلب الحذف"] };
   KP.tabs.activity_log = (mount, ctx) => {
     const k = ctx.pkg;
     let log = ctx.params.get("log") === "partner" ? "partner" : "super_admin", f = {};
@@ -287,14 +295,12 @@
     mount.addEventListener("click", (e) => {
       const t = e.target.closest("[data-log]"); if (t) { log = t.dataset.log; f = { date_from: f.date_from, date_to: f.date_to }; history.replaceState(null, "", KP.href("activity_log", { log })); return paint(); }
       const b = e.target.closest("[data-filter]");
-      if (b) PP.filterPop(b, { width: 300, value: f, fields: [
+      /* the date range error sits under the fields and disables Apply (PACKAGES.DISPLAY_ERR_END_AFTER_START) */
+      if (b) KP.filterPop(b, { width: 300, value: f, validate: (d) => (d.date_from && d.date_to && d.date_to < d.date_from ? L("The end date must be after the start date.", "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء.") : ""), fields: [
         { key: "type", label: ["Event type :", "نوع الحدث :"], options: () => Object.keys(EVT).map((x) => [x, L(...EVT[x])]) },
         { key: "user", label: ["User :", "المستخدم :"], options: () => [...new Set((log === "super_admin" ? SA_ITEMS : PA_ITEMS).map((x) => x.actor.name))].map((x) => [x, x]) },
         { key: "date", label: ["Date range :", "الفترة الزمنية :"], type: "range" },
-      ], onApply: (d) => {
-        if (d.date_from && d.date_to && d.date_to < d.date_from) return RD.toast("error", L("The end date must be after the start date.", "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء."));
-        f = d; paint();
-      } });
+      ], onApply: (d) => { f = d; paint(); } });
     });
     paint();
   };

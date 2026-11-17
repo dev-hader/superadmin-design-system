@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <script>
+            try {
+                document.documentElement.setAttribute(
+                    "data-theme",
+                    localStorage.getItem("rd-theme") === "1" ? "dark" : "light",
+                );
+                document.documentElement.dir =
+                    localStorage.getItem("rd-dir") === "1" ? "rtl" : "ltr";
+            } catch (e) {}
+        </script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sign In · High Five</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="assets/css/tokens.css" />
+        <link rel="stylesheet" href="assets/css/base.css" />
+        <link rel="stylesheet" href="assets/css/app.css" />
+        <link rel="stylesheet" href="assets/css/components.css" />
+        <link rel="stylesheet" href="assets/shell.css" />
+    </head>
+    <body>
+        <div class="auth">
+            <!-- The decoration layer (.lg-deco: bloom + wave) and this page's
+                 brand panel are both injected by AUTH.init() (assets/js/auth.js)
+                 and styled by the "AUTH — brand panel + raised card" section at
+                 the end of assets/css/components.css — every auth page shares
+                 the exact same treatment now. -->
+            <aside class="auth-brand"></aside>
+            <main class="auth-main">
+                <form class="auth-card" id="loginForm" novalidate>
+                    <a class="auth-card__logo" href="login.html"></a>
+                    <div class="auth-head">
+                        <h1 data-ar="تسجيل الدخول">Sign In</h1>
+                        <p data-ar="يرجى إدخال البريد الإلكتروني أو رقم الهاتف وكلمة المرور للمشرف">Please Enter Admin Email Or Phone Number And Password</p>
+                    </div>
+
+                    <div class="auth-field">
+                        <label class="field__label" data-ar="البريد الإلكتروني أو الهاتف">Email Or Phone</label>
+                        <input
+                            class="input"
+                            id="username"
+                            type="email"
+                            autocomplete="username"
+                            placeholder="Enter Email Or Phone"
+                            data-ar-placeholder="أدخل البريد الإلكتروني أو الهاتف"
+                        />
+                        <!-- leading field icon (.lg-fi) — shared treatment -->
+                        <span class="lg-fi" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
+                    </div>
+
+                    <div class="auth-field">
+                        <label class="field__label" data-ar="كلمة المرور">Password</label>
+                        <div class="auth-pw">
+                            <input
+                                class="input"
+                                id="password"
+                                type="password"
+                                autocomplete="current-password"
+                                placeholder="Password"
+                                data-ar-placeholder="كلمة المرور"
+                            />
+                            <span
+                                class="auth-pw__eye"
+                                data-eye="password"
+                                aria-label="Show password"
+                            ></span>
+                            <span class="lg-fi" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+                        </div>
+                    </div>
+
+                    <div class="auth-row" style="justify-content:flex-end">
+                        <a href="forgot-password.html" style="color: var(--color-primary-ink); font-size: var(--text-sm)" data-ar="هل نسيت كلمة المرور ؟">Forgot Password ?</a>
+                    </div>
+
+                    <div class="auth-actions">
+                        <button class="btn" type="submit" id="btnLogin" data-ar="تسجيل الدخول">Sign In</button>
+                    </div>
+
+                    <!-- "Not a Member yet? Sign up" is commented out in the dashboard — not shown -->
+                </form>
+            </main>
+        </div>
+
+        <script src="assets/js/env.js"></script>
+        <script src="assets/js/api.js"></script>
+        <script src="assets/shell.js"></script>
+        <script src="assets/js/auth.js"></script>
+        <script>
+            (() => {
+                AUTH.init();
+                const $ = (id) => document.getElementById(id);
+                const btn = $("btnLogin");
+                const ar = document.documentElement.dir === "rtl", T = (en, a) => (ar ? a : en);
+                document.querySelectorAll("[data-ar-placeholder]").forEach((i) => ar && (i.placeholder = i.dataset.arPlaceholder));
+                const setLoading = (on) => {
+                    btn.disabled = on;
+                    btn.textContent = on ? T("Please wait...", "يرجى الانتظار...") : T("Sign In", "تسجيل الدخول");
+                };
+
+                /* Only a relative, same-origin path (leading single "/") is honored, to avoid an
+     open-redirect via a crafted ?redirect= param — mirrors RD.boot's own
+     redirectToLogin() in assets/shell.js, which sends users here the same way. */
+                function safeRedirect() {
+                    const r = new URLSearchParams(location.search).get(
+                        "redirect",
+                    );
+                    return r && /^\/(?!\/)/.test(r) ? r : "index.html";
+                }
+
+                /* POST /auth/login (#2525): email + password created by the Super Admin.
+     Client-side validation only blocks empty fields — the server is the source of
+     truth for whether the credentials/account are actually valid. */
+                $("loginForm").addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const email = $("username").value.trim(),
+                        password = $("password").value.trim();
+                    /* the dashboard's Yup copy: required · min 3 · max 50 */
+                    if (!email) return RD.toast("danger", T("Email this field is required", "بريد إلكتروني هذا الحقل مطلوب"));
+                    if (!password) return RD.toast("danger", T("Password is required", "كلمة المرور مطلوبة"));
+                    if (email.length < 3 || password.length < 3) return RD.toast("danger", T("Minimum 3 symbols", "3 رموز كحد أدنى"));
+                    if (email.length > 50 || password.length > 50) return RD.toast("danger", T("Maximum 50 symbols", "50 رمزًا كحد أقصى"));
+
+                    setLoading(true);
+                    try {
+                        const { token, expiresIn } = await API.login(
+                            email,
+                            password,
+                        );
+                        API.saveSession(
+                            token,
+                            expiresIn,
+                            true,
+                        );
+                        RD.toast("success", "Login successful");
+                        setTimeout(() => (location.href = safeRedirect()), 500);
+                    } catch (err) {
+                        setLoading(false);
+                        if (err.status === 403)
+                            RD.toast(
+                                "danger",
+                                "This account has no access yet — ask your Super Admin to add you first.",
+                            );
+                        else if (err.status === 401)
+                            RD.toast("danger", T("The login details are incorrect", "تفاصيل تسجيل الدخول غير صحيحة"));
+                        else
+                            RD.toast(
+                                "danger",
+                                "Couldn't reach the server. Please try again.",
+                            );
+                    }
+                });
+            })();
+        </script>
+    </body>
+</html>

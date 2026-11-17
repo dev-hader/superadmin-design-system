@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
 <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
@@ -14,6 +15,18 @@
 <link rel="stylesheet" href="assets/css/app.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
+<style>
+  /* ---- redesign (2026-11-17): partners-style head, compact merged columns ---- */
+  .un-head { margin-bottom: var(--space-5); }
+  #listMount .data-table-toolbar .input-wrap { flex: 1 1 320px; min-width: 0; }
+  .un-strong { font-weight: var(--weight-medium); }
+  .un-st { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+  .un-st + .un-st { margin-top: var(--space-1); }
+  .un-st .t-xs { min-width: 4.5em; }
+  #listMount .data-table-footer .pagination { flex-wrap: wrap; max-width: 100%; }
+</style>
 </head>
 <body>
 <div class="app" id="app">
@@ -36,38 +49,54 @@
 <script src="assets/shell.js"></script>
 <script src="assets/js/sa-data.js"></script>
 <script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
 <script>
 (() => {
   /* Units — mirrors pages/units (list): status pills with counts, search,
      Filter (category · activity · type · capacity · availability · partner
      app status · attendance type), 11 columns, eye → unit profile.
-     API: GET /units. */
-  RD.boot({ activeId: "units", title: "Units" });
+     API: GET /units.
+     Redesign (2026-11-17): partners-style head with a live summary, status pills
+     as stat tiles, search + Filter (applied-count badge) in one bar; category ·
+     activity · type in one column, capacity under the booking methodology, the
+     two app statuses in one column. Previous layout:
+     revisions/2026-11-17-all-pages/units.html
+     Permissions (job keys, as pages/units): page view_units (UnitsPage.js →
+     NotHavePermissions); row eye view_unit_details (UnitsTable.js). */
+  RD.boot({ activeId: "units", title: "Units", perm: "view_units" });
   if (!document.getElementById("listMount")) return;
-  const { L, esc, ic, badge } = SA;
+  const { L, esc, ic, badge, fmt } = SA;
   const data = HF.SA.units;
 
-  SA.head(document.getElementById("pageHead"), { title: ["units", "الوحدات"] });
+  const isPending = (r) => r.status.value === "waiting" || r.status.value === "pending";
+  document.getElementById("pageHead").innerHTML = `<div class="un-head animate-in">
+      <div>
+        <h1 class="t-h3">${L("Units", "الوحدات")}</h1>
+        <nav class="t-sm text-tertiary" aria-label="Breadcrumb" style="margin-top:var(--space-1)"><a href="index.html" style="color:inherit">${L("Dashboard", "لوحة القيادة")}</a> › <span>${L("Units", "الوحدات")}</span></nav>
+        <p class="t-sm text-secondary" style="margin-top:var(--space-1)">${L(`${fmt(data.length)} units · ${fmt(data.filter(isPending).length)} waiting for approval`, `${fmt(data.length)} وحدة · ${fmt(data.filter(isPending).length)} في انتظار الموافقة`)}</p>
+      </div>
+    </div>`;
 
   const tone = (v) => (v === "waiting" || v === "pending" ? "warning" : v === "active" ? "primary" : "danger");
-  const label = (v) => ({ waiting: L("pending", "معلق"), pending: L("pending", "معلق"), active: L("approved", "معتمد"), inactive: L("not approved", "غير معتمد") }[v] || v);
+  const label = (v) => ({ waiting: L("Pending", "معلق"), pending: L("Pending", "معلق"), active: L("Approved", "معتمد"), inactive: L("Not approved", "غير معتمد") }[v] || v);
   const initials = (s) => (s || "?").trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
   const dash = (v) => (v == null || v === "" ? "---" : esc(v));
+  const FKEYS = ["category", "activity", "type", "capacity", "availability", "partner_app_status", "attendance_type"];
 
   let ctl = null;
   ctl = SA.list({
     mount: document.getElementById("listMount"),
     data,
     pills: [
-      { key: "all", label: ["all", "الكل"] },
-      { key: "waiting", label: ["pending", "معلق"] },
-      { key: "active", label: ["approved", "معتمد"] },
-      { key: "inactive", label: ["not approved", "غير معتمد"] },
+      { key: "all", label: ["All units", "كل الوحدات"], icon: "box", tone: "primary" },
+      { key: "waiting", label: ["Pending", "معلق"] },
+      { key: "active", label: ["Approved", "معتمد"] },
+      { key: "inactive", label: ["Not approved", "غير معتمد"] },
     ],
-    pillMatch: (r, k) => k === "all" || (k === "waiting" ? r.status.value === "waiting" || r.status.value === "pending" : r.status.value === k),
-    search: ["search by company name or unit name", "البحث باسم الشركة أو الوحدة"],
+    pillMatch: (r, k) => k === "all" || (k === "waiting" ? isPending(r) : r.status.value === k),
+    search: ["Search by company name or unit name", "البحث باسم الشركة أو الوحدة"],
     searchMatch: (r, q) => r.name.toLowerCase().includes(q) || r.partner.company_name.toLowerCase().includes(q),
-    toolbarExtra: `<button type="button" class="btn btn--sm btn--secondary" data-filter aria-haspopup="dialog">${ic("sliders")}<span>${L("Filter", "تصفية")}</span></button>`,
+    toolbarExtra: (st) => PP.filterBtn(FKEYS.filter((k) => st.extra[k]).length),
     extraMatch: (r, f) =>
       (!f.category || String(r.activity_category.id) === f.category) &&
       (!f.activity || r.activity.name === f.activity) &&
@@ -76,26 +105,27 @@
       (!f.availability || r.availability.toLowerCase() === f.availability) &&
       (!f.partner_app_status || (r.ownappactive && r.ownappactive.value === f.partner_app_status)) &&
       (!f.attendance_type || r.attendance_type === f.attendance_type),
-    empty: ["there is no data to display", "لا توجد بيانات للعرض"],
+    empty: ["There is no data to display", "لا توجد بيانات للعرض"],
     columns: [
-      { head: ["unit", "الوحدة"], cell: (r) => `<div class="cell-user"><span class="cell-thumb">${ic("box")}</span>
-          <div><b>${esc(r.name)}</b> ${r.attendance_type === "online" ? badge("primary", L("online", "عبر الإنترنت")) : ""}<div class="t-xs text-tertiary">${esc(r.created_at)}</div></div></div>` },
-      { head: ["company", "الشركة"], align: "center", cell: (r) => `<div class="cell-user" style="justify-content:center"><span class="avatar avatar--sm">${esc(initials(r.partner.company_name))}</span>
-          <div style="text-align:start"><a href="#" style="color:var(--color-text-link);font-weight:var(--weight-semibold)">${esc(r.partner.company_name)}</a><div class="t-xs text-tertiary">${esc(r.partner.created_at)}</div></div></div>` },
-      { head: ["Category", "الفئة"], align: "center", cell: (r) => dash(r.activity_category.name) },
-      { head: ["Activity", "النشاط"], align: "center", cell: (r) => dash(r.activity.name) },
-      { head: ["Type", "النوع"], align: "center", cell: (r) => dash(r.type.name) },
-      { head: ["Capacity", "السعة"], align: "center", cell: (r) => dash(r.capacity) },
-      { head: ["booking methodology", "منهجية الحجز"], align: "center", cell: (r) => dash(r.booking_methodology) },
-      { head: ["Availability", "التوفر"], align: "center", cell: (r) => `<span style="color:${r.availability.toLowerCase() === "available" ? "var(--color-info)" : "var(--color-danger)"};font-weight:var(--weight-semibold)">${esc(r.availability.toLowerCase() === "available" ? L("Available", "متاح") : L("Maintenance", "صيانة"))}</span>` },
-      { head: ["HighFive App Status", "حالة تطبيق هاي فايف"], align: "center", cell: (r) => badge(tone(r.status.value), label(r.status.value)) },
-      { head: ["Partner App Status", "حالة تطبيق الشريك"], align: "center", cell: (r) => (r.partner.is_independent ? (r.ownappactive ? badge(tone(r.ownappactive.value), label(r.ownappactive.value)) : badge("", L("N/A", "غير متاح"))) : "---") },
-      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<a class="icon-btn" href="unit-profile.html?id=${r.id}&tab=details&redirect_to_page=${ctl ? ctl.state.page : 1}" aria-label="${L("View", "عرض")} ${esc(r.name)}">${ic("eye")}</a>` },
+      { head: ["Unit", "الوحدة"], cell: (r) => `<div class="cell-user"><span class="cell-thumb">${ic("box")}</span>
+          <div><b>${esc(r.name)}</b> ${r.attendance_type === "online" ? badge("primary", L("Online", "عبر الإنترنت")) : ""}<div class="t-xs text-tertiary">${esc(r.created_at)}</div></div></div>` },
+      { head: ["Company", "الشركة"], cell: (r) => `<div class="cell-user"><span class="avatar avatar--sm">${esc(initials(r.partner.company_name))}</span>
+          <div><a href="partner-profile.html?id=${r.partner.id}&tab=owner" style="color:var(--color-text-link);font-weight:var(--weight-semibold)">${esc(r.partner.company_name)}</a><div class="t-xs text-tertiary">${esc(r.partner.created_at)}</div></div></div>` },
+      { head: ["Activity", "النشاط"], label: ["Category · activity · type", "الفئة · النشاط · النوع"], cell: (r) => `<b class="un-strong">${dash(r.activity.name)}</b><div class="t-xs text-tertiary">${dash(r.activity_category.name)} · ${dash(r.type.name)}</div>` },
+      { head: ["Booking", "الحجز"], label: ["Booking methodology · capacity", "منهجية الحجز · السعة"], cell: (r) => `${dash(r.booking_methodology)}<div class="t-xs text-tertiary">${L("Capacity", "السعة")}: ${dash(r.capacity)}</div>` },
+      { head: ["Availability", "التوفر"], align: "center", cell: (r) => (r.availability.toLowerCase() === "available" ? badge("info", L("Available", "متاح")) : badge("danger", L("Maintenance", "صيانة"))) },
+      { head: ["App status", "حالة التطبيق"], cell: (r) => `<div class="un-st"><span class="t-xs text-tertiary">${L("HighFive", "هاي فايف")}</span>${badge(tone(r.status.value), label(r.status.value))}</div>
+          <div class="un-st"><span class="t-xs text-tertiary">${L("Partner", "الشريك")}</span>${r.partner.is_independent ? (r.ownappactive ? badge(tone(r.ownappactive.value), label(r.ownappactive.value)) : badge("", L("N/A", "غير متاح"))) : `<span class="text-tertiary">---</span>`}</div>` },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<a class="icon-btn" href="unit-profile.html?id=${r.id}&tab=details&redirect_to_page=${ctl ? ctl.state.page : 1}" aria-label="${L("View", "عرض")} ${esc(r.name)}" data-tip="${L("View unit", "عرض الوحدة")}" data-perm="view_unit_details">${ic("eye")}</a>` },
     ],
   });
 
+  /* ?page= (the unit profile's Back sends redirect_to_page back here) — read on load, as UnitsTableWrapper does */
+  const startPage = +new URLSearchParams(location.search).get("page");
+  if (startPage > 1) { ctl.state.page = startPage; ctl.paint(); }
+
   /* ---------------- Filter Options ---------------- */
-  const ALL = L("all", "الكل");
+  const ALL = L("All", "الكل");
   const pop = document.createElement("div");
   pop.className = "popover";
   pop.setAttribute("role", "dialog");
@@ -106,15 +136,15 @@
     const o = (v, t, k) => [v, t, String(draft[k] || "") === String(v)];
     const sel = (k, list) => SA.select([o("", ALL, k)].concat(list.map((x) => o(x[0], x[1], k))), `data-f="${k}"`);
     const acts = draft.category ? HF.SA.ACTS[draft.category] : [];
-    pop.innerHTML = `<div class="popover__title">${L("Filter Options", "خيارات التصفية")}</div>
+    pop.innerHTML = `<div class="popover__title">${L("Filter options", "خيارات التصفية")}</div>
       <div class="popover__body stack gap-3">
         ${SA.field(["Category", "الفئة"], sel("category", HF.SA.CATS.map((c) => [c.id, c.name])))}
         ${SA.field(["Activity", "النشاط"], sel("activity", acts.map((a) => [a, a])))}
         ${SA.field(["Type", "النوع"], sel("type", HF.SA.TYPES.map((t) => [t, t])))}
         ${SA.field(["Capacity", "السعة"], sel("capacity", HF.SA.CAPS.map((c) => [c, c])))}
-        ${SA.field(["Availability", "التوفر"], sel("availability", [["available", L("available", "متاح")], ["maintenance", L("maintenance", "صيانة")]]))}
-        ${SA.field(["Partner App Status", "حالة تطبيق الشريك"], sel("partner_app_status", [["waiting", L("pending", "معلق")], ["active", L("approved", "معتمد")], ["inactive", L("not approved", "غير معتمد")]]))}
-        ${SA.field(["attendance type", "نوع الحضور"], sel("attendance_type", [["online", L("online", "عبر الإنترنت")], ["onsite", L("onsite", "حضوري")]]))}
+        ${SA.field(["Availability", "التوفر"], sel("availability", [["available", L("Available", "متاح")], ["maintenance", L("Maintenance", "صيانة")]]))}
+        ${SA.field(["Partner app status", "حالة تطبيق الشريك"], sel("partner_app_status", [["waiting", L("Pending", "معلق")], ["active", L("Approved", "معتمد")], ["inactive", L("Not approved", "غير معتمد")]]))}
+        ${SA.field(["Attendance type", "نوع الحضور"], sel("attendance_type", [["online", L("Online", "عبر الإنترنت")], ["onsite", L("Onsite", "حضوري")]]))}
       </div>
       <div class="popover__foot">
         <button type="button" class="btn btn--sm btn--secondary" data-reset>${L("Reset", "إعادة تعيين")}</button>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Design Systems · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+  /* redesign 2026-11-17 — sub-navigation between the pages of this sidebar group (same bar on every sibling page) */
+  .sa-tabbar { margin-top: calc(var(--space-2) * -1); margin-bottom: var(--space-5); scrollbar-width: none; }
+  .sa-tabbar .tabs > a { flex: none; }
+  .sa-tabbar .tabs svg { width: 16px; height: 16px; }
+  /* redesign 2026-11-17 — card list: the SA.list table shown as a grid of cards
+     (same rows, search, pager and row actions; the last cell is the card footer) */
+  .sa-cards .data-table-scroll { overflow: visible; padding: var(--space-4); background: var(--color-surface-sunken); }
+  .sa-cards .data-table { display: block; }
+  .sa-cards .data-table thead { display: none; }
+  .sa-cards .data-table tbody { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--sa-card-min, 300px)), 1fr)); gap: var(--space-4); }
+  .sa-cards .data-table tbody tr { display: flex; flex-direction: column; min-width: 0; background: var(--color-surface); border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); padding: 0; box-shadow: var(--shadow-xs); transition: box-shadow var(--duration-fast); }
+  .sa-cards .data-table tbody tr:hover { background: var(--color-surface); box-shadow: var(--shadow-sm); }
+  .sa-cards .data-table td { display: block; padding: var(--space-4); border: 0; white-space: normal; text-align: start !important; min-width: 0; }
+  .sa-cards .data-table td + td { padding-top: 0; }
+  .sa-cards .data-table td::before { content: none !important; }
+  .sa-cards .data-table td:last-child:not(:first-child) { margin-top: auto; padding: var(--space-2) var(--space-3); border-top: var(--border-thin) solid var(--color-border-subtle); }
+  .sa-cards .data-table td:last-child .row { justify-content: flex-end !important; }
+  .sa-cards .data-table tr:has(> td[colspan]) { grid-column: 1 / -1; }
+  .sa-cards .data-table td[colspan] { text-align: center !important; }
+  .sa-cards--1 .data-table tbody { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+  @media (max-width: 640px) { .sa-cards .data-table-scroll { padding: 0; background: transparent; } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/sa-translation.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/sa-crud.js"></script>
+<script>
+(() => {
+  /* Design System admin — pages/design-systems · design-system-pages · design-system-access.
+     One script, picked by file name; each page is a CRUD.page config.
+       design-systems.html        systems (name · active) — pills all / active / inactive
+       design-system-pages.html   pages = permissions (title · key) per system; system rows are read-only;
+                                  key auto-slugs from the name until edited by hand
+       design-system-access.html  users (name · email · password) with permission ids grouped by system;
+                                  picking any page of a system also grants its "dashboard" page
+     API: GET/POST /design-systems · PUT/DELETE /design-systems/{id}; /design-system-permissions; /design-system-users.
+     Demo flag: ?demo=error shows the dashboard's load error above the list, and the save / delete
+     error alerts inside the modals instead of saving (e.g. "Failed to load design systems. Please try again.").
+     Permissions (constants/permissions.js; demo ?perm=limited | ?perm=none):
+       design-systems        DESIGN_SYSTEMS        view_ / add_ / update_ / delete_design_systems
+       design-system-pages   DESIGN_SYSTEM_PAGES   view_ / add_ / update_ / delete_design_system_permissions
+       design-system-access  DESIGN_SYSTEM_ACCESS  view_ / add_ / update_ / delete_design_system_users
+     (Pages: the dashboard renders Edit / Delete disabled for system rows or without the key; here
+     they are hidden, as before.) Each tab shows only with its view_* key. */
+  const file = location.pathname.split("/").pop().replace(/^_preview-/, "").replace(".html", "");
+  const PK = { "design-systems": "design_systems", "design-system-pages": "design_system_permissions", "design-system-access": "design_system_users" }[file] || "design_systems";
+  RD.boot({ activeId: { "design-systems": "dsa-systems", "design-system-pages": "dsa-pages", "design-system-access": "dsa-access" }[file] || "dsa-systems", title: "Design System", perm: "view_" + PK });
+  if (!document.getElementById("listMount")) return;
+  const { L, T, esc, badge, ic } = SA;
+  const S = HF.SA, R = CRUD.rules;
+  /* redesign 2026-11-17: tab bar between the three Design System pages (sidebar group order); access
+     list as user cards; copy in sentence case. Data, fields, rules and flows unchanged. */
+  {
+    const TABS = [["design-systems", "layers", "Design systems", "أنظمة التصميم", "design_systems"], ["design-system-pages", "layout", "Pages", "الصفحات", "design_system_permissions"], ["design-system-access", "lock", "Access", "الصلاحيات", "design_system_users"]];
+    document.getElementById("listMount").insertAdjacentHTML("beforebegin", `<nav class="sa-tabbar" aria-label="${L("Design system", "نظام التصميم")}"><div class="tabs">${TABS.map((t) => `<a href="${t[0]}.html" data-perm="view_${t[4]}" class="${t[0] === file ? "is-active" : ""}"${t[0] === file ? ' aria-current="page"' : ""}>${ic(t[1])}<span>${L(t[2], t[3])}</span></a>`).join("")}</div></nav>`);
+  }
+  const MAX50 = ["Maximum 50 symbols", "الحد الأقصى 50 رمز"]; /* the dashboard's message for a 100-char limit */
+  const slug = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  const nice = (k) => k.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  const today = (() => { const d = new Date(); return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`; })();
+
+  /* ---- data (GET /design-systems · /design-system-permissions · /design-system-users) ---- */
+  if (!S._dsa) {
+    const systems = [["Partner Design System", 1], ["Superadmin", 1], ["Marketing Site", 0]].map((s, i) => ({ id: i + 1, name: s[0], active: s[1], created_at: "02/10/2026" }));
+    let pid = 1;
+    const pages = [];
+    systems.forEach((s) => ["dashboard", "foundations", "components", "templates"].concat(s.id === 2 ? ["partners", "packages"] : ["design-system"]).forEach((k, i) => pages.push({ id: pid++, title: nice(k), permission: k, system_id: s.id, type: i < 4 ? "system" : "custom", is_system: i < 4 ? 1 : 0, created_at: i < 4 ? "02/10/2026" : today })));
+    const users = [["Hadeer Abdulfatah", "hadeer@highfive.sa", [1, 2, 3, 8, 9]], ["Magdy Ali", "magdy@highfive.sa", [8, 13, 14]], ["Design Reviewer", "review@highfive.sa", [1, 5]]].map((u, i) => ({ id: i + 1, name: u[0], email: u[1], permissions: u[2] }));
+    S._dsa = { systems, pages, users };
+  }
+  const D = S._dsa;
+  const sysOf = (id) => D.systems.find((s) => s.id === +id);
+  const isNew = (p) => p.is_system === 0 || p.created_at === today;
+  const newTag = ` <b style="color:var(--color-success)">${L("New", "جديد")}</b>`;
+  const formBase = { labelCols: true, creatingText: ["Creating…", "جاري الإنشاء…"], updatingText: ["Updating…", "جاري التحديث…"] };
+
+  const CFG = {
+    "design-systems": {
+      title: ["Design Systems", "أنظمة التصميم"], data: D.systems, pills: true, search: ["Search by name", "البحث بالاسم"], add: ["Add new", "إضافة جديد"],
+      empty: ["No design systems found. Try adjusting your search, or add a new one.", "لا توجد أنظمة تصميم. حاول تعديل البحث أو أضف نظاماً جديداً."],
+      columns: [{ head: ["Name", "الاسم"], cell: (r) => `<div class="cell-user"><span class="cell-thumb">${ic("puzzle")}</span><b>${esc(r.name)}</b></div>` }, { head: ["Status", "الحالة"], cell: (r) => (+r.active ? badge("success", L("Active", "مفعّل")) : badge("danger", L("Inactive", "غير مفعّل"))) }],
+      form: Object.assign({}, formBase, { createTitle: ["Add design system", "إضافة نظام تصميم"], editTitle: ["Edit design system", "تعديل نظام تصميم"],
+        fields: [{ key: "name", label: ["Name", "الاسم"], req: 1, placeholder: ["e.g. Partner Design System", "مثال: نظام تصميم الشركاء"], rules: [R.req, R.max(100, MAX50), (v, _, row) => (D.systems.some((s) => s !== row && s.name.toLowerCase() === String(v).toLowerCase()) ? L("This name is already in use. Please choose another one.", "هذا الاسم مستخدم بالفعل، يرجى اختيار اسم آخر.") : "")] },
+          { key: "active", type: "switch", label: ["Active", "مفعّل"], default: 1 }] }),
+      del: { title: ["Delete design system", "حذف نظام تصميم"], body: ["Are you sure you want to delete this design system? Its pages and permissions will no longer be available.", "هل أنت متأكد من حذف نظام التصميم هذا؟ لن تعود صفحاته وصلاحياته متاحة بعد الحذف."], danger: true,
+        item: (r) => `<strong>${esc(r.name)}</strong>` },
+    },
+    "design-system-pages": {
+      title: ["Design System Pages", "صفحات نظام التصميم"], data: D.pages, search: ["Search by page name or key", "البحث باسم الصفحة أو المفتاح"], searchKeys: ["title", "permission"], add: ["Add new", "إضافة جديد"],
+      /* system filter (react-select in the dashboard) */
+      toolbarExtra: (st) => `<div class="select" style="min-width:230px"><select data-sys aria-label="${L("Filter by design system", "تصفية حسب نظام التصميم")}"><option value="">${L("All design systems", "كل أنظمة التصميم")}</option>${D.systems.filter((s) => +s.active).map((s) => `<option value="${s.id}" ${String(st.extra.sys || "") === String(s.id) ? "selected" : ""}>${esc(s.name)}</option>`).join("")}</select><span class="select__caret">${SA.ic("chevronDown")}</span></div>`,
+      extraMatch: (r, f) => !f.sys || String(r.system_id) === f.sys,
+      empty: ["No pages found. Try adjusting your search, or add a new page.", "لا توجد صفحات. حاول تعديل البحث أو أضف صفحة جديدة."],
+      columns: [
+        { head: ["Page name", "اسم الصفحة"], cell: (r) => `<div class="cell-user"><span class="cell-thumb">${ic(r.type === "system" ? "lock" : "layout")}</span><b>${esc(r.title || r.permission)}</b> ${r.type === "system" ? `<span class="badge" tabindex="0" data-tip="${L("Built-in page — view only", "صفحة مدمجة — للعرض فقط")}">${L("System", "نظامي")}</span>` : isNew(r) ? badge("success", L("New", "جديد")) : ""}</div>` },
+        { head: ["Design system", "نظام التصميم"], cell: (r) => (sysOf(r.system_id) ? badge("info", sysOf(r.system_id).name) : `<span class="text-tertiary">—</span>`) },
+        { head: ["Key", "المفتاح"], cell: (r) => `<code dir="ltr" class="t-xs" style="padding:2px var(--space-2);border-radius:var(--radius-sm);background:var(--color-surface-sunken)">${esc(r.permission)}</code>` },
+      ],
+      canEdit: (r) => r.type !== "system", canDel: (r) => r.type !== "system", /* system pages are built-in and view-only */
+      form: Object.assign({}, formBase, { createTitle: ["Add page", "إضافة صفحة"], editTitle: ["Edit page", "تعديل صفحة"],
+        fields: [{ key: "system_id", type: "select", label: ["Design system", "نظام التصميم"], req: 1, placeholder: ["Select a design system", "اختر نظام تصميم"], options: () => D.systems.filter((s) => +s.active).map((s) => [s.id, s.name]), rules: [R.req] },
+          { key: "title", label: ["Page name", "اسم الصفحة"], req: 1, placeholder: ["e.g. Design System", "مثال: Design System"], rules: [R.req, R.max(100, MAX50)] },
+          { key: "permission", label: ["Key", "المفتاح"], req: 1, placeholder: ["e.g. design-system", "مثال: design-system"], hint: ["Auto-generated from the page name. Lowercase letters, numbers and dashes only.", "يتم إنشاؤه تلقائياً من اسم الصفحة. أحرف إنجليزية صغيرة وأرقام وشرطات فقط."],
+            rules: [R.req, (v) => (v && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(v) ? L("Key must contain only lowercase letters, numbers and dashes (e.g. design-system).", "يجب أن يحتوي المفتاح على أحرف إنجليزية صغيرة وأرقام وشرطات فقط (مثال: design-system).") : ""),
+              (v, vals, row) => (D.pages.some((p) => p !== row && p.permission === v && String(p.system_id) === String(vals.system_id)) ? L("This key is already in use. Please choose another one.", "هذا المفتاح مستخدم بالفعل، يرجى اختيار مفتاح آخر.") : "")] }],
+        /* key follows the name until it is edited by hand (never on edit) */
+        onOpen: (el, row) => { if (row) return; const n = el.querySelector('[data-f="title"]'), k = el.querySelector('[data-f="permission"]'); let manual = false; k.oninput = () => (manual = true); n.oninput = () => { if (!manual) k.value = slug(n.value); }; } }),
+      onSave: (v, r) => { const vals = { title: v.title, permission: v.permission, system_id: +v.system_id }; if (r) Object.assign(r, vals); else D.pages.unshift(Object.assign({ id: Math.max(...D.pages.map((p) => p.id)) + 1, type: "custom", is_system: 0, created_at: today }, vals)); },
+      del: { title: ["Delete page", "حذف صفحة"], body: ["Are you sure you want to delete this page? It will no longer be assignable as a permission.", "هل أنت متأكد من حذف هذه الصفحة؟ لن تعود متاحة كصلاحية بعد الحذف."], danger: true,
+        item: (r) => `<strong>${esc(r.title)}</strong> (<code dir="ltr">${esc(r.permission)}</code>)` },
+    },
+    "design-system-access": {
+      title: ["Design System Access", "صلاحيات نظام التصميم"], data: D.users, search: ["Search by name or email", "البحث بالاسم أو البريد الإلكتروني"], searchKeys: ["name", "email"], add: ["Add new", "إضافة جديد"],
+      empty: ["No users found. Try adjusting your search, or add a new access.", "لا يوجد مستخدمون. حاول تعديل البحث أو أضف صلاحية جديدة."],
+      /* user cards: avatar + name + email, then the permissions grouped by design system */
+      columns: [
+        { head: ["Name", "الاسم"], cell: (r) => `<div class="cell-user">${PP.avatar(r.name, "md")}<div style="min-width:0"><b>${esc(r.name)}</b><div class="t-xs text-secondary" style="overflow-wrap:anywhere">${esc(r.email)}</div></div></div>` },
+        { head: ["Permissions", "الصلاحيات"], cell: (r) => { const by = {}; r.permissions.forEach((id) => { const p = D.pages.find((x) => x.id === +id); if (!p) return; const g = (sysOf(p.system_id) || {}).name || L("Other", "أخرى"); (by[g] = by[g] || []).push(p); });
+          return `<div class="stack gap-3">${Object.entries(by).map(([g, ps]) => `<div class="stack gap-1"><span class="t-xs text-tertiary" style="font-weight:var(--weight-semibold)">${esc(g)}</span><div class="row gap-1" style="flex-wrap:wrap">${ps.map((p) => `<span class="badge badge--primary">${esc(p.title || nice(p.permission))}${isNew(p) ? newTag : ""}</span>`).join("")}</div></div>`).join("")}</div>`; } },
+      ],
+      form: Object.assign({}, formBase, { wide: true, createTitle: ["Add access", "إضافة صلاحية"], editTitle: ["Edit access", "تعديل صلاحية"],
+        fields: (row) => [{ key: "name", label: ["Name", "الاسم"], req: 1, placeholder: ["Enter full name", "أدخل الاسم الكامل"], rules: [R.req, R.max(100, MAX50)] },
+          { key: "email", type: "email", label: ["Email", "البريد الإلكتروني"], req: 1, placeholder: ["Enter email address", "أدخل البريد الإلكتروني"], rules: [R.req, (v) => (v && !/^\S+@\S+\.\S+$/.test(v) ? L("Wrong email format", "تنسيق البريد الإلكتروني خاطئ") : ""), (v, _, r) => (D.users.some((u) => u !== r && u.email === v) ? L("This email is already in use. Please choose another one.", "هذا البريد الإلكتروني مستخدم بالفعل، يرجى اختيار بريد آخر.") : "")] },
+          { key: "password", type: "password", label: ["Password", "كلمة المرور"], req: !row, placeholder: row ? ["Leave blank to keep current password", "اتركه فارغاً للاحتفاظ بكلمة المرور الحالية"] : ["Enter password", "أدخل كلمة المرور"], get: () => "",
+            rules: [(v) => (!row && !v ? CRUD.REQ() : v && !/^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(v) ? L("Password must be at least 8 characters and include a letter and a number.", "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل وتحتوي على حرف ورقم.") : "")] },
+          { key: "permissions", type: "groups", label: ["Permissions", "الصلاحيات"], req: 1, rules: [R.req], default: (() => { const act = D.systems.filter((s) => +s.active); const b = act.length === 1 && D.pages.find((p) => p.system_id === act[0].id && p.permission === "dashboard"); return b ? [b.id] : []; })(),
+            options: () => D.systems.filter((s) => +s.active).map((s) => ({ group: s.name, items: D.pages.filter((p) => p.system_id === s.id).map((p) => [p.id, p.title || p.permission, isNew(p) ? ` ${badge("success", L("New", "جديد"))}` : ""]) })) }] },
+        /* baseline rule: picking any page of a system also grants that system's "dashboard" */
+        { onOpen: (el, row) => {
+          const enforce = () => D.systems.forEach((sy) => { const dash = D.pages.find((x) => x.system_id === sy.id && x.permission === "dashboard"), box = dash && el.querySelector(`[data-m="permissions"][value="${dash.id}"]`);
+            if (box && !box.checked && D.pages.some((x) => x.system_id === sy.id && x !== dash && (el.querySelector(`[data-m="permissions"][value="${x.id}"]`) || {}).checked)) box.checked = true; });
+          el.addEventListener("change", (e) => { if (e.target.matches('[data-m="permissions"]')) enforce(); });
+          el.addEventListener("click", (e) => { if (e.target.closest("[data-gtoggle]")) enforce(); });
+          /* edit-only help under the password (DESIGN_SYSTEM_ACCESS.PASSWORD_EDIT_HELP) */
+          if (row) { const pw = el.querySelector('[data-f="password"]'); pw.insertAdjacentHTML("afterend", `<span class="field__hint">${L("Leave blank to keep the current password.", "اتركه فارغاً للاحتفاظ بكلمة المرور الحالية.")}</span>`); } } }),
+      onSave: (v, r) => { const vals = { name: v.name, email: v.email, permissions: v.permissions.map(Number) }; if (r) Object.assign(r, vals); else D.users.unshift(Object.assign({ id: Math.max(...D.users.map((u) => u.id)) + 1 }, vals)); },
+      del: { title: ["Delete access", "حذف صلاحية"], body: ["Are you sure you want to delete this user's access? They will no longer be able to sign in.", "هل أنت متأكد من حذف صلاحية وصول هذا المستخدم؟ لن يتمكن بعدها من تسجيل الدخول."], danger: true,
+        item: (r) => `<strong>${esc(r.name)}</strong> (<span dir="ltr">${esc(r.email)}</span>)` },
+    },
+  };
+  const cfg = CFG[file] || CFG["design-systems"];
+  /* permission gating (add_ · update_ · delete_ + the page's key); system pages stay read-only */
+  {
+    const e0 = cfg.canEdit, d0 = cfg.canDel;
+    if (!RD.can("add_" + PK)) cfg.add = null;
+    cfg.canEdit = (r) => RD.can("update_" + PK) && (!e0 || e0(r));
+    cfg.canDel = (r) => RD.can("delete_" + PK) && (!d0 || d0(r));
+  }
+  /* ?demo=error — the dashboard's load / save / delete error alerts (LOAD_ERROR · SAVE_ERROR · DELETE_ERROR) */
+  const ERR = {
+    "design-systems": [["Failed to load design systems. Please try again.", "تعذر تحميل أنظمة التصميم، يرجى المحاولة مرة أخرى."], ["Failed to save the design system. Please try again.", "تعذر حفظ نظام التصميم، يرجى المحاولة مرة أخرى."], ["Failed to delete the design system. Please try again.", "تعذر حذف نظام التصميم، يرجى المحاولة مرة أخرى."]],
+    "design-system-pages": [["Failed to load pages. Please try again.", "تعذر تحميل الصفحات، يرجى المحاولة مرة أخرى."], ["Failed to save the page. Please try again.", "تعذر حفظ الصفحة، يرجى المحاولة مرة أخرى."], ["Failed to delete the page. Please try again.", "تعذر حذف الصفحة، يرجى المحاولة مرة أخرى."]],
+    "design-system-access": [["Failed to load users. Please try again.", "تعذر تحميل المستخدمين، يرجى المحاولة مرة أخرى."], ["Failed to save the access. Please try again.", "تعذر حفظ الصلاحية، يرجى المحاولة مرة أخرى."], ["Failed to delete the access. Please try again.", "تعذر حذف الصلاحية، يرجى المحاولة مرة أخرى."]],
+  }[file] || [];
+  const demoErr = new URLSearchParams(location.search).get("demo") === "error";
+  if (demoErr) document.addEventListener("click", (e) => { const b = e.target.closest("#crudForm [data-ok], #crudDel [data-ok]"); if (!b) return; e.stopPropagation(); const m = b.closest(".modal-overlay"); m.querySelector("[data-alert]").innerHTML = CRUD.alert("danger", L(...ERR[m.id === "crudDel" ? 2 : 1])); }, true);
+  if (file === "design-system-access") document.getElementById("listMount").classList.add("sa-cards");
+  const ctl = CRUD.page(cfg);
+  if (demoErr) document.getElementById("listMount").insertAdjacentHTML("beforebegin", `<div style="margin-bottom:var(--space-4)">${CRUD.alert("danger", L(...ERR[0]))}</div>`);
+  if (file === "design-system-pages") {
+    /* info note above the card */
+    document.getElementById("listMount").insertAdjacentHTML("beforebegin", `<div class="alert alert--info" style="margin-bottom:var(--space-4)"><span class="alert__icon">${SA.ic("info")}</span><div class="alert__body">${L("Pages added here become available as permissions in", "الصفحات المضافة هنا تصبح متاحة كصلاحيات في")} <a href="design-system-access.html" style="color:var(--color-text-link);font-weight:var(--weight-semibold)">${L("Design System Access", "صلاحيات نظام التصميم")}</a> ${L("when assigning access to users.", "عند تعيين الصلاحيات للمستخدمين.")}</div></div>`);
+    document.getElementById("listMount").addEventListener("change", (e) => { if (e.target.matches("[data-sys]")) { ctl.state.extra = { sys: e.target.value }; ctl.state.page = 1; ctl.paint(); } });
+  }
+})();
+</script>
+</body>
+</html>

@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
 <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
-<title>bookings · HighFive Super Admin</title>
+<title>Bookings · HighFive Super Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -14,6 +15,8 @@
 <link rel="stylesheet" href="assets/css/app.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
 <style>
   .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
   .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
@@ -41,6 +44,18 @@
   .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
   .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
   @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+  /* ---- redesign 2026-11-17: global list layer (same composition as partners.html) ---- */
+  .ops-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+  #listMount .data-table-toolbar > .grow { display: none; }
+  #listMount .data-table-toolbar > .input-wrap { flex: 1 1 320px; min-width: 0 !important; }
+  .ops-chips { padding: 0 var(--space-5) var(--space-4); }
+  .ops-id { font: inherit; font-weight: var(--weight-semibold); color: var(--color-text); padding: 0; cursor: pointer; text-align: start; }
+  .ops-id:hover { color: var(--color-primary-ink); text-decoration: underline; text-underline-offset: 3px; }
+  .ops-two { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .ops-two > b { font-weight: var(--weight-medium); }
+  .ops-check { display: inline-flex; flex-direction: column; gap: var(--space-1); align-items: flex-start; }
+  #listMount tbody tr:has([data-peek]) { cursor: pointer; }
+  #listMount > .stat-strip { grid-template-columns: repeat(auto-fit, minmax(min(100%, 128px), 1fr)) !important; }
 </style>
 </head>
 <body>
@@ -73,10 +88,17 @@
      List: pills (all · coming · pending approval · ended · cancelled), search by
      booking id, Filter Options (session date · check-in date · category →
      activity · booking type · session gender), 12 columns, eye → view.
-     API: GET /session-booking. View (?view=<id>): "Booking ID {id}" card around
-     the shared SessionBookingView (pp-ops.js) — no breadcrumbs, no back. */
+     API: GET /session-booking (params incl. status — the Cancelled pill sends
+     status=cancelled while the response counts key is counts.canceled and rows
+     carry status "canceled"); GET /activity-categories and
+     GET /activity-categories/{id}/activities (Filter: category → activity).
+     View: GET /session-booking/{id}. View (?view=<id>): "Booking ID {id}" card around
+     the shared SessionBookingView (pp-ops.js) — no breadcrumbs, no back.
+     Permissions (job keys): list view_bookings (TableWrapper.js); row eye + drawer
+     link view_booking_details (BookingsTable.js); view page view_booking_details
+     (SessionBookingView.js → NotHavePermissions). */
   const qs = new URLSearchParams(location.search), view = qs.get("view");
-  RD.boot({ activeId: "bookings", title: view ? "Booking" : "bookings" });
+  RD.boot({ activeId: "bookings", title: view ? "Booking" : "Bookings", perm: view ? "view_booking_details" : "view_bookings" });
   if (!document.getElementById("listMount")) return;
   const { L, esc, ic, badge } = SA;
   const D = OPS.all();
@@ -88,44 +110,72 @@
     document.getElementById("pageHead").hidden = true;
     const mount = document.getElementById("listMount");
     mount.className = "stack gap-6";
-    PP.tabs.bookings(mount, { partner: OPS.partnerOf(b), params: new URLSearchParams({ view: String(b.id) }) });
-    const back = mount.querySelector(":scope > .row a.btn"); if (back) back.remove(); /* back link is commented out in the dashboard */
+    /* noBack: the back link is commented out in the dashboard */
+    PP.tabs.bookings(mount, { partner: OPS.partnerOf(b), params: new URLSearchParams({ view: String(b.id) }), noBack: true });
     return;
   }
 
-  SA.head(document.getElementById("pageHead"), { title: ["bookings", "الحجوزات"] });
+  /* Redesign (2026-11-17) — same data, filters, fields, actions and routes as the
+     dashboard list, re-composed like partners.html: head with a live summary,
+     status tiles, one search + Filter bar with removable chips, company + unit in
+     one Venue column, date + time on one line, row (or #id) opens a summary drawer
+     with the link to the booking view. */
+  const by = (k) => D.bookings.filter((r) => r.status === k).length;
+  OPS.head(document.getElementById("pageHead"), { title: ["Bookings", "الحجوزات"],
+    sub: L(`${SA.fmt(D.bookings.length)} bookings across ${HF.SA.partners.length} partners · ${by("coming")} coming · ${by("pending")} pending approval`,
+      `${SA.fmt(D.bookings.length)} حجز لدى ${HF.SA.partners.length} شريك · ${by("coming")} قادم · ${by("pending")} في انتظار الموافقة`) });
+  const BTYPE = () => [["online", L("Online", "عبر الإنترنت")], ["linked", L("Linked", "مرتبط")], ["manual", L("Manual", "يدوي")]];
+  const btype = (r) => (r.is_flexible_slot ? L("Online flexible booking", "حجز مرن عبر الإنترنت") : OPS.dash(r.booking_type));
+  const checkin = (r) => (r.check_in_at ? `${badge("success", L("Checked in", "تم تسجيل الحضور"))}<div class="t-xs text-tertiary" style="margin-top:2px">${esc(r.check_in_at)}</div>` : badge("", L("Not checked in", "لم يسجّل الحضور")));
+  const viewHref = (r) => `bookings.html?view=${r.id}&redirect_to_page=${ctl ? ctl.state.page : 1}`;
+  const fx = OPS.filters([
+    { keys: ["session_from", "session_to"], label: ["Session date", "تاريخ الجلسة"], value: (f) => OPS.range(f.session_from, f.session_to) },
+    { keys: ["checkin_from", "checkin_to"], label: ["Check-in date", "تاريخ تسجيل الحضور"], value: (f) => OPS.range(f.checkin_from, f.checkin_to) },
+    { keys: ["category"], also: ["activity"], label: ["Category", "الفئة"], value: (f) => f.category },
+    { keys: ["activity"], label: ["Activity", "النشاط"], value: (f) => f.activity },
+    { keys: ["btype"], label: ["Booking type", "نوع الحجز"], value: (f) => OPS.opt(BTYPE(), f.btype) },
+    { keys: ["gender"], label: ["Session gender", "جنس الجلسة"], value: (f) => PP.cap(f.gender) },
+  ]);
   let ctl = null;
   ctl = SA.list({
     mount: document.getElementById("listMount"), data: D.bookings,
-    pills: [["all", "all", "الكل"], ["coming", "Coming", "قادم"], ["pending", "Pending Approval", "في انتظار الموافقة"], ["ended", "ended", "انتهى"], ["canceled", "cancelled", "ملغي"]].map((p) => ({ key: p[0], label: [p[1], p[2]] })),
+    pills: [["all", "All bookings", "كل الحجوزات", "booking", ""], ["coming", "Coming", "قادم", "calendar", "success"], ["pending", "Pending approval", "في انتظار الموافقة", "clock", "warning"], ["ended", "Ended", "انتهى", "check", "primary"], ["canceled", "Cancelled", "ملغي", "close", "danger"]]
+      .map((p) => ({ key: p[0], label: [p[1], p[2]], icon: p[3], tone: p[4] })),
     pillMatch: (r, k) => k === "all" || r.status === k,
-    search: ["search by booking id", "البحث برقم الحجز"], searchMatch: (r, q) => String(r.id).includes(q),
-    toolbarExtra: PP.filterBtn(),
+    search: ["Search by booking ID", "البحث برقم الحجز"], searchMatch: (r, q) => String(r.id).includes(q),
+    toolbarExtra: fx.toolbarExtra, after: fx.after,
     extraMatch: (r, f) => OPS.inRange(r.date, f.session_from, f.session_to) && (!(f.checkin_from || f.checkin_to) || (r.check_in_at && OPS.inRange(r.check_in_at, f.checkin_from, f.checkin_to)))
       && (!f.category || r.activity_category_name === f.category) && (!f.activity || r.activity_name === f.activity) && (!f.btype || r.booking_type === f.btype) && (!f.gender || r.session_gender === f.gender),
     empty: () => `<div class="stack gap-2" style="align-items:center"><span style="transform:scale(1.6)">${ic("calendar")}</span><b style="margin-top:var(--space-2)">${L("No bookings yet", "لا توجد حجوزات")}</b><span class="t-sm">${L("Try another tab, adjust filters, or search again.", "جرّب تبويبًا آخر أو غيّر عوامل التصفية أو أعد البحث.")}</span></div>`,
     columns: [
-      { head: ["#", "#"], cell: (r) => `<b>#${r.id}</b> ${r.is_flexible_slot ? badge("info", L("Flexible", "مرن")) : ""}<div class="t-xs text-tertiary">${esc(r.created_at)}</div>` },
-      { head: ["company", "الشركة"], align: "center", cell: (r) => dash(r.company_name) },
-      { head: ["unit", "الوحدة"], align: "center", cell: (r) => dash(r.unit_name) },
-      { head: ["date & time", "التاريخ والوقت"], align: "center", cell: (r) => `${esc(r.date)}<div class="t-xs text-tertiary">${esc(r.start_time)}</div><div class="t-xs text-tertiary">${esc(r.end_time)}</div>` },
-      { head: ["Activity", "النشاط"], align: "center", cell: (r) => `${esc(r.activity_category_name)}<div class="t-xs text-tertiary">${esc(r.activity_name)}</div>` },
-      { head: ["user", "المستخدم"], align: "center", cell: (r) => dash(r.user_name) },
-      { head: ["session gender", "جنس الجلسة"], align: "center", cell: (r) => dash(r.session_gender) },
-      { head: ["booking type", "نوع الحجز"], align: "center", cell: (r) => (r.is_flexible_slot ? L("Online Flexible Booking", "حجز مرن عبر الإنترنت") : dash(r.booking_type)) },
-      { head: ["Price Per User", "السعر لكل مستخدم"], align: "center", cell: (r) => `<b>${r.paid_price || 0}</b> ${esc(r.currency.code)}<div class="t-xs text-tertiary">${dash(r.payment_method)}</div>` },
-      { head: ["status", "الحالة"], align: "center", cell: (r) => OPS.sessionBadge(r.status) },
-      { head: ["Check-in Status", "حالة تسجيل الحضور"], align: "center", cell: (r) => (r.check_in_at ? `${badge("success", L("Checked-in", "تم تسجيل الحضور"))}<div class="t-xs text-tertiary">${esc(r.check_in_at)}</div>` : badge("", L("Not checked-in", "لم يسجّل الحضور"))) },
-      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<a class="icon-btn" href="bookings.html?view=${r.id}&redirect_to_page=${ctl ? ctl.state.page : 1}" aria-label="${L("View", "عرض")}" title="${L("View", "عرض")}">${ic("eye")}</a>` },
+      { head: ["Booking", "الحجز"], cell: (r) => `<div class="ops-two">${OPS.peekId(r.id, "#" + r.id)}<span class="t-xs text-tertiary">${esc(r.created_at)}</span>${r.is_flexible_slot ? `<span>${badge("info", L("Flexible", "مرن"))}</span>` : ""}</div>` },
+      { head: ["Venue", "المكان"], cell: (r) => OPS.two(dash(r.company_name), dash(r.unit_name)) },
+      { head: ["Date & time", "التاريخ والوقت"], cell: (r) => OPS.when(r.date, r.start_time, r.end_time) },
+      { head: ["Activity", "النشاط"], cell: (r) => OPS.two(esc(r.activity_category_name), esc(r.activity_name)) },
+      { head: ["User", "المستخدم"], cell: (r) => (r.user_name ? `<div class="cell-user">${PP.avatar(r.user_name)}<b>${esc(r.user_name)}</b></div>` : "---") },
+      { head: ["Session gender", "جنس الجلسة"], align: "center", cell: (r) => OPS.dash(r.session_gender) },
+      { head: ["Booking type", "نوع الحجز"], align: "center", cell: btype },
+      { head: ["Price per user", "السعر لكل مستخدم"], align: "end", cell: (r) => `<b style="font-variant-numeric:tabular-nums">${r.paid_price || 0}</b> <span class="t-xs">${esc(r.currency.code)}</span><div class="t-xs text-tertiary">${OPS.dash(r.payment_method)}</div>` },
+      { head: ["Status", "الحالة"], align: "center", cell: (r) => OPS.sessionBadge(r.status) },
+      { head: ["Check-in status", "حالة تسجيل الحضور"], align: "center", cell: checkin },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<a class="icon-btn" href="${viewHref(r)}" aria-label="${L("View", "عرض")} #${r.id}" data-tip="${L("View", "عرض")}" data-perm="view_booking_details">${ic("eye")}</a>` },
     ],
   });
+  fx.bind(document.getElementById("listMount"), ctl);
   if (+qs.get("page") > 1) { ctl.state.page = +qs.get("page"); ctl.paint(); }
+  OPS.peek(document.getElementById("listMount"), (id) => ctl.rowById(id), (r) => ({
+    title: `${L("Booking", "الحجز")} #${r.id}`, href: viewHref(r), open: L("Open booking", "فتح الحجز"), perm: "view_booking_details",
+    rows: [[L("Status", "الحالة"), OPS.sessionBadge(r.status)], [L("Created", "تاريخ الإنشاء"), esc(r.created_at)], [L("Company", "الشركة"), dash(r.company_name)], [L("Unit", "الوحدة"), dash(r.unit_name)],
+      [L("Date", "التاريخ"), esc(r.date)], [L("Time", "الوقت"), `<span dir="ltr">${esc(r.start_time)} – ${esc(r.end_time)}</span>`], [L("Category", "الفئة"), esc(r.activity_category_name)], [L("Activity", "النشاط"), esc(r.activity_name)],
+      [L("User", "المستخدم"), dash(r.user_name)], [L("Session gender", "جنس الجلسة"), OPS.dash(r.session_gender)], [L("Booking type", "نوع الحجز"), btype(r)],
+      [L("Price per user", "السعر لكل مستخدم"), `${r.paid_price || 0} ${esc(r.currency.code)}`], [L("Payment method", "طريقة الدفع"), OPS.dash(r.payment_method)], [L("Check-in status", "حالة تسجيل الحضور"), checkin(r)]],
+  }));
   document.getElementById("listMount").addEventListener("click", (e) => {
     const b = e.target.closest("[data-filter]");
     if (!b) return;
     PP.filterPop(b, { width: 320, value: ctl.state.extra, cascade: { category: ["activity"] },
-      fields: [{ key: "session", type: "range", label: ["session date :", "تاريخ الجلسة :"] }, { key: "checkin", type: "range", label: ["Check-in Date :", "تاريخ تسجيل الحضور :"] }].concat(OPS.catFields(), [
-        { key: "btype", label: ["booking type :", "نوع الحجز :"], placeholder: ["select booking type", "اختر نوع الحجز"], options: () => [["online", L("online", "عبر الإنترنت")], ["linked", L("linked", "مرتبط")], ["manual", L("manual", "يدوي")]] },
+      fields: [{ key: "session", type: "range", label: ["Session date", "تاريخ الجلسة"] }, { key: "checkin", type: "range", label: ["Check-in date", "تاريخ تسجيل الحضور"] }].concat(OPS.catFields(), [
+        { key: "btype", label: ["Booking type", "نوع الحجز"], placeholder: ["Select booking type", "اختر نوع الحجز"], options: BTYPE },
         OPS.genderField()]),
       onApply: (d) => { ctl.state.extra = d; ctl.paint(); } });
   });

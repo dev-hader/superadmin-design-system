@@ -2,6 +2,289 @@
 
 Semver per [03-governance-workflow.md](03-governance-workflow.md) §6.
 
+## 1.24.0-trial — 2026-11-17 · Parity with the real dashboard (latest dev) + job permissions
+
+Pre-change copies of the shared files are in `revisions/2026-11-17-parity/`.
+
+- **Synced to HighFive-SuperAdmin-Front `dev` @ d0daa7a:**
+  - "Package support" type, and the Type is locked when a category already has tickets ("This category already has tickets.").
+  - Partner financials "Collected by" = `collector.label || collector.value`.
+  - Subscriber plurals in package-edit.
+  - BR-01 branches endpoint and refresh notes.
+- **Parity audit** (every page vs the React source, read-only) followed by fixes per page group. Fixes covered fields, filters, validation (real rules and messages), links that pointed to `#`, empty/error/read-only states, and removed invented copy. Arabic was corrected along the way.
+  - States the real app reaches only through the API are shown with `?demo=…` flags (documented in each page header); off by default.
+  - Highlights:
+    - unit edit gains additional categories/activities, with type/capacity/services following the activity;
+    - coupon form (country required, linked users/branches/units pickers, cascades);
+    - package approval and status modals rebuilt to the real layout and rules;
+    - package-edit plan, schedule and capacity rules;
+    - activity-log value formatting;
+    - notification create defaults and test send;
+    - advertisement GPS state/city;
+    - policy wording reverted to the real meaning.
+- **Job permissions (documentation + demo):**
+  - Every gated control carries `data-perm="<real key>"`, and each page passes `RD.boot({ perm })`.
+  - `?perm=limited` grants only view keys; `?perm=none` shows the NotHavePermissions card. Default view unchanged. Use `RD.can(key)` for script-rendered disabled states.
+  - Keys that are empty in the dashboard (open to all) are left untagged and noted.
+  - **Floating switcher** (`permSwitcher` in shell.js), bottom corner on the inline-end side (right in EN, left in AR):
+    - shows the simulated level: Full access / View only / No access;
+    - picking a level rewrites `?perm=` and reloads;
+    - × hides it until the next refresh;
+    - it replaces the centred demo pill.
+- **Shared:**
+  - **sa-kit:** `SA.modal({static})`, `SA.crop()`.
+  - **sa-crud:**
+    - `rules.int`
+    - image picker: size check on pick, Remove, crop, existing image shown on edit
+    - `del.item`
+    - wording overrides
+    - select `disabled` / `note`
+    - translation link by `idKey`
+  - **filterPop:** "All" first; ranges can't cross.
+  - **SATR:** delete wording as the dashboard.
+  - **Sentence case:** keeps a capital after `?`.
+  - **`.switch`:** positioned, with a disabled look.
+- **Shell:**
+  - Notifications Settings is a top-level nav item.
+  - Collapsed-sidebar tooltips show item names beside the icon.
+  - Every `.tabs` bar gets start/end scroll arrows (no jump when a visible tab is clicked).
+  - The sidebar keeps its scroll position.
+  - Drawers lock page scroll.
+- **Sentence-case sweep:** about 240 remaining Title Case English labels across pages and modules are now sentence case, e.g. "Registered on", "Show in app", "Session information", "Campaign name".
+  - Sidebar page names, proper names (HighFive, Super Admin), month names and sample place names are kept.
+  - Pre-sweep copies are in `revisions/2026-11-17-sentence/`.
+- **Preview server:** `.claude/launch.json` now uses `python -m http.server`. `npx serve` leaked file handles and crashed under load.
+
+## 1.23.0-trial — 2026-11-17 · Every remaining page on the redesign
+
+Pre-redesign copies of all pages and the touched modules are in `revisions/2026-11-17-all-pages/`.
+
+- **Skin and palette:** 47 more pages now carry the trial head script, `skin-v2.css?v=7` and the classic palette.
+  - units and packages switched from the v2 to the classic palette.
+  - The docs pages are left as they are: components, foundations and templates.
+- **`sa-kit.js`, sentence case:** `SA.sc()` and `SA.TS()` put UI copy in sentence case. Names in a keep-list keep their capital.
+  - `SA.up1()` capitalises page titles' first letter.
+  - Search placeholders go through `TS`.
+- **`sa-kit.js`, status tiles:** `SA.list` renders status pills as stat tiles by default (`tiles:false` keeps the pill row).
+  - The icon and tone are inferred from the status key: all, active/approved…, inactive/rejected…, pending….
+- **`sa-kit.js`, tooltips:** `SA.iconBtn` uses the custom tooltip (`data-tip`) instead of `title`.
+- **Tooltip moved to `assets/shell.js`:** it now runs on every app page, including the dashboard, which doesn't load sa-kit.
+  - Any plain `title=""` is adopted on first hover or focus: it moves to `data-tip`, and becomes `aria-label` when it was the element's only name. So no native browser tooltips are left.
+  - SVG `<title>` elements are left alone.
+- **`sa-crud.js`:**
+  - Labels sit above fields and have no trailing colon.
+  - Image and file inputs became a designed picker that shows the file name and an image preview.
+  - All page-supplied labels, titles, buttons and messages show in sentence case.
+  - Active shows as a success badge.
+  - Ellipses are tidied ("Creating…").
+- **`<title>` tags:** they start with a capital.
+- **Pages:** same data, fields, filters, actions, modals, validation and API notes.
+  - **Auth and errors:**
+    - login, login-live, forgot-password and verification-code use the new card. The forgot-password and verification-code steps show a 3-step progress bar.
+    - 404 and 500 are split cards.
+    - Two fixes: the eye toggle on the verification page, and an empty logo slot.
+  - **Operations (new `OPS.head` / `OPS.filters` / `OPS.peek` in `sa-ops.js`):**
+    - bookings, public events, multi-booking, joining list and comments get a summary head, tiles, filter chips, merged columns and a row-peek drawer.
+  - **People:**
+    - employees and jobs forms have labels above fields; jobs gets a permissions picker.
+    - The activity log gets one filter bar and status-tone badges.
+    - Notifications (users and partners) get a sectioned create form.
+  - **Setup and content:**
+    - Sibling tab bars on setup, locations, design-system, pages-content and marketing.
+    - activities as category cards, settings as a card, and notifications as a feed.
+    - notifications-settings shows recipient cards.
+    - The advertisement view gets a record header and a phone preview.
+    - Arabic fixes throughout.
+  - **Finance and catalog:**
+    - financials gets country cards with totals, and its country view gets stat cards.
+    - The wallet overview and its country lists get a sub-nav.
+    - users, units and packages are laid out like partners.
+    - user, unit and package profiles use the partner-profile frame: record header, grouped side or top nav with arrows and the narrow picker. The choice is saved per page.
+    - package-edit is laid out like partners-add.
+- **`components.css`:** `.pagination` wraps on phones.
+- **`pp-core` / `pp-ops`:** "Filter options", "Select session gender" and "Pending approval" are now sentence case.
+- **`sa-crud`:** pills keep their own `icon` and `tone`.
+- **`us/*`, `up/*`, `kp/*`:** labels are sentence case at the source. API words go through `PP.cap`, which knows new words: onsite, main/part, available/maintenance, completed/rejected, booking, payment and the wallet transaction types.
+  - The temporary label workaround on the profile pages is removed.
+  - Many Arabic fixes.
+- **Profile pages:** `.pp-pick` drops to z-index 50 on the four pages so it no longer paints over modals.
+- **`unit-profile` title:** "Unit profile".
+- **Profile navigation choice:** partner, user, unit and package profiles share one saved choice, `rd-pp-nav` (side or tabs).
+- **Filter popover (`pp-core`):** date ranges stack as From / To rows, so they no longer overflow the 320px popover. The age range shrinks to fit, and the popover never scrolls sideways.
+- **`SA.popover`:** opens above the trigger when there is more room there, and caps its height to the visible space. It closes on page scroll.
+- **`RD.openDrawer` scroll lock:** the page behind an open drawer no longer scrolls. `html.rd-scroll-lock` is set in `shell.css` with a stable scrollbar gutter, and the drawer body uses `overscroll-behavior: contain`. This covers the partners peek and every ops-page peek.
+- **Notifications (users and partners):** "Sent" is green (success) in both the tile and the badge.
+- **Sidebar scroll (`shell.js` `keepSidebarScroll`):** the sidebar keeps its scroll position across page loads (per tab, in sessionStorage `rd-sb-scroll`). The active item is nudged into view only when it would be hidden.
+- **Sidebar footer:** "Powered by HighFive · v1.0.0" / «بواسطة هاي فايف · الإصدار 1.0.0».
+- **Docs nav group:** new links to the static auth and error designs: sign in, forgot password, verification code, 404 and 500. They are gated by the `design-system` permission and have Arabic labels.
+- **Policy view (`pp-ops.js`):** the rules read as full-width sentences with the number as a badge, instead of the narrow key/value grid.
+  - The copy is rewritten in proper English and Arabic ("HighFive user", "unlocked", correct plurals).
+  - The cash-payment note is a warning alert.
+  - This applies to partner and unit profiles.
+- **404 / 500:** language and theme toggles, via `AUTH.tools()`, newly exported from `auth.js`.
+- **Kept, as decided:** the Super Admin copy on the auth brand rail, and the row-peek drawer on the ops pages.
+
+## 1.22.0-trial — 2026-11-17 · Translation page redesigned
+
+Same data, edit and delete flows, and fields. The previous version is in `revisions/sa-translation-2026-11-17-before-redesign.js`.
+
+- **`sa-translation.js`:** the language table became a record header plus one card per language.
+  - The header shows the item name, "n of 3 languages translated" with a progress bar, and Back.
+  - Each card shows its status badge (Translated, Partly translated or Not translated) and every field as label over value. An empty field reads "Not translated yet".
+  - Each card has Edit (or Add translation when the language isn't created yet) and delete. Delete is disabled until there is something to delete.
+  - The edit modal shows the original text above each input.
+  - Callers' lowercase labels and titles now show in sentence case ("name", "BIO", "edit translates").
+- **Pages that follow automatically:** every page that renders `SATR`. That covers the services, partner, branch, unit, package, activity, currency and content-page translations.
+- **`app.css`:** `.icon-btn:disabled` now dims and stops pointer events, matching `.btn:disabled`.
+- **`services-translation.html`:** the title is "Translation".
+
+## 1.21.1-trial — 2026-11-17 · Explaining tooltips on list rules and company
+
+- **`sa-kit.js`:** one shared tooltip (registry `.tooltip`) for any element with `data-tip` and an optional `data-tip-label`.
+  - Shows on hover and on keyboard focus, sitting above the element and flipping below when there is no room, kept inside the viewport.
+  - Hides on leave, blur and Escape, and on scroll unless the element has focus.
+  - Content is set as text, never as HTML.
+  - Uses `aria-describedby`.
+- **`sa-services.js`:** the rule chips (Requirement, Selection type, Min / max selection or total quantity, Quantity mode) and the company line explain themselves in EN and AR.
+  - Applies to the lists table and the services summary.
+  - The chips come from one shared `RULES()` source.
+- **`.tooltip` (components.css):** it no longer inverts the theme.
+  - It now uses the raised surface with a border and `--shadow-lg`: white in light mode, dark in dark mode.
+  - The label sits on its own line in tertiary text.
+
+## 1.21.0-trial — 2026-11-17 · Partners Lists and Services redesigned
+
+Same data, modals, validation and API notes; classic palette; previous versions in `revisions/` (the three pages + `sa-services.js`). The shared module also drives the partner profile's "Lists and services" section, so it follows.
+
+### Changed — service lists (`partner-services.html`, `SV.lists`)
+-   Head: a live summary line under the title ("33 lists · 100 services · 7 waiting for approval"), refreshed after every change.
+-   Status filter as stat tiles (from 1.20.2). Table **9 → 6 columns, nothing dropped**: List (name, Default badge, company · ID underneath) · Services (link) · **Rules** (Required / Optional, Single / Multiple, Min / max, By quantity — as small chips) · Status · Created date · Actions.
+
+### Changed — services of a list (`partner-services-list.html`, `SV.services`)
+-   The summary card is a small record header: list name + Default + status badges, the company (now a link to its profile's Lists and services section) · ID, the rules as chips, and three live counts — services · visible · pending.
+-   Table **10 → 7 columns, nothing dropped**: Service (image + name + two-line description) · Duration · Quantity (max over min selection) · Price · Visibility · Created date · Actions.
+
+### Changed — copy
+-   Sentence case for the 24 lower-case display strings in `sa-services.js` (+ 3 in the pages); skin + classic palette on the three pages (incl. `services-translation.html`).
+-   Verified: tiles toggle, search, approve / reject → summary refresh, visibility toggle → "Visible" count, add-service modal; the three pages + the profile section in AR + dark at 375 / 1280 — 0 errors, no overflow, only data left in English.
+
+## 1.20.3-trial — 2026-11-17 · Arabic data words, key/value fields, branch cards
+
+-   **Arabic:** `PP.cap` is now a small vocabulary of known API values (statuses, gender, payment method, booking / transaction type, coupon type, booking methodology, activity-log actions and modules) with their EN / AR label; unknown words are just capitalised. In Arabic mode the profile no longer shows "Coming / Ended / Created / Fixed slots…" in English. A scan of every section in AR leaves only real data (names, cities, units, activity and age-group names, membership categories, codes). Activity log: action filter options, action badges and module names go through it too.
+-   **`PP.kv()` → compact fields:** owner feedback — on a wide card the detail-list rows put the value a screen-width away from its label. Each pair is now a small label over its value, in a grid (`minmax(min(100%,220px),1fr)`), so values sit under their labels (location, QR settings, booking / event / coupon views, user · unit · package cards).
+-   **Branch cards:** wider (`minmax(min(100%,400px),1fr)`), the meta line is "#id · city" on one line (the full address is below), the unit-count labels no longer wrap ("Not Approved").
+-   Verified: partner (22) · user (8) · unit (13) · package (11) profiles + bookings, EN and AR, 1280 and 375 — 0 errors, no empty section, no page overflow.
+
+## 1.20.2-trial — 2026-11-17 · Tabs no longer jump; every profile section brought in line
+
+### Fixed
+-   **Tabs row jumped on click** even when the clicked tab was fully visible: the row re-rendered at scroll 0 and `scrollIntoView` then moved it. The row now keeps its scroll position when the same group re-renders and moves only by the exact amount needed when the open tab is partly hidden under an edge / arrow (physical deltas, LTR + RTL); `scrollIntoView` (which could also nudge the page) is gone.
+
+### Changed — audit of all 22 sections (shared helpers, so every page that uses them follows)
+-   **Status pills → stat tiles everywhere they were left:** `SA.list` gained an opt-in `tiles: true` (+ per-pill `icon` / `tone`; clicking the active tile clears it). Turned on for packages, public events, multi-booking, members, coupons and service lists / services (`sa-services.js` — also the Partners Lists and Services pages). The customers High five / Manual switch stays a segmented control (it switches views, it doesn't filter).
+-   **`PP.kv()` → registry `detail-list`**, two columns when the card is wide, trailing ":" dropped from labels — replaces the old `.sa-kv` grid in every key/value card (location, QR settings, booking / event / coupon views, user · unit · package profile cards).
+-   **Display case for raw data words** (`PP.cap`): session gender, status, payment method, booking type, coupon type / discount type, transaction type and the session status badges now read "Male", "Online", "Coming"… (data unchanged); customers' "booking / public event (Coming - past - canceled)" headers capitalised.
+-   Verified: all 50 app pages load with an error hook installed before any script — 0 errors, content rendered, no overflow; every section clicked (and a tile toggled) in partner profile 22 · user profile 8 · unit profile 13 · package details 11 — 0 errors, 0 empty.
+
+## 1.20.1-trial — 2026-11-17 · Section nav: scroll arrows + a designed narrow-screen picker
+
+-   **Tabs view — scroll arrows:** when a group's sections don't fit, start / end arrow buttons sit over the row's edges (with a fade), each shown only while there is more in that direction; they scroll by 70% of the row, smooth unless reduced motion, and are RTL-aware (direction and glyphs mirror). The open tab is scrolled into view on load. Hidden when the row fits (e.g. Operations, 3 sections).
+-   **Narrow screens (< 1100px) — designed picker instead of the native `<select>`:** a button with the current section's icon + name + chevron opens a grouped menu (registry `.menu`) — group titles, an icon per section, the open one tinted with a check; scrolls to the open section; closes on pick, outside click or Escape; items are the same `?tab=` links the router already handles.
+-   Fix found while testing: the picker's menu painted under the animated section cards that follow it — `.pp-pick` now sits on `--z-popover`.
+-   Verified: arrows LTR + RTL (end → hides end, start → back, hides start); picker open / outside-close / pick → section + label update; 375px dark — menu on top, no overflow.
+
+## 1.20.0-trial — 2026-11-17 · Partner profile: better section nav (side / tabs) + four sections redesigned
+
+### Changed — section navigation (`partner-profile.html`)
+-   Side list restyled: a "Sections" card with an icon per section, group titles with their counts, an accent rail + tinted row for the open section, slim scrollbar.
+-   **Admin's choice of layout:** a switch in the nav header toggles **side list ↔ tabs on top**. Tabs view is two rows — the four groups (with counts) on top, the chosen group's sections with icons and an underline below — so nothing is hidden behind "More" as in the old bar. The choice is a per-viewer preference (`localStorage` `rd-pp-nav`, guarded); below 1100px both views use the grouped select.
+
+### Changed — sections (shared `assets/js/pp/*`, approach A)
+-   **Owner** (`pp-info.js`, partner profile only): identity header (avatar · name · registered on) with Reset password + Edit; the fields in two grouped detail lists — Contact (email and phone as mailto / tel links, username) and Account (password, show in app, independent as badges). Same modals and validation.
+-   **Branches** (`pp-catalog.js`, partner profile only): a card per branch instead of a table with expandable rows — description, address and street (what the expand used to hide) on the card, plus approved / pending / not-approved unit counts; same search, same location filter, same view + translation links.
+-   **Units** (`pp-catalog.js`, partner profile only): status pills → stat tiles with counts; 11 → 8 columns with nothing dropped (activity over category, type over capacity, High Five status over the partner-app status).
+-   **Bookings list** (`pp-ops.js`, partner + unit profile): status pills → stat tiles with counts (same five statuses). The booking view — also used by `bookings.html` — is untouched.
+-   **Financials** (`pp-people.js`, partner profile only): the four stat tables → a KPI strip (revenues with online / cash split, collected, net HighFive, net partner, to be collected) + one "By source" table (booking · public event · packages · total) keeping every online / cash revenue and collected figure and the nets; same transactions table, filter and export.
+-   `pp-core.js`: `PP.tiles()` — the shared stat-tile status filter used by units and bookings.
+-   Verified: all 11 pages that load `pp/*` (every section clicked) — 0 errors, 0 empty; the five sections in AR + dark at 375 / 1440 — no page or card overflow (a long email in the owner card was wrapped).
+
+## 1.19.0-trial — 2026-11-17 · Partners inner pages: profile + add partner redesigned
+
+Same data, actions, validation and API notes; classic palette like the Partners list. Previous layouts in `revisions/`.
+
+### Changed — `partner-profile.html`
+-   **Record header** (registry `record-head`) replaces the hero card: initials media · name · status + ID badges · location + units · status action by / on · bio; every action in one place — Login as partner (primary), Update status, Edit profile, Translation, Back. Same two modals, same API comments.
+-   **Grouped section nav** replaces the 22-tab bar with 12 sections hidden under "More": all 22 sections visible in four titled groups (Profile · Catalogue · Operations · Customers & money), sticky beside the content; a grouped `<select>` below 1100px. Same `?tab=` keys, same router, same section bodies (`assets/js/pp/*`).
+
+### Changed — `partners-add.html`
+-   Horizontal stepper across the top; fields in a two-column grid (country · state · city in three); a **live partner summary** beside the form (owner, email, phone, company, location, documents uploaded / required) — read-only, nothing new collected; Cancel · Previous · Next/Submit in a `formbar`. Same 3 steps, fields, validation copy and submit.
+
+-   Fix (owner review): the stepper is centred in its band; the phone country code is now the registry **`phone-field`** (flag + dial button joined to the input, country menu with real SVG flags) instead of a plain `select` glued to the input — same five codes, same `phone_country` value; menu closes on pick / outside click / Escape and returns focus to the number.
+-   `assets/shell.js`: Bahrain (+973) added to `RD.FLAGS` — the dashboard offers it and the flag inventory didn't have it.
+-   Fix (owner review, round 2): the phone field still read as two boxes — `skin-v2.css`'s 10px input radius (higher specificity) re-rounded the input edge that meets the country button, and the button used `--color-border` while the input uses `--input-border`. SHAPE now squares that edge, gives the button the input border and the start radius, and turns both halves orange together on hover / focus. Measured light/dark × LTR/RTL: 0 gap, 0 inner radius, same border colour, both 42px. Skin links bumped to `?v=7`.
+
+### Changed — sentence case in the shared section modules
+-   `assets/js/pp/*.js`: 434 display strings (`L("…")` and `[en, ar]` pairs only — keys untouched) now start with a capital. These modules also render parts of user/unit profile, bookings, public events, joining list, multi-booking, comments, wallet and both promo-code pages, so those pages pick up the same casing.
+-   Regression: all 11 pages that load `pp/*` opened and every section clicked (partner profile 22 · user profile 8 · unit profile 13) — 0 errors, 0 empty sections. Both redesigned pages: EN/AR, light/dark, 375/768/1440 — no overflow.
+
+## 1.18.1-trial — 2026-11-17 · Sentence case on the redesigned pages
+
+-   `index.html` (57 strings) and `partners.html` (21 strings): every English label, title, heading, tab, option, placeholder and badge now starts with a capital (sentence case) — e.g. "partners statistics" → "Partners statistics", "units" → "Units", "show all" → "Show all", "all / year / month" → "All / Year / Month", "active" → "Active", "search by …" → "Search by …". Owner request; a deliberate departure from the dashboard's own lower-case copy on these two redesigned pages only.
+-   Kept lower case on purpose: mid-sentence words ("is" inside a filter chip, "items" after the page-size select, "37 pending" after a number) and data (emails). Arabic is unaffected.
+-   Verified by walking every visible text node (page, Filter popover, drawer): nothing else starts lower case.
+
+## 1.18.0-trial — 2026-11-17 · Dashboard: layout redesign, classic colours
+
+Same statistics, filters and links as the dashboard — re-composed (`index.html`, classic palette like Partners; `?palette=v2` for the v2 colours). Previous layout kept at `revisions/index-2026-11-17-before-redesign.html`.
+
+### Changed
+-   **Head:** title + one-line summary; the location filter's "all - all - all" text → removable `filter-chip`s (country · state · city; removing a level clears the levels below), "All locations" when none; Filter is a secondary button.
+-   **KPI strip:** the five headline totals (partners, units, users, bookings, public events) as `stat-tile` links to their lists — each with one existing sub-figure (pending / very active / coming). 5 across, 3 below 1200px, 2 on phones (icon on top; an odd last tile takes the full row).
+-   **One card per domain** instead of a stats card beside a chart card: header (icon · title · sub · period / filters · show all) + chart + breakdown. The big total isn't repeated inside the card (it lives in the strip).
+-   **Breakdowns:** dashed boxes → proportion rows (swatch · label · value · % over a `progress` bar) for partners, units, users and engagement; bookings / events columns show total + donut + split.
+-   **Sections** with titles — Partners & units (2 across) · Users (users chart 2/3 + engagement, gender + age table 2/3) · Bookings & public events (full width). One column below 1200px.
+-   Verified: 5 tiles → partners/units/users/bookings/public-events; 5 show-all links; period toggles swap their picker; filter apply → chips → remove cascades; EN/AR, light/dark, 375/768/1280/1440/1920 — no page or card overflow.
+-   Cards in a row share one height (`align-items: stretch`) and pin their breakdown to the bottom, so the proportion rows of side-by-side cards line up (partners ↔ units, users ↔ engagement, gender ↔ age table). User engagement gained a donut of its own four figures so the taller card isn't empty. Measured at 1440 and 1920: equal heights in every row.
+
+## 1.17.1-trial — 2026-11-17 · Partners: new layout, classic colours
+
+-   `skin-v2.css` split into **SHAPE** (radius, type, density, table/segment structure — always on) and **PALETTE** (ink sidebar, stone canvas, ink pills, ink button label — skipped under `data-palette="classic"`). The ink-sidebar-only details (white logo text, sidebar focus outline) moved into PALETTE so they never land on the white sidebar.
+-   `partners.html` sets `data-palette="classic"`: the redesigned layout with the dashboard's own colours (owner preference). `?palette=v2` shows it in v2 colours. Dashboard / Units / Packages are unchanged (still v2 colours).
+-   Note: classic colours bring back the dashboard's white label on the orange button (3.02:1) and the original grey text — the AA fixes from the ui-ux-pro-max pass live in the v2 palette only.
+
+## 1.17.0-trial — 2026-11-17 · Partners: layout redesign (not just the skin)
+
+Same data, rules and routes as the dashboard's Partners list — re-composed. Previous layout kept at `revisions/partners-2026-11-17-before-redesign.html`.
+
+### Changed (`partners.html`)
+-   **Head:** title + breadcrumb + a live summary line ("36 partners · 9 waiting for approval"); Add New Partner is the one full-size primary button.
+-   **Status pills → four `stat-tile`s** (All · Pending · active · inactive) with counts; `aria-pressed`; clicking the active tile clears it (stat-tile contract). Each tile icon uses the matching status tone; 4 across, 2 × 2 below 900px.
+-   **Toolbar:** search + Filter in one bar; applied filters (created by · country · state · city) show as removable `filter-chip`s with Clear all — removing a country also clears state/city, like the popover's cascade.
+-   **Table 9 → 7 columns, no field dropped:** Partner (name + #id) · Owner (name, phone, email) · **Location** (city over state · country) · Units · Status · **Created** (date + by Partner/Admin) · Actions (eye → profile, `redirect_to_page` kept).
+-   **Summary drawer** (registry `drawer` via `RD.openDrawer`): clicking a row or the partner name shows all of the partner's list fields read-only, with Open profile.
+-   Verified: counts 36/9/23/4 as before; tiles, search (focus kept while typing), Filter popover + chips, paging, eye link and drawer; EN/AR, light/dark, 375/768/1440/1920 — no overflow.
+
+## 1.16.0-trial — 2026-11-17 · Redesign trial (skin v2) on the first 4 pages
+
+### Added
+-   `assets/css/skin-v2.css` — a look-only redesign scoped under `:root[data-skin="v2"]`: dark ink sidebar in both themes, warm stone canvas, hairline cards, ink pill for the active segment / page, uppercase hairline table header, gradient KPI tiles and larger tabular numbers on the dashboard. Tokens first; no markup, copy, data or JS behaviour touched.
+-   Enabled on `index.html`, `partners.html`, `units.html`, `packages.html` (a one-line head script sets `data-skin="v2"`; `?skin=classic` shows the current look for comparison). Every other page is unchanged.
+-   Checked: EN/AR, light/dark, desktop/mobile — no overflow, no errors.
+
+### Changed — ui-ux-pro-max pass
+-   Style verified against the skill's **Data-Dense Dashboard** entry (the `--design-system` output proposed glassmorphism + Fira fonts — rejected: off-brand, and the identity is locked). Rows back to the compact base padding (12px); `tabular-nums` on every table cell; `cursor: pointer` on sortable headers.
+-   Contrast (`color-accessible-pairs`, measured): grey text `#767985` → `#686b77` (3.74 → 4.58:1 on the sunken surface); sidebar group labels `#6f7380` → `#868a96` (3.82 → 5.24:1); **primary button label white → ink** (white on `#FC6404` is 3.02:1, ink is 6.0:1 — the orange fill is unchanged).
+-   Table header text 11px → 12px (no text below 12px).
+-   Solid orange focus outline inside the ink sidebar (`focus-states`) — the base translucent ring was too faint there.
+
+### Added — three alternative shapes (`assets/css/skin-v2-looks.css`)
+-   Same v2 colours, different shape — picked from ui-ux-pro-max `--domain style`: `?look=swiss` (Minimalism & Swiss: 2–4px radius, no shadows, underline tabs, 2px rule under the table head), `?look=bento` (Bento Box Grid: 24px tiles, bigger KPI, hover lift 1.01 behind `prefers-reduced-motion`), `?look=soft` (Soft UI Evolution: borderless cards with layered soft shadows, pressed state, 3px focus outline). Flat Design was rejected (it needs a new saturated palette).
+-   Checked on index + partners × 3 looks × 375/1440 in AR + dark: no overflow.
+-   `?look=glass` (Glassmorphism — the skill rates it "risk: conditional, requires contrast-text-4.5"): frosted panels (72% surface, `blur(18px)`), white edge + top shine, smoked-glass sidebar, and the light source is the brand orange as two fixed canvas glows — no new colours. The catalogue's 15% glass was rejected for data tables. Measured: grey text 4.70–5.02:1 on the glass (light/dark); glow capped at 10% so text sitting straight on the canvas (page head, dashboard filter summary) stays ≥ 4.57:1. Solid fallback for `prefers-reduced-transparency` and browsers without `backdrop-filter`.
+
+### Fixed
+-   The trial head script had a literal backspace character where `\b` was meant, so `?skin=classic` never switched back to the current look. Rewritten with `URLSearchParams`; `?skin=classic`, `?look=…` and an unknown look are all verified.
+
 ## 1.15.4 — 2026-11-16 · Vercel deployment config
 
 ### Added

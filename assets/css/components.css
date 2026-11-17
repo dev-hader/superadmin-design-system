@@ -947,6 +947,8 @@ textarea.input {
     display: flex;
     align-items: center;
     gap: 2px;
+    flex-wrap: wrap;
+    max-width: 100%;
 }
 .pagination button {
     min-width: 34px;
@@ -1288,14 +1290,17 @@ textarea.input {
     position: relative;
     display: inline-flex;
 }
+/* Raised surface (same family as the cards, a step above them) with a border
+   and a large shadow, so it reads as floating in light and dark alike. */
 .tooltip {
-    padding: 6px 10px;
-    border-radius: var(--radius-sm);
-    background: var(--color-text);
-    color: var(--color-text-inverse);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
     font-size: var(--text-xs);
     font-weight: var(--weight-medium);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-lg);
     white-space: nowrap;
 }
 
@@ -5697,3 +5702,8 @@ html[lang="ar"] .lg-eyebrow {
     font-weight: var(--weight-semibold);
     color: var(--color-text);
 }
+
+/* .switch: positioned so its visually-hidden input can't escape a scroll box;
+   a disabled switch reads as unavailable (permission-gated controls) */
+.switch { position: relative; }
+.switch:has(input:disabled) { opacity: var(--opacity-disabled, .55); cursor: not-allowed; }

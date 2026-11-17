@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
 <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
@@ -14,6 +15,8 @@
 <link rel="stylesheet" href="assets/css/app.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
 <style>
   .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
   .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
@@ -41,6 +44,33 @@
   .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
   .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
   @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+  /* redesign 2026-11-17 — card list: the SA.list table shown as a grid of cards
+     (same rows, search, pager and row actions; the last cell is the card footer) */
+  .sa-cards .data-table-scroll { overflow: visible; padding: var(--space-4); background: var(--color-surface-sunken); }
+  .sa-cards .data-table { display: block; }
+  .sa-cards .data-table thead { display: none; }
+  .sa-cards .data-table tbody { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--sa-card-min, 300px)), 1fr)); gap: var(--space-4); }
+  .sa-cards .data-table tbody tr { display: flex; flex-direction: column; min-width: 0; background: var(--color-surface); border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); padding: 0; box-shadow: var(--shadow-xs); transition: box-shadow var(--duration-fast); }
+  .sa-cards .data-table tbody tr:hover { background: var(--color-surface); box-shadow: var(--shadow-sm); }
+  .sa-cards .data-table td { display: block; padding: var(--space-4); border: 0; white-space: normal; text-align: start !important; min-width: 0; }
+  .sa-cards .data-table td + td { padding-top: 0; }
+  .sa-cards .data-table td::before { content: none !important; }
+  .sa-cards .data-table td:last-child:not(:first-child) { margin-top: auto; padding: var(--space-2) var(--space-3); border-top: var(--border-thin) solid var(--color-border-subtle); }
+  .sa-cards .data-table td:last-child .row { justify-content: flex-end !important; }
+  .sa-cards .data-table tr:has(> td[colspan]) { grid-column: 1 / -1; }
+  .sa-cards .data-table td[colspan] { text-align: center !important; }
+  .sa-cards--1 .data-table tbody { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+  @media (max-width: 640px) { .sa-cards .data-table-scroll { padding: 0; background: transparent; } }
+  /* notifications feed: one row per notification — icon, text, then the type action */
+  .sa-feed .data-table tbody tr { flex-direction: row; align-items: center; flex-wrap: wrap; }
+  .sa-feed .data-table td:first-child { flex: 1 1 320px; }
+  .sa-feed .data-table td:last-child:not(:first-child) { margin: 0; border: 0; padding: var(--space-4); padding-inline-start: 0; }
+  .sa-feed .data-table-toolbar { display: none; }
+  .sa-feed__item { display: flex; gap: var(--space-3); align-items: flex-start; min-width: 0; }
+  .sa-feed__item .kpi-ic { flex: none; box-shadow: none; }
+  @media (max-width: 640px) { .sa-feed .data-table td:last-child:not(:first-child) { padding: 0 var(--space-4) var(--space-4); width: 100%; } .sa-feed .data-table td:last-child .btn { width: 100%; justify-content: center; } }
+  /* notification settings: recipient cards */
+  .sa-chips { display: flex; flex-wrap: wrap; gap: var(--space-1); }
 </style>
 </head>
 <body>
@@ -71,39 +101,52 @@
   /* notifications-settings.html — email notification recipients (pages/notifications/settings):
        search by name or email, name · email · trigger chips, add / edit / delete (inline alert, closes after 1.5 s).
      notifications.html — the topbar bell's "all notifications" page (pages/notifications index):
-       title + 45px image · body · create date · type button (links when the type has a target). */
+       title + 45px image · body · create date · type button (links when the type has a target).
+     API: GET /notifications (bell) · GET/POST /email-notifications-settings · PUT/DELETE /email-notifications-settings/{id}.
+     Permissions (dashboard job permissions; demo ?perm=limited | ?perm=none):
+       notifications            page view_notifications
+       notifications-settings   page view_email_notifications · Add add_email_notifications ·
+                                Edit update_email_notifications · Delete delete_email_notifications */
   const file = location.pathname.split("/").pop().replace(/^_preview-/, "").replace(".html", "");
   const isSettings = file === "notifications-settings";
-  RD.boot({ activeId: isSettings ? "nt-settings" : "", title: isSettings ? "Notifications Settings" : "Notifications" });
+  RD.boot({ activeId: isSettings ? "nt-settings" : "", title: isSettings ? "Notifications Settings" : "Notifications", perm: isSettings ? "view_email_notifications" : "view_notifications" });
   if (!document.getElementById("listMount")) return;
   const { L, esc, ic, badge } = SA;
   const S = HF.SA, R = CRUD.rules;
 
   if (isSettings) {
-    const TRIG = [["partner_registration", ["New Registered Partners", "شركاء جدد مسجلين"]], ["unit_creation", ["New Created Units", "وحدات جديدة تم إنشاؤها"]], ["cash_out", ["New Cash-Out", "سحب نقدي جديد"]], ["new_booking", ["New Bookings", "حجوزات جديدة"]],
-      ["support_request", ["New Tickets", "تذاكر جديدة"]], ["comment_deletion", ["Comment Deletion", "حذف التعليقات"]], ["new_created_services", ["New Created Services", "خدمات جديدة تم إنشاؤها"]]];
+    const TRIG = [["partner_registration", ["New registered partners", "شركاء جدد مسجلين"]], ["unit_creation", ["New created units", "وحدات جديدة تم إنشاؤها"]], ["cash_out", ["New cash-out", "سحب نقدي جديد"]], ["new_booking", ["New bookings", "حجوزات جديدة"]],
+      ["support_request", ["New tickets", "تذاكر جديدة"]], ["comment_deletion", ["Comment deletion", "حذف التعليقات"]], ["new_created_services", ["New created services", "خدمات جديدة تم إنشاؤها"]]];
     S._notifSettings = S._notifSettings || [["Operations Team", "ops@highfive.sa", ["partner_registration", "unit_creation", "new_booking"]], ["Finance", "finance@highfive.sa", ["cash_out"]], ["Support Desk", "support@highfive.sa", ["support_request", "comment_deletion"]], ["Mona Fawzi", "mona.0@highfive.sa", ["new_created_services"]]]
       .map((r, i) => ({ id: i + 1, name: r[0], email: r[1], services: r[2] }));
-    /* triggers show the raw service names in the dashboard (not the translated labels) — kept 1:1 */
+    /* the dashboard shows the raw service names as trigger chips; redesign 2026-11-17 shows their
+       readable label (the raw key is in the tooltip) and lays the recipients out as cards */
+    const trig = (s) => { const t = TRIG.find((x) => x[0] === s); return `<span class="badge badge--primary" tabindex="0" data-tip="${esc(s)}" data-tip-label="${L("Key", "المفتاح")}">${esc(t ? L(...t[1]) : s)}</span>`; };
+    document.getElementById("listMount").classList.add("sa-cards");
     CRUD.page({
-      title: ["Notifications Settings", "إعدادات الإشعارات"], data: S._notifSettings, add: ["add new", "إضافة جديد"],
+      title: ["Notifications Settings", "إعدادات الإشعارات"], data: S._notifSettings, add: RD.can("add_email_notifications") ? ["Add new", "إضافة جديد"] : null,
+      canEdit: () => RD.can("update_email_notifications"), canDel: () => RD.can("delete_email_notifications"),
       search: ["Search by name or email", "البحث بالاسم أو البريد الإلكتروني"], searchKeys: ["name", "email"], empty: ["There is no data to display.", "لا توجد بيانات للعرض."],
       columns: [
-        { head: ["name", "الاسم"], cell: (r) => esc(r.name) },
-        { head: ["Email", "البريد الإلكتروني"], align: "center", cell: (r) => esc(r.email) },
-        { head: ["Triggers", "المشغلات"], align: "center", cell: (r) => (r.services.length ? `<div class="row gap-1" style="flex-wrap:wrap;justify-content:center">${r.services.map((s) => badge("", s)).join("")}</div>` : "---") },
+        { head: ["Name", "الاسم"], cell: (r) => `<div class="cell-user">${PP.avatar(r.name)}<div style="min-width:0"><b>${esc(r.name)}</b><div class="t-xs text-secondary" style="overflow-wrap:anywhere">${esc(r.email)}</div></div></div>` },
+        { head: ["Triggers", "المشغلات"], cell: (r) => (r.services.length ? `<div class="sa-chips">${r.services.map(trig).join("")}</div>` : "---") },
       ],
-      form: { labelCols: true, createTitle: ["Add Notification Setting", "إضافة إعداد إشعار"], editTitle: ["Edit Notification Setting", "تعديل إعداد الإشعار"], feedback: "alert", creatingText: ["creating", "جاري الإنشاء"], updatingText: ["updating", "جاري التحديث"],
-        fields: [{ key: "name", label: ["name", "الاسم"], req: 1, placeholder: ["enter name", "أدخل الاسم"], rules: [R.req, R.min(3, ["Minimum 3 symbols", "الحد الأدنى 3 رموز"]), R.max(50, ["Maximum 50 symbols", "الحد الأقصى 50 رمز"])] },
+      form: { labelCols: true, createTitle: ["Add notification setting", "إضافة إعداد إشعار"], editTitle: ["Edit notification setting", "تعديل إعداد الإشعار"], feedback: "alert", creatingText: ["Creating…", "جاري الإنشاء…"], updatingText: ["Updating…", "جاري التحديث…"],
+        /* the dashboard's own success wording */
+        createdText: ["Notification setting created successfully", "تم إنشاء إعداد الإشعار بنجاح"], updatedText: ["Notification setting updated successfully", "تم تحديث إعداد الإشعار بنجاح"],
+        fields: [{ key: "name", label: ["Name", "الاسم"], req: 1, placeholder: ["Enter name", "أدخل الاسم"], rules: [R.req, R.min(3, ["Minimum 3 symbols", "الحد الأدنى 3 رموز"]), R.max(50, ["Maximum 50 symbols", "الحد الأقصى 50 رمز"])] },
           { key: "email", type: "email", label: ["Email", "البريد الإلكتروني"], req: 1, placeholder: ["Enter email address", "أدخل البريد الإلكتروني"], rules: [R.req, (v) => (v && !/^\S+@\S+\.\S+$/.test(v) ? L("Email is not valid", "البريد الإلكتروني غير صالح") : "")] },
           { key: "services", type: "multi", label: ["Triggers", "المشغلات"], req: 1, options: () => TRIG.map((t) => [t[0], L(...t[1])]), rules: [(v) => (!v.length ? L("Please select at least one service", "الرجاء تحديد خدمة واحدة على الأقل") : "")] }] },
-      del: { warn: ["This action cannot be undone", "لا يمكن التراجع عن هذا الإجراء"], danger: true, feedback: "alert" },
+      del: { warn: ["This action cannot be undone", "لا يمكن التراجع عن هذا الإجراء"], danger: true, feedback: "alert", busyText: ["Deleting", "جاري الحذف"], doneText: ["Item deleted successfully", "تم حذف العنصر بنجاح"] },
     });
     return;
   }
 
   /* ---- all notifications (GET /notifications) — what the bell opens ---- */
-  const LINK = { partner: (d) => `partner-profile.html?id=${d.id}&tab=owner`, new_comment: (d) => (d.unit_id ? `unit-profile.html?id=${d.unit_id}&tab=comments` : `comments.html?commentId=${d.id}`), delete_comment: (d) => `unit-profile.html?id=${d.unit_id}&tab=comments`, cash_out: (d) => `user-profile.html?id=${d.id}&tab=wallet&sub=cash-out` };
+  /* helpers/notificationLinks.js — no link when the id it needs is missing */
+  const LINK = { partner: (d) => (d.id ? `partner-profile.html?id=${d.id}&tab=owner` : ""),
+    new_comment: (d) => (d.unit_id ? `unit-profile.html?id=${d.unit_id}&tab=comments${d.id ? `&commentId=${d.id}` : ""}` : d.id ? `comments.html?commentId=${d.id}` : "comments.html"),
+    delete_comment: (d) => (d.unit_id ? `unit-profile.html?id=${d.unit_id}&tab=comments` : ""), cash_out: (d) => (d.id ? `user-profile.html?id=${d.id}&tab=wallet&sub=cash-out` : "") };
   const unit = S.units[0], u = S.users[3], p = S.partners[4];
   const rows = [
     ["New partner registration", `${p.company_name} has registered and is waiting for approval.`, { type: "partner", id: p.id }],
@@ -114,13 +157,19 @@
     ["Weekly report", "", { type: null }],
   ].map((r, i) => ({ id: i + 1, title: r[0], body: r[1], data: r[2], image: null, created_at: `2026-11-${String(16 - i).padStart(2, "0")} ${String(9 + i).padStart(2, "0")}:15 ${i % 2 ? "PM" : "AM"}` }));
   SA.head(document.getElementById("pageHead"), { title: ["Notifications", "الإشعارات"] });
+  /* redesign 2026-11-17: a feed of notification cards — type icon, title, body and date, then the
+     type button (a link when the type has a target, disabled otherwise), same as the dashboard */
+  const LOOK = { partner: ["hotel", "primary"], new_comment: ["chat", "info"], delete_comment: ["trash", "danger"], cash_out: ["trendUp", "warning"], system: ["gear", ""] };
+  const TONE = { primary: "--color-primary", info: "--color-info", danger: "--color-danger", warning: "--color-warning", success: "--color-success" };
+  const TYPE = { partner: ["Partner", "شريك"], new_comment: ["New comment", "تعليق جديد"], delete_comment: ["Delete comment", "حذف تعليق"], cash_out: ["Cash out", "سحب نقدي"], system: ["System", "النظام"] };
+  const typeLabel = (t) => (TYPE[t] ? L(...TYPE[t]) : t ? SA.sc(t.replace(/_/g, " ")) : "---");
+  document.getElementById("listMount").classList.add("sa-cards", "sa-cards--1", "sa-feed");
   SA.list({
-    mount: document.getElementById("listMount"), data: rows, empty: ["there is no data to display", "لا توجد بيانات لعرضها"],
+    mount: document.getElementById("listMount"), data: rows, empty: ["There is no data to display", "لا توجد بيانات لعرضها"],
     columns: [
-      { head: ["title", "العنوان"], cell: (r) => `<div class="cell-user"><span class="cell-thumb">${ic("bell")}</span><b>${esc(r.title)}</b></div>` },
-      { head: ["Body", "المحتوى"], cell: (r) => `<span dir="auto">${esc(r.body || "---")}</span>` },
-      { head: ["create", "الإنشاء"], align: "center", cell: (r) => `<small>${esc(r.created_at)}</small>` },
-      { head: ["Type", "النوع"], align: "center", cell: (r) => { const t = r.data.type, href = t && LINK[t] && LINK[t](r.data); return href ? `<a class="btn btn--sm" href="${href}">${esc(t.replace(/_/g, " "))}</a>` : `<button class="btn btn--sm btn--secondary" disabled>${esc(t ? t.replace(/_/g, " ") : "---")}</button>`; } },
+      { head: ["Notification", "الإشعار"], cell: (r) => { const lk = LOOK[r.data.type] || ["bell", ""], tn = TONE[lk[1]]; return `<div class="sa-feed__item">${r.image ? `<span class="kpi-ic" role="img" aria-label="${esc(r.title)}" style="background:var(--color-surface) center/cover no-repeat url('${esc(r.image)}')"></span>` : `<span class="kpi-ic" style="background:var(${tn ? tn + "-subtle" : "--color-surface-sunken"});color:var(${tn ? (lk[1] === "primary" ? "--color-primary-ink" : tn) : "--color-text-secondary"})">${ic(lk[0])}</span>`}
+        <div class="stack gap-1" style="min-width:0"><b dir="auto">${esc(r.title)}</b><span class="t-sm text-secondary" dir="auto">${esc(r.body || "---")}</span><span class="t-xs text-tertiary row gap-1" style="align-items:center">${ic("clock")}${esc(r.created_at)}</span></div></div>`; } },
+      { head: ["Type", "النوع"], align: "center", cell: (r) => { const t = r.data.type, href = t && LINK[t] && LINK[t](r.data); return href ? `<a class="btn btn--sm btn--secondary" href="${href}">${esc(typeLabel(t))}${ic(document.documentElement.dir === "rtl" ? "chevronLeft" : "chevronRight")}</a>` : `<button class="btn btn--sm btn--ghost" disabled>${esc(typeLabel(t))}</button>`; } },
     ],
   });
 })();

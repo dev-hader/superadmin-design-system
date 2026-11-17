@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
 <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
-<title>jobs · HighFive Super Admin</title>
+<title>Jobs · HighFive Super Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -14,6 +15,8 @@
 <link rel="stylesheet" href="assets/css/app.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
 <style>
   .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
   .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
@@ -41,6 +44,27 @@
   .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
   .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
   @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+  /* ---- redesign 2026-11-17: global list layer (same composition as partners.html) ---- */
+  .ops-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+  #listMount .data-table-toolbar > .grow { display: none; }
+  #listMount .data-table-toolbar > .input-wrap { flex: 1 1 320px; min-width: 0 !important; }
+  .ops-chips { padding: 0 var(--space-5) var(--space-4); }
+  .ops-id { font: inherit; font-weight: var(--weight-semibold); color: var(--color-text); padding: 0; cursor: pointer; text-align: start; }
+  .ops-id:hover { color: var(--color-primary-ink); text-decoration: underline; text-underline-offset: 3px; }
+  .ops-two { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .ops-two > b { font-weight: var(--weight-medium); }
+  .ops-check { display: inline-flex; flex-direction: column; gap: var(--space-1); align-items: flex-start; }
+  #listMount tbody tr:has([data-peek]) { cursor: pointer; }
+  #listMount > .stat-strip { grid-template-columns: repeat(auto-fit, minmax(min(100%, 128px), 1fr)) !important; }
+  .jp-group { padding: 0; overflow: hidden; }
+  .jp-group > summary { list-style: none; cursor: pointer; align-items: center; padding: var(--space-4) var(--space-5); }
+  .jp-group > summary::-webkit-details-marker { display: none; }
+  .jp-group .jp-caret { display: inline-flex; color: var(--color-text-tertiary); transition: transform var(--duration-fast); }
+  .jp-group:not([open]) .jp-caret { transform: rotate(-90deg); }
+  [dir="rtl"] .jp-group:not([open]) .jp-caret { transform: rotate(90deg); }
+  .jp-body { padding: var(--space-4) var(--space-5) var(--space-5); border-top: var(--border-thin) solid var(--color-border-subtle); }
+  .jp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: var(--space-2); }
+  .jp-perm { padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); background: var(--color-surface-sunken); }
 </style>
 </head>
 <body>
@@ -66,15 +90,29 @@
 <script src="assets/js/sa-kit.js"></script>
 <script src="assets/js/pp/pp-core.js"></script>
 <script src="assets/js/sa-emp.js"></script>
+<script src="assets/js/sa-ops.js"></script>
 <script>
 (() => {
   /* Jobs — mirrors pages/emploayees/jobs:
        list        /employees/jobs        jobs.html          pills, search, 5 columns, edit · delete · key (admin only)
        permissions /employees/jobs/:id    ?id=<jobId>        group picker + accordion of sub-modules with select-all,
                                                              Save Updates → POST /job/{id}/permissions {permissions:[ids]}
-     Job #1 (admin) has no row actions and no permissions page. Feedback is inline alerts. */
-  const qs = new URLSearchParams(location.search), jobId = qs.get("id");
-  RD.boot({ activeId: "emp-jobs", title: "jobs" });
+     Job #1 (admin) has no row actions and no permissions page. Feedback is inline alerts.
+     API: GET /jobs?active=&search=&page=&limit= · GET /jobs/{id} (permissions tree
+          { Group: { SubModule: [{id,key,name,checked}] } }) · POST /jobs {name, description, active}
+          · PUT /jobs/{id} {name, description, active} · DELETE /jobs/{id}
+          · POST /job/{id}/permissions {permissions:[ids]}
+     Sample states (off by default): ?demo=error — Save updates and Delete fail with the
+     backend message (red alert; the Save alert clears after 3 s like the success one).
+     Permissions (dashboard job keys — data-perm, demo ?perm=limited | ?perm=none):
+       list page view_jobs · Add new add_jobs · edit update_jobs · delete delete_jobs.
+       The key (permissions page) link is not a permission key — it shows only when the
+       signed-in employee's job name is 'admin' (kept untagged). The permissions page
+       (JobPermissions.js) checks no key, only "job #1 → NotHavePermissions".
+       Its checkboxes carry data-pid (not data-perm — that attribute is the gating hook). */
+  const qs = new URLSearchParams(location.search), jobId = qs.get("id"), demo = qs.get("demo");
+  const API_MSG = () => L("The selected item is invalid.", "العنصر المحدد غير صالح."); /* placeholder for the backend's res.data.message */
+  RD.boot({ activeId: "emp-jobs", title: "Jobs", perm: jobId ? undefined : "view_jobs" });
   if (!document.getElementById("listMount")) return;
   const { L, esc, ic, badge } = SA;
   const S = HF.SA, data = S.jobs;
@@ -82,45 +120,56 @@
   const alert = (tone, msg) => `<div class="alert alert--${tone}"><span class="alert__icon">${ic(tone === "success" ? "check" : "warn")}</span><div class="alert__body">${msg}</div></div>`;
 
   /* ================= job permissions ================= */
+  /* Redesign (2026-11-17): head with the job name, a live "n of N selected" summary and
+     Back · Save; the group picker sits in its own card; each group is a card-like
+     accordion with a per-sub-module count and the permissions as a checkbox grid.
+     Same tree, same select-all, same remove-group confirm, same POST on Save. */
   if (jobId) {
     const job = data.find((j) => String(j.id) === jobId) || data[1];
-    if (job.id === 1) { mount.innerHTML = `<section class="card card--pad stack gap-3" style="align-items:center;text-align:center"><h2 class="t-h3" style="color:var(--color-danger)">${L("You do not have permissions to access this page", "ليس لديك صلاحيات للوصول إلى هذه الصفحة")}</h2><p class="text-tertiary">${L("Please contact your administrator if you believe this is an error.", "يرجى الاتصال بالمسؤول إذا كنت تعتقد أن هذا خطأ.")}</p><div class="row gap-2"><a class="btn" href="index.html">${L("Home", "الرئيسية")}</a><a class="btn btn--secondary" href="jobs.html">${L("back", "رجوع")}</a></div></section>`; return; }
+    if (job.id === 1) { mount.innerHTML = `<section class="card card--pad stack gap-3" style="align-items:center;text-align:center"><span class="kpi-ic" style="background:var(--color-danger-subtle);color:var(--color-danger);box-shadow:none">${ic("lock")}</span><h2 class="t-h3">${L("You do not have permissions to access this page", "ليس لديك صلاحيات للوصول إلى هذه الصفحة")}</h2><p class="text-tertiary">${L("Please contact your administrator if you believe this is an error.", "يرجى الاتصال بالمسؤول إذا كنت تعتقد أن هذا خطأ.")}</p><div class="row gap-2"><a class="btn" href="index.html">${L("Home", "الرئيسية")}</a><a class="btn btn--secondary" href="jobs.html">${L("Back", "رجوع")}</a></div></section>`; return; }
     const tree = S.permTree(job);
     const groups = Object.keys(tree);
     let shown = groups.filter((g) => Object.values(tree[g]).some((items) => items.some((x) => x.checked)));
-    SA.head(document.getElementById("pageHead"), { title: [`Assign Permissions to Job (${job.name || "---"})`, `تعيين الصلاحيات للوظيفة (${job.name || "---"})`], crumbs: [["jobs", "الوظائف", "jobs.html"]],
-      actions: `<a class="btn btn--sm btn--secondary" href="jobs.html">${L("Back To Jobs", "العودة إلى الوظائف")}</a>${PP.btn(L("Save Updates", "حفظ التحديثات"), "", "data-save")}` });
-    const paint = () => {
-      mount.innerHTML = `<section class="card card--pad stack gap-4">
-        <h3 style="font-size:var(--text-lg);font-weight:var(--weight-bold)">Permissions Group:</h3><div data-msg></div>
-        <div class="stack gap-2"><div class="row gap-2" style="flex-wrap:wrap">${shown.map((g) => `<span class="badge badge--primary" style="gap:6px">${esc(g)}<button type="button" data-rm="${esc(g)}" aria-label="remove ${esc(g)}" style="background:none;border:0;color:inherit;cursor:pointer;padding:0">×</button></span>`).join("")}</div>
-          ${SA.select([["", L("Select Groups", "اختر المجموعات")]].concat(groups.filter((g) => !shown.includes(g)).map((g) => [g, g])), "data-add")}</div>
-        <div class="stack gap-3">${shown.map((g) => `<details open style="border:var(--border-thin) solid var(--color-border);border-radius:var(--radius-lg)">
-            <summary style="padding:var(--space-4);font-size:var(--text-lg);font-weight:var(--weight-semibold);cursor:pointer">${esc(g || "---")}</summary>
-            <div class="stack gap-5" style="padding:0 var(--space-4) var(--space-4)">${Object.entries(tree[g]).map(([sub, items]) => `<div class="stack gap-2">
-              <label class="check"><input type="checkbox" data-all="${esc(g)}|${esc(sub)}" ${items.every((x) => x.checked) ? "checked" : ""}><span class="check__box">${ic("check")}</span><h4 class="t-title" style="font-size:var(--text-body)">${esc(sub)}</h4></label>
-              ${items.map((x) => `<label class="row between gap-3" style="align-items:center;padding:var(--space-2) var(--space-3);border-radius:var(--radius-md);background:var(--color-surface-sunken)"><b class="t-sm">${esc(x.name)}</b><span class="check"><input type="checkbox" id="${x.key}" data-perm="${x.id}" ${x.checked ? "checked" : ""}><span class="check__box">${ic("check")}</span></span></label>`).join("")}</div>`).join("")}</div></details>`).join("")}</div></section>`;
-    };
     const all = () => groups.flatMap((g) => Object.values(tree[g]).flat());
+    const summary = () => { const a = all(), n = a.filter((x) => x.checked).length; return L(`${n} of ${a.length} permissions selected · ${shown.length} of ${groups.length} groups`, `${n} من ${a.length} صلاحية محددة · ${shown.length} من ${groups.length} مجموعات`); };
+    OPS.head(document.getElementById("pageHead"), { title: [`Assign permissions to job (${job.name || "---"})`, `تعيين الصلاحيات للوظيفة (${job.name || "---"})`], crumbs: [["Employees", "الموظفين", "employees.html"], ["Jobs", "الوظائف", "jobs.html"]],
+      sub: `<span data-sum>${summary()}</span>`,
+      actions: `<a class="btn btn--secondary" href="jobs.html">${ic(document.documentElement.dir === "rtl" ? "chevronRight" : "chevronLeft")}<span>${L("Back to jobs", "العودة إلى الوظائف")}</span></a><button type="button" class="btn" data-save>${ic("check")}<span>${L("Save updates", "حفظ التحديثات")}</span></button>` });
+    const paint = () => {
+      document.querySelector("[data-sum]").textContent = summary();
+      mount.innerHTML = `<div class="stack gap-5"><div data-msg></div>
+        <section class="card card--pad stack gap-3 animate-in">
+          <div class="row between gap-3" style="align-items:center;flex-wrap:wrap"><h3 class="t-title">${L("Permissions group", "مجموعة الصلاحيات")}</h3>
+            <div style="min-width:min(100%,260px)">${SA.select([["", L("Select groups", "اختر المجموعات")]].concat(groups.filter((g) => !shown.includes(g)).map((g) => [g, g])), `data-add aria-label="${L("Add a permissions group", "إضافة مجموعة صلاحيات")}"`)}</div></div>
+          <div class="row gap-2" style="flex-wrap:wrap">${shown.map((g) => `<span class="chip">${esc(g)}<button type="button" data-rm="${esc(g)}" aria-label="${L("Remove", "إزالة")} ${esc(g)}">${ic("close")}</button></span>`).join("") || `<span class="t-sm text-tertiary">${L("No groups selected", "لم يتم اختيار مجموعات")}</span>`}</div>
+        </section>
+        ${shown.map((g) => { const items = Object.values(tree[g]).flat(), on = items.filter((x) => x.checked).length; return `<details open class="card jp-group animate-in">
+            <summary class="row between gap-3"><span class="row gap-3" style="align-items:center"><span class="kpi-ic" style="background:var(--color-primary-subtle);color:var(--color-primary-ink);box-shadow:none">${ic("shield")}</span><b class="t-title">${esc(g || "---")}</b></span>
+              <span class="row gap-2" style="align-items:center"><span class="badge${on ? " badge--primary" : ""}">${on}/${items.length}</span><span class="jp-caret">${ic("chevronDown")}</span></span></summary>
+            <div class="stack gap-5 jp-body">${Object.entries(tree[g]).map(([sub, list]) => `<div class="stack gap-3">
+              <div class="row between gap-3" style="align-items:center"><label class="check"><input type="checkbox" data-all="${esc(g)}|${esc(sub)}" ${list.every((x) => x.checked) ? "checked" : ""}><span class="check__box">${ic("check")}</span><b>${esc(sub)}</b></label><span class="t-xs text-tertiary">${list.filter((x) => x.checked).length}/${list.length}</span></div>
+              <div class="jp-grid">${list.map((x) => `<label class="check jp-perm"><input type="checkbox" id="${x.key}" data-pid="${x.id}" ${x.checked ? "checked" : ""}><span class="check__box">${ic("check")}</span><span class="t-sm">${esc(x.name)}</span></label>`).join("")}</div></div>`).join("")}</div></details>`; }).join("")}</div>`;
+    };
     mount.addEventListener("change", (e) => {
-      const p = e.target.dataset.perm; if (p) { all().find((x) => String(x.id) === p).checked = e.target.checked; return paint(); }
+      const p = e.target.dataset.pid; if (p) { all().find((x) => String(x.id) === p).checked = e.target.checked; return paint(); }
       const a = e.target.dataset.all; if (a) { const [g, s] = a.split("|"); tree[g][s].forEach((x) => (x.checked = e.target.checked)); return paint(); }
       if (e.target.matches("[data-add]") && e.target.value) { shown.push(e.target.value); paint(); }
     });
     mount.addEventListener("click", (e) => {
       const rm = e.target.closest("[data-rm]"); if (!rm) return;
       const g = rm.dataset.rm;
-      /* the dashboard's own confirm (hard-coded English) — removes locally, nothing is sent until Save */
-      const el = SA.modal({ id: "jpRm", title: "Delete Group Permissions", body: `<p class="t-sm text-secondary">Please confirm that you want to delete this Group Permissions (${esc(g)}).</p>`,
-        foot: `<button class="btn btn--secondary" data-close>Cancel</button><button class="btn" data-ok>Confirm</button>` });
+      /* the dashboard's own confirm — removes locally, nothing is sent until Save */
+      const el = SA.modal({ id: "jpRm", title: L("Delete group permissions", "حذف صلاحيات المجموعة"), body: `<p class="t-sm text-secondary">${L(`Please confirm that you want to delete this group permissions (${esc(g)}).`, `يرجى تأكيد رغبتك في حذف صلاحيات هذه المجموعة (${esc(g)}).`)}</p>`,
+        foot: `<button class="btn btn--secondary" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${L("Confirm", "تأكيد")}</button>` });
       el.querySelector("[data-ok]").onclick = () => { Object.values(tree[g]).flat().forEach((x) => (x.checked = false)); shown = shown.filter((x) => x !== g); SA.close(el); paint(); };
     });
     document.getElementById("pageHead").addEventListener("click", (e) => {
       const b = e.target.closest("[data-save]"); if (!b) return;
-      b.disabled = true; b.innerHTML = L("Loading", "جاري التحميل");
+      b.disabled = true; b.innerHTML = `<span>${L("Loading", "جاري التحميل")}</span>`;
       setTimeout(() => {
-        b.disabled = false; b.innerHTML = `<span>${L("Save Updates", "حفظ التحديثات")}</span>`;
-        const box = mount.querySelector("[data-msg]"); box.innerHTML = alert("success", L(`Permissions updated (${all().filter((x) => x.checked).length} selected)`, `تم تحديث الصلاحيات (${all().filter((x) => x.checked).length} محددة)`));
+        b.disabled = false; b.innerHTML = `${ic("check")}<span>${L("Save updates", "حفظ التحديثات")}</span>`;
+        /* success: the backend's res.data.message (placeholder text); failure: its message in red */
+        const box = mount.querySelector("[data-msg]"); box.innerHTML = demo === "error" ? alert("danger", API_MSG()) : alert("success", L("Updated successfully", "تم التحديث بنجاح"));
         setTimeout(() => (box.innerHTML = ""), 3000);
       }, 500);
     });
@@ -129,38 +178,45 @@
   }
 
   /* ================= jobs list ================= */
-  SA.head(document.getElementById("pageHead"), { title: ["jobs", "وظائف"], actions: PP.btn(L("add new", "إضافة جديد"), "plus", "data-add") });
+  /* Redesign (2026-11-17): head with summary + add action, status tiles, search
+     bar, employees as a count chip, permissions as a labelled action. */
+  OPS.head(document.getElementById("pageHead"), { title: ["Jobs", "الوظائف"], crumbs: [["Employees", "الموظفين", "employees.html"]],
+    sub: L(`${data.length} jobs · ${data.filter((j) => j.active === 1).length} active · ${S.employees.length} employees`, `${data.length} وظائف · ${data.filter((j) => j.active === 1).length} نشطة · ${S.employees.length} موظف`),
+    actions: `<button type="button" class="btn" data-add data-perm="add_jobs">${ic("plus")}<span>${L("Add new", "إضافة جديد")}</span></button>` });
   const ctl = SA.list({
     mount, data,
-    pills: [{ key: "all", label: ["all", "الكل"] }, { key: "1", label: ["active", "نشط"] }, { key: "0", label: ["inactive", "غير نشط"] }],
+    pills: [{ key: "all", label: ["All jobs", "كل الوظائف"], icon: "shield", tone: "" }, { key: "1", label: ["Active", "نشط"], icon: "check", tone: "primary" }, { key: "0", label: ["Inactive", "غير نشط"], icon: "close", tone: "danger" }],
     pillMatch: (r, k) => k === "all" || String(r.active) === k,
-    search: ["search by name", "البحث بالاسم"], searchMatch: (r, q) => r.name.toLowerCase().includes(q),
+    search: ["Search by name", "البحث بالاسم"], searchMatch: (r, q) => r.name.toLowerCase().includes(q),
     empty: ["There is no data to display.", "لا توجد بيانات للعرض."],
     columns: [
-      { head: ["name", "الاسم"], cell: (r) => `<b>${esc(r.name)}</b>` },
-      { head: ["Description", "الوصف"], align: "center", cell: (r) => esc(r.description || "") },
-      { head: ["employees", "الموظفين"], align: "center", cell: (r) => r.employees_count },
-      { head: ["status", "الحالة"], align: "center", cell: (r) => (r.active === 1 ? badge("primary", L("active", "نشط")) : badge("danger", L("inactive", "غير نشط"))) },
+      { head: ["Name", "الاسم"], cell: (r) => `<div class="cell-user"><span class="kpi-ic" style="width:36px;height:36px;background:var(--color-surface-sunken);color:var(--color-text-secondary);box-shadow:none">${ic("layers")}</span><div><b>${esc(r.name)}</b></div></div>` },
+      { head: ["Description", "الوصف"], cell: (r) => (r.description ? `<span class="t-sm text-secondary" style="display:block;max-width:360px;white-space:normal">${esc(r.description)}</span>` : `<span class="text-tertiary">—</span>`) },
+      { head: ["Employees", "الموظفين"], align: "center", cell: (r) => `<span class="chip">${ic("users")}${r.employees_count}</span>` },
+      { head: ["Status", "الحالة"], align: "center", cell: (r) => (r.active === 1 ? badge("primary", L("Active", "نشط")) : badge("danger", L("Inactive", "غير نشط"))) },
       /* the key (permissions page) shows only for the signed-in admin job; the admin row itself has no actions */
-      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => (r.id === 1 ? "" : `<div class="row gap-1" style="justify-content:center">${SA.iconBtn("edit", L("edit job", "تعديل الوظيفة"), `data-edit="${r.id}"`)}${SA.iconBtn("trash", L("delete item", "حذف العنصر"), `data-del="${r.id}"`)}<a class="icon-btn" href="jobs.html?id=${r.id}" aria-label="${L("permissions", "الصلاحيات")}" title="${L("permissions", "الصلاحيات")}">${ic("lock")}</a></div>`) },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => (r.id === 1 ? "" : `<div class="row gap-1" style="justify-content:center">${SA.iconBtn("edit", L("Edit job", "تعديل الوظيفة"), `data-edit="${r.id}" data-perm="update_jobs"`)}${SA.iconBtn("trash", L("Delete item", "حذف العنصر"), `data-del="${r.id}" data-perm="delete_jobs"`)}<a class="icon-btn" href="jobs.html?id=${r.id}" aria-label="${L("Permissions", "الصلاحيات")}" data-tip="${L("Permissions", "الصلاحيات")}">${ic("shield")}</a></div>`) },
     ],
   });
   function form(job) {
     const isNew = !job;
-    const el = SA.modal({ id: "jobForm", title: isNew ? L("create new job", "إنشاء وظيفة جديدة") : L("edit job", "تعديل الوظيفة"), body: `<div class="stack gap-4"><div data-alert></div>
-        <div class="sa-formrow"><label class="field__label">${L("name", "الاسم")}: <span class="req">*</span></label><div class="stack gap-1"><input class="input" data-n value="${esc(job ? job.name : "")}" placeholder="${L("enter job name", "أدخل اسم الوظيفة")}"><span data-e="n"></span></div></div>
-        <div class="sa-formrow"><label class="field__label">${L("Description", "الوصف")}:</label><div class="stack gap-1"><textarea class="input" rows="3" data-d placeholder="${L("enter job description", "أدخل وصف الوظيفة")}">${esc(job ? job.description || "" : "")}</textarea><span data-e="d"></span></div></div>
-        <div class="sa-formrow"><label class="field__label">${L("status", "الحالة")}:${isNew ? ' <span class="req">*</span>' : ""}</label>${SA.select([["1", L("active", "نشط"), !job || job.active === 1], ["0", L("inactive", "غير نشط"), job && job.active === 0]], "data-s")}</div></div>`,
-      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${isNew ? L("create", "إنشاء") : L("update", "تحديث")}</button>` });
+    const fld = (label, req, control, k) => `<div class="field" style="margin:0"><label class="field__label">${label}${req ? ' <span class="req">*</span>' : ""}</label>${control}${k ? `<span data-e="${k}"></span>` : ""}</div>`;
+    const el = SA.modal({ id: "jobForm", title: isNew ? L("Create new job", "إنشاء وظيفة جديدة") : L("Edit job", "تعديل الوظيفة"), body: `<div class="stack gap-4"><div data-alert></div>
+        ${fld(L("Name", "الاسم"), true, `<input class="input" data-n value="${esc(job ? job.name : "")}" placeholder="${L("Enter job name", "أدخل اسم الوظيفة")}">`, "n")}
+        ${fld(L("Description", "الوصف"), false, `<textarea class="input" rows="3" data-d placeholder="${L("Enter job description", "أدخل وصف الوظيفة")}">${esc(job ? job.description || "" : "")}</textarea>`, "d")}
+        ${fld(L("Status", "الحالة"), isNew, SA.select([["1", L("Active", "نشط"), !job || job.active === 1], ["0", L("Inactive", "غير نشط"), job && job.active === 0]], "data-s"))}</div>`,
+      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${isNew ? L("Create", "إنشاء") : L("Update", "تحديث")}</button>` });
     el.querySelector(".modal__foot").style.justifyContent = "space-between";
     const err = (k, m) => (el.querySelector(`[data-e="${k}"]`).innerHTML = m ? `<span class="field__error">${ic("warn")} ${m}</span>` : "");
     el.querySelector("[data-ok]").onclick = (e) => {
       const n = el.querySelector("[data-n]").value.trim(), d = el.querySelector("[data-d]").value.trim();
       /* dashboard messages say 3 / 50 while the rules are 2 / 150 — kept 1:1 */
-      err("n", !n ? L("this field is required", "هذا الحقل مطلوب") : n.length < 2 ? L("Minimum 3 symbols", "الحد الأدنى 3 رموز") : n.length > 50 ? L("Maximum 50 symbols", "الحد الأقصى 50 رمز") : "");
-      err("d", d && d.length < 3 ? L("Minimum 3 symbols", "الحد الأدنى 3 رموز") : d.length > 150 ? L("Maximum 50 symbols", "الحد الأقصى 50 رمز") : "");
+      err("n", !n ? L("This field is required", "هذا الحقل مطلوب") : n.length < 2 ? L("Minimum 3 symbols", "الحد الأدنى 3 رموز") : n.length > 50 ? L("Maximum 50 symbols", "الحد الأقصى 50 رمز") : "");
+      /* yup string().min(3) also rejects '' — an empty description fails with "Minimum 3 symbols"
+         (likely a real-app bug: the field looks optional; mirrored 1:1) */
+      err("d", d.length < 3 ? L("Minimum 3 symbols", "الحد الأدنى 3 رموز") : d.length > 150 ? L("Maximum 50 symbols", "الحد الأقصى 50 رمز") : "");
       if (el.querySelector(".field__error")) return;
-      const b = e.currentTarget; b.disabled = true; b.textContent = isNew ? L("creating ...", "جاري الإنشاء ...") : L("updating ...", "جاري التحديث ...");
+      const b = e.currentTarget; b.disabled = true; b.textContent = isNew ? L("Creating ...", "جاري الإنشاء ...") : L("Updating ...", "جاري التحديث ...");
       setTimeout(() => {
         const vals = { name: n, description: d, active: +el.querySelector("[data-s]").value };
         if (isNew) data.push(Object.assign({ id: Math.max(...data.map((x) => x.id)) + 1, employees_count: 0, created_at: "2026-11-16 10:00:00" }, vals)); else Object.assign(job, vals);
@@ -169,13 +225,17 @@
     };
   }
   function del(job) {
-    const el = SA.modal({ id: "jobDel", title: L("delete item", "حذف العنصر"), body: `<div class="stack gap-2"><div data-alert></div><p class="t-sm text-secondary">${L("Please confirm that you want to delete this item", "يرجى تأكيد أنك تريد حذف هذا العنصر")}</p>
-        <p style="color:var(--color-danger)">${L("cannot delete job linked to employee", "لا يمكن حذف الوظيفة المرتبطة بموظف")}</p></div>`,
+    const el = SA.modal({ id: "jobDel", title: L("Delete item", "حذف العنصر"), body: `<div class="stack gap-2"><div data-alert></div><p class="t-sm text-secondary">${L("Please confirm that you want to delete this item", "يرجى تأكيد أنك تريد حذف هذا العنصر")}</p>
+        <p style="color:var(--color-danger)">${L("Cannot delete a job linked to an employee", "لا يمكن حذف وظيفة مرتبطة بموظف")}</p></div>`,
       foot: `<button class="btn btn--secondary" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok ${job.employees_count > 0 ? "disabled" : ""}>${L("Confirm", "تأكيد")}</button>` });
     el.querySelector("[data-ok]").onclick = (e) => {
       const b = e.currentTarget; b.disabled = true; b.textContent = L("Confirming ...", "جاري التأكيد ...");
       /* the dashboard leaves this modal open with the success alert */
-      setTimeout(() => { data.splice(data.indexOf(job), 1); el.querySelector("[data-alert]").innerHTML = alert("success", L("Job deleted successfully", "تم حذف الوظيفة بنجاح")); b.textContent = L("Confirm", "تأكيد"); ctl.paint(); }, 400);
+      setTimeout(() => {
+        b.textContent = L("Confirm", "تأكيد");
+        /* failure: the backend's message (fallback "Failed to delete job") in a red alert */
+        if (demo === "error") { b.disabled = false; el.querySelector("[data-alert]").innerHTML = alert("danger", API_MSG()); return; }
+        data.splice(data.indexOf(job), 1); el.querySelector("[data-alert]").innerHTML = alert("success", L("Job deleted successfully", "تم حذف الوظيفة بنجاح")); ctl.paint(); }, 400);
     };
   }
   document.addEventListener("click", (e) => {

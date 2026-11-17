@@ -165,6 +165,12 @@
             dial: "+965",
             flag: '<svg viewBox="0 0 24 16"><rect width="24" height="5.33" fill="#007a3d"/><rect y="5.33" width="24" height="5.33" fill="#fff"/><rect y="10.67" width="24" height="5.33" fill="#ce1126"/><path d="M0 0 L7 5.33 V10.67 L0 16 Z" fill="#000"/></svg>',
         },
+        {
+            code: "BH",
+            name: "Bahrain",
+            dial: "+973",
+            flag: '<svg viewBox="0 0 24 16"><rect width="24" height="16" fill="#ce1126"/><path d="M0 0H6L9 1.6 6 3.2 9 4.8 6 6.4 9 8 6 9.6 9 11.2 6 12.8 9 14.4 6 16H0Z" fill="#fff"/></svg>',
+        },
     ];
     /* Wire a flag+dial country picker: btn/menu ids + onPick(flagObj). Returns a
      getter/setter: call with no args to read the current country; call with a
@@ -306,12 +312,13 @@
                         { id: "dsa-access", title: "Design System Access", icon: "lock", href: "design-system-access.html" },
                     ],
                 },
+                /* top-level, before the Notifications accordion — SidebarMenuMain.tsx:399-406 (view_email_notifications) */
+                { id: "nt-settings", title: "Notifications Settings", icon: "gear", href: "notifications-settings.html" },
                 {
                     id: "notifications",
                     title: "Notifications",
                     icon: "bell",
                     children: [
-                        { id: "nt-settings", title: "Notifications Settings", icon: "gear", href: "notifications-settings.html" },
                         { id: "nt-partners", title: "Partners", icon: "hotel", href: "notifications-partners.html" },
                         { id: "nt-users", title: "Users", icon: "users", href: "notifications-users.html" },
                     ],
@@ -338,6 +345,13 @@
                 { id: "foundations", title: "Foundations", icon: "layers", href: "foundations.html", badge: "DS" },
                 { id: "components", title: "Components", icon: "layout", href: "components.html", badge: "DS" },
                 { id: "templates", title: "Templates", icon: "box", href: "templates.html", badge: "DS" },
+                /* the dashboard's own sign-in flow + error screens (static designs, not the
+                   real login-live.html gate) — no other way to reach them from the app */
+                { id: "auth-login", title: "Sign in page", icon: "lock", href: "login.html", badge: "DS" },
+                { id: "auth-forgot", title: "Forgot password page", icon: "mail", href: "forgot-password.html", badge: "DS" },
+                { id: "auth-verify", title: "Verification code page", icon: "shield", href: "verification-code.html", badge: "DS" },
+                { id: "err-404", title: "404 page", icon: "warn", href: "error-404.html", badge: "DS" },
+                { id: "err-500", title: "500 page", icon: "server", href: "error-500.html", badge: "DS" },
             ],
         },
     ];
@@ -389,6 +403,11 @@
         foundations: "design-system",
         components: "design-system",
         templates: "design-system",
+        "auth-login": "design-system",
+        "auth-forgot": "design-system",
+        "auth-verify": "design-system",
+        "err-404": "design-system",
+        "err-500": "design-system",
     };
     /* Pages whose ctx.activeId is NOT a nav row id (none yet — kept so a
        detail page can map itself to its section's key). Keyed by activeId. */
@@ -560,13 +579,13 @@
                 RD.leaves([it]).some((c) => c.id === activeId);
             const open = descActive;
             return `<div class="nav-parent${open ? " is-open" : ""}" data-navp="${it.id}">
-        <button class="nav-link nav-parent__toggle${descActive ? " is-active" : ""}" type="button" aria-expanded="${open}">
+        <button class="nav-link nav-parent__toggle${descActive ? " is-active" : ""}" type="button" aria-expanded="${open}" data-tip="${it.title}" data-tip-sb>
           <span class="nav-ic">${ic(it.icon)}</span><span>${it.title}</span>${ic("chevronDown")}
         </button>
         <div class="nav-parent__items">${it.children.map((c) => navLink(c, activeId, dense)).join("")}</div>
       </div>`;
         }
-        return `<a class="nav-link ${it.id === activeId ? "is-active" : ""}" href="${it.href}" ${it.id === activeId ? 'aria-current="page"' : ""}>
+        return `<a class="nav-link ${it.id === activeId ? "is-active" : ""}" href="${it.href}" ${it.id === activeId ? 'aria-current="page"' : ""} data-tip="${it.title}" data-tip-sb>
       <span class="nav-ic">${ic(it.icon)}</span><span>${it.title}</span>${it.badge ? `<span class="nav-badge${it.badge === "DS" ? " nav-badge--ds" : ""}">${it.badge}</span>` : ""}
     </a>`;
     }
@@ -610,8 +629,8 @@
     const userFoot = () => {
         const ar = document.documentElement.dir === "rtl";
         return `<div class="sidebar__ver t-xs text-tertiary" style="text-align:center;padding:var(--space-4) var(--space-3)">
-          <span class="sidebar__ver-full">${ar ? "بواسطة هاي فايف - اصدار 1.0.0" : "powered by high five - v 1.0.0"}</span>
-          <span class="sidebar__ver-short" translate="no">v 1.0.0</span></div>`;
+          <span class="sidebar__ver-full">${ar ? "بواسطة هاي فايف · الإصدار 1.0.0" : "Powered by HighFive · v1.0.0"}</span>
+          <span class="sidebar__ver-short" translate="no">v1.0.0</span></div>`;
     };
     /* Support — pinned below the menu tree on every sidebar style (mirrors the
      partner app's SidebarFooter: a headset button that opens a small flyout,
@@ -883,6 +902,26 @@
             idx === 3 ? "" : SIDEBAR_RENDER[idx](ctx);
         if (tabs) tabs.innerHTML = idx === 3 ? topTabsHTML(ctx) : "";
         wireSidebar(idx, ctx);
+        keepSidebarScroll(mount);
+    }
+    /* Navigating used to reload the sidebar at the top, so a page low in the menu
+       (Setup, Locations, Marketing…) "jumped" the list away from where you clicked.
+       Restore the last position (per tab, sessionStorage), then make sure the
+       active item is visible without moving the list when it already is. */
+    function keepSidebarScroll(mount) {
+        const sc = mount.querySelector(".sidebar__scroll");
+        if (!sc) return;
+        const KEY = "rd-sb-scroll";
+        let saved = null;
+        try { saved = sessionStorage.getItem(KEY); } catch (e) {}
+        if (saved != null) sc.scrollTo({ top: +saved, behavior: "instant" });
+        const act = sc.querySelector("a.is-active, .is-active");
+        if (act) {
+            const a = act.getBoundingClientRect(), b = sc.getBoundingClientRect();
+            if (b.height && (a.top < b.top || a.bottom > b.bottom))
+                sc.scrollTo({ top: sc.scrollTop + (a.top < b.top ? a.top - b.top - 12 : a.bottom - b.bottom + 12), behavior: "instant" });
+        }
+        sc.addEventListener("scroll", () => { try { sessionStorage.setItem(KEY, String(Math.round(sc.scrollTop))); } catch (e) {} }, { passive: true });
     }
 
     function wireTopbar() {
@@ -1759,6 +1798,11 @@
         members: "عضوًا",
         /* docs mode */
         Foundations: "الأساسيات",
+        "Sign in page": "صفحة تسجيل الدخول",
+        "Forgot password page": "صفحة نسيت كلمة المرور",
+        "Verification code page": "صفحة رمز التحقق",
+        "404 page": "صفحة 404",
+        "500 page": "صفحة 500",
         "The raw material every component is built from — colors, type, space, elevation and icons, live from tokens.css.":
             "المادة الخام التي تُبنى منها كل المكوّنات — الألوان والخطوط والمسافات والظلال والأيقونات، حيّةً من tokens.css.",
         "Brand color scales": "تدرجات ألوان الهوية",
@@ -1790,7 +1834,7 @@
         Inactive: "غير نشط",
         "On leave": "في إجازة",
         "Open session": "جلسة مفتوحة",
-        "Public event": "نشاط جماعي",
+        "Public event": "الحدث العام",
         Now: "الآن",
         Success: "نجاح",
         Refund: "استرداد",
@@ -4161,6 +4205,81 @@
     /* =====================================================================
      BOOT
      ===================================================================== */
+    /* ---- Dashboard job permissions (documentation + demo) ----
+       The real dashboard hides actions / tabs / whole pages by the signed-in
+       employee's job permissions (currentUser.data.job.permissions). Here every
+       gated control carries data-perm="<key>" (e.g. data-perm="add_partners"),
+       and pages pass their page key to RD.boot({ perm: "view_partners" }).
+       Normal view shows everything. Demo: ?perm=limited → only view_* keys are
+       granted (add / update / delete controls disappear); ?perm=none → nothing
+       is granted and the page shows the dashboard's NotHavePermissions card.
+       RD.can(key) answers the same question for script-rendered controls. */
+    RD.PERM_MODE = (function () {
+        const m = new URLSearchParams(location.search).get("perm");
+        return m === "limited" || m === "none" ? m : "all";
+    })();
+    document.documentElement.setAttribute("data-perm-mode", RD.PERM_MODE);
+    RD.can = function (key) {
+        if (!key || RD.PERM_MODE === "all") return true;
+        if (RD.PERM_MODE === "none") return false;
+        return String(key).split("|").some((k) => /^view_|^VIEW_|_view$/.test(k.trim()));
+    };
+    RD.noPermission = function () {
+        const ar = document.documentElement.dir === "rtl", L2 = (en, a) => (ar ? a : en);
+        return `<section class="card card--pad stack gap-3" style="align-items:center;text-align:center;max-width:560px;margin:var(--space-8) auto">
+          <span class="kpi-ic" style="background:var(--color-danger-subtle);color:var(--color-danger);box-shadow:none">${ic("lock")}</span>
+          <h2 class="t-h3" style="color:var(--color-danger)">${L2("You do not have permissions to access this page", "ليس لديك صلاحيات للوصول إلى هذه الصفحة")}</h2>
+          <p class="text-tertiary" style="margin:0">${L2("Please contact your administrator if you believe this is an error.", "يرجى الاتصال بالمسؤول إذا كنت تعتقد أن هذا خطأ.")}</p>
+          <div class="row gap-2"><a class="btn" href="index.html">${L2("Home", "الرئيسية")}</a><button type="button" class="btn btn--secondary" onclick="history.back()">${L2("Back", "رجوع")}</button></div></section>`;
+    };
+    /* Floating permissions switcher — bottom corner on the inline-end side (right in
+       English, left in Arabic). Shows the simulated access level; picking another one
+       rewrites ?perm= in the URL and reloads (the mode is read at load). The × hides
+       it for this page view only — a refresh brings it back. */
+    function permSwitcher() {
+        if (document.getElementById("rdPermFab")) return;
+        const ar = document.documentElement.dir === "rtl", L2 = (en, a) => (ar ? a : en);
+        const MODES = [
+            ["all", L2("Full access", "كل الصلاحيات"), L2("Everything the page can do", "كل ما تتيحه الصفحة"), "shield"],
+            ["limited", L2("View only", "عرض فقط"), L2("Add, edit and delete are hidden", "تختفي الإضافة والتعديل والحذف"), "eye"],
+            ["none", L2("No access", "بدون صلاحيات"), L2("The no-permission page", "صفحة عدم وجود صلاحيات"), "lock"],
+        ];
+        const cur = MODES.find((m) => m[0] === RD.PERM_MODE) || MODES[0];
+        const fab = document.createElement("div");
+        fab.id = "rdPermFab";
+        fab.className = "rd-permfab" + (RD.PERM_MODE !== "all" ? " is-sim" : "");
+        fab.innerHTML = `<div class="rd-permfab__menu" role="menu" hidden>
+            <div class="rd-permfab__title">${L2("Simulate permissions", "محاكاة الصلاحيات")}</div>
+            ${MODES.map((m) => `<button type="button" role="menuitemradio" aria-checked="${m[0] === cur[0]}" class="rd-permfab__opt${m[0] === cur[0] ? " is-active" : ""}" data-pm="${m[0]}">${ic(m[3])}<span><b>${m[1]}</b><small>${m[2]}</small></span>${m[0] === cur[0] ? ic("check") : ""}</button>`).join("")}
+          </div>
+          <div class="rd-permfab__bar">
+            <button type="button" class="rd-permfab__btn" aria-haspopup="menu" aria-expanded="false" aria-label="${L2("Simulate permissions", "محاكاة الصلاحيات")}: ${cur[1]}">${ic(cur[3])}<span>${cur[1]}</span>${ic("chevronDown")}</button>
+            <button type="button" class="rd-permfab__x" aria-label="${L2("Hide until refresh", "إخفاء حتى التحديث")}" data-tip="${L2("Hide until refresh", "إخفاء حتى التحديث")}">${ic("close")}</button>
+          </div>`;
+        document.body.appendChild(fab);
+        const menu = fab.querySelector(".rd-permfab__menu"), btn = fab.querySelector(".rd-permfab__btn");
+        const open = (on) => { menu.hidden = !on; btn.setAttribute("aria-expanded", String(on)); };
+        btn.onclick = () => open(menu.hidden);
+        fab.querySelector(".rd-permfab__x").onclick = () => fab.remove();
+        fab.addEventListener("click", (e) => {
+            const o = e.target.closest("[data-pm]");
+            if (!o) return;
+            const u = new URL(location.href);
+            if (o.dataset.pm === "all") u.searchParams.delete("perm"); else u.searchParams.set("perm", o.dataset.pm);
+            location.href = u.toString();
+        });
+        document.addEventListener("click", (e) => { if (!fab.contains(e.target)) open(false); });
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape") open(false); });
+    }
+    function applyPermDemo(ctx) {
+        permSwitcher();
+        if (RD.PERM_MODE === "all") return;
+        if (ctx.perm && !RD.can(ctx.perm)) {
+            /* after the page script has rendered (it runs right after RD.boot) */
+            setTimeout(() => { const c = document.querySelector(".content__inner"); if (c) c.innerHTML = RD.noPermission(); }, 0);
+        }
+    }
+
     RD.boot = function (ctx) {
         ctx = ctx || {};
         RD.__activeId = ctx.activeId;
@@ -4201,6 +4320,7 @@
 
         applyTopbar(readStyle("rd-navbar-style", 5), ctx);
         applySidebar(readStyle("rd-sidebar-style", 5), ctx);
+        applyPermDemo(ctx);
 
         const app = document.getElementById("app");
         const scrim = app && app.querySelector(".scrim");
@@ -4497,6 +4617,7 @@
             const close = () => {
                 drawer.classList.remove("is-open");
                 backdrop.classList.remove("is-open");
+                document.documentElement.classList.remove("rd-scroll-lock");
             };
             backdrop.addEventListener("click", close);
             document.addEventListener("keydown", (e) => {
@@ -4511,6 +4632,8 @@
       <div class="drawer__foot">${footButtons || '<button class="btn btn--ghost" data-drawer-close>Close</button>'}</div>`;
         drawer.classList.add("is-open");
         backdrop.classList.add("is-open");
+        /* the page behind an open drawer must not scroll (wheel / touch go to the drawer only) */
+        document.documentElement.classList.add("rd-scroll-lock");
     };
 
     /* Portal any dropdown/popover .menu to <body> and position it with fixed
@@ -4674,3 +4797,96 @@
     };
 })();
 
+/* Tooltip (registry .tooltip) — any element with data-tip (+ optional data-tip-label)
+   shows one floating tip on hover AND keyboard focus; above the element, flipped
+   below when there is no room, kept inside the viewport; hides on leave, blur,
+   scroll and Escape. Content is set as text, never as HTML. */
+(function () {
+  if (window.__saTip) return; window.__saTip = true;
+  let tip = null, cur = null;
+  function show(el) {
+    if (!tip) {
+      tip = document.createElement("div");
+      tip.className = "tooltip"; tip.id = "saTip"; tip.setAttribute("role", "tooltip");
+      tip.style.cssText = "position:fixed;z-index:var(--z-toast);pointer-events:none;white-space:normal;width:max-content;max-width:min(320px, calc(100vw - 16px));line-height:1.45";
+      document.body.appendChild(tip);
+    }
+    cur = el;
+    tip.textContent = "";
+    if (el.dataset.tipLabel) { const b = document.createElement("b"); b.textContent = el.dataset.tipLabel; b.style.cssText = "display:block;font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--color-text-tertiary);margin-bottom:2px"; tip.appendChild(b); }
+    tip.appendChild(document.createTextNode(el.dataset.tip));
+    tip.hidden = false;
+    el.setAttribute("aria-describedby", "saTip");
+    place();
+  }
+  function place() {
+    const el = cur, r = el.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+    if (el.hasAttribute("data-tip-sb")) { /* beside the sidebar icon, toward the content */
+      const rtl = document.documentElement.dir === "rtl";
+      tip.style.top = Math.max(8, r.top + r.height / 2 - h / 2) + "px";
+      tip.style.left = (rtl ? r.left - w - 10 : r.right + 10) + "px";
+      return;
+    }
+    const top = r.top - h - 8 < 8 ? r.bottom + 8 : r.top - h - 8;
+    tip.style.top = top + "px";
+    tip.style.left = Math.min(Math.max(8, r.left + r.width / 2 - w / 2), innerWidth - w - 8) + "px";
+  }
+  function hide() { if (tip) tip.hidden = true; if (cur) cur.removeAttribute("aria-describedby"); cur = null; }
+  /* any plain title="" (e.g. "+2" branches, truncated names) is adopted on first
+     hover / focus: moved to data-tip so the designed tip shows instead of the
+     browser's; if the title was the element's only name it becomes aria-label */
+  function target(e) {
+    /* nav names: only while the sidebar shows icons alone (collapsed or the icon rail) */
+    const sb = e.target.closest && e.target.closest("[data-tip-sb]");
+    if (sb) { const app = document.getElementById("app"); return app && (app.classList.contains("is-collapsed") || app.classList.contains("rd-sb-rail")) ? sb : null; }
+    const el = e.target.closest && e.target.closest("[data-tip],[title]");
+    if (!el || el.closest("svg") || el.ownerDocument !== document) return el && el.dataset && el.dataset.tip ? el : null;
+    if (!el.dataset.tip && el.getAttribute("title")) {
+      el.dataset.tip = el.getAttribute("title");
+      if (!el.getAttribute("aria-label") && !el.textContent.trim()) el.setAttribute("aria-label", el.dataset.tip);
+      el.removeAttribute("title");
+    } else if (el.hasAttribute("title")) el.removeAttribute("title");
+    return el.dataset.tip ? el : null;
+  }
+  document.addEventListener("mouseover", (e) => { const el = target(e); if (el && el !== cur) show(el); else if (!el && cur && cur !== document.activeElement) hide(); });
+  document.addEventListener("focusin", (e) => { const el = target(e); if (el) show(el); });
+  document.addEventListener("focusout", (e) => { if (cur && e.target === cur) hide(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") hide(); });
+  /* a focused element keeps its tip (keyboard focus scrolls it into view); hover tips hide */
+  addEventListener("scroll", () => { if (cur && cur === document.activeElement) place(); else hide(); }, true);
+})();
+
+/* Scrollable tab bars (.tabs — setup / locations / design-system / content / marketing):
+   start / end arrows appear only while there is more in that direction; the row never
+   jumps when a fully visible tab is clicked; on load the active tab is brought into
+   view only if it is partly hidden. */
+(function () {
+  if (window.__rdTabs) return; window.__rdTabs = true;
+  const rtl = () => document.documentElement.dir === "rtl";
+  const ic = (n) => (window.RD && RD.icon ? RD.icon(n) : "");
+  function enhance(row) {
+    if (row.__rdTabs || row.closest(".pp-tabs")) return;
+    row.__rdTabs = true;
+    const wrap = document.createElement("div");
+    wrap.className = "rd-tabs";
+    row.parentNode.insertBefore(wrap, row);
+    wrap.appendChild(row);
+    const ar = rtl();
+    const mk = (dir) => { const b = document.createElement("button"); b.type = "button"; b.className = "rd-tabs__arrow"; b.dataset.dir = dir; b.hidden = true;
+      b.setAttribute("aria-label", dir === "start" ? (ar ? "تمرير للخلف" : "Scroll back") : (ar ? "تمرير للأمام" : "Scroll forward"));
+      b.innerHTML = ic(dir === "start" ? (ar ? "chevronRight" : "chevronLeft") : (ar ? "chevronLeft" : "chevronRight")); return b; };
+    const s = mk("start"), e = mk("end");
+    wrap.prepend(s); wrap.append(e);
+    const sync = () => { const max = row.scrollWidth - row.clientWidth, pos = Math.abs(row.scrollLeft); s.hidden = pos <= 4; e.hidden = max <= 4 || pos >= max - 4; };
+    const go = (dir) => { row.scrollBy({ left: (dir === "end" ? 1 : -1) * (ar ? -1 : 1) * row.clientWidth * 0.7, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); setTimeout(sync, 450); /* settle after the smooth scroll */ };
+    s.onclick = () => go("start"); e.onclick = () => go("end");
+    row.addEventListener("scroll", sync, { passive: true });
+    addEventListener("resize", sync);
+    const act = row.querySelector(".is-active");
+    if (act) { const a = act.getBoundingClientRect(), b = row.getBoundingClientRect(); if (a.left < b.left || a.right > b.right) act.scrollIntoView({ block: "nearest", inline: "center" }); }
+    requestAnimationFrame(sync);
+  }
+  const scan = (root) => (root.querySelectorAll ? root.querySelectorAll(".tabs") : []).forEach(enhance);
+  const start = () => { scan(document); new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach((n) => { if (n.nodeType === 1) { if (n.classList && n.classList.contains("tabs")) enhance(n); else scan(n); } }))).observe(document.body, { childList: true, subtree: true }); };
+  if (document.body) start(); else document.addEventListener("DOMContentLoaded", start);
+})();

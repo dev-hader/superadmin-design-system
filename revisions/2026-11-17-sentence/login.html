@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
+        <script>
+            try {
+                document.documentElement.setAttribute(
+                    "data-theme",
+                    localStorage.getItem("rd-theme") === "1" ? "dark" : "light",
+                );
+                document.documentElement.dir =
+                    localStorage.getItem("rd-dir") === "1" ? "rtl" : "ltr";
+            } catch (e) {}
+        </script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sign in · High Five</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="assets/css/tokens.css" />
+        <link rel="stylesheet" href="assets/css/base.css" />
+        <link rel="stylesheet" href="assets/css/app.css" />
+        <link rel="stylesheet" href="assets/css/components.css" />
+        <link rel="stylesheet" href="assets/shell.css" />
+        <link rel="stylesheet" href="assets/css/skin-v2.css?v=7" />
+        <link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7" />
+        <style>
+            /* ---- Super Admin auth card (page-level layer on top of the shared
+               "AUTH — brand panel + raised card" treatment in components.css):
+               start-aligned head with a kicker / icon tile, label-row links,
+               controls wrapped so the leading icon stays centred when an error
+               line appears, a 3-step progress for the reset flow, and a quiet
+               footer row for "back" links. Tokens only. ---- */
+            .sa-card .auth-head { text-align: start; margin-block-end: var(--space-6); }
+            .sa-card .auth-head h1 { font-size: var(--text-h2); line-height: 1.2; letter-spacing: -0.01em; }
+            .sa-card .auth-head p { margin-block-start: var(--space-2); }
+            .sa-kicker { display: flex; align-items: center; gap: var(--space-2); margin-block-end: var(--space-5); }
+            .sa-kicker .badge { gap: 6px; }
+            .sa-kicker .badge svg { width: 14px; height: 14px; }
+            /* the card mark (shown once the rail collapses) sits at the start, in line with the head */
+            .sa-card .auth-card__logo { justify-content: flex-start; }
+            .sa-kicker { justify-content: space-between; }
+            .sa-kicker .auth-card__logo { margin: 0; }
+            .sa-head-ic { width: 48px; height: 48px; border-radius: var(--radius-lg); display: grid; place-items: center; background: var(--color-primary-subtle); color: var(--color-primary-ink); margin-block-end: var(--space-4); }
+            .sa-head-ic svg { width: 24px; height: 24px; }
+            .sa-ctl { position: relative; }
+            .sa-ctl > .input { block-size: 48px; }
+            .sa-card .lg-fi { bottom: auto; top: 50%; translate: 0 -50%; }
+            .sa-label-row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); margin-block-end: 6px; }
+            .sa-card .sa-label-row .field__label { margin: 0; }
+            .sa-link { color: var(--color-primary-ink); font-size: var(--text-sm); font-weight: var(--weight-medium); text-decoration: none; white-space: nowrap; }
+            .sa-link:hover { text-decoration: underline; }
+            .sa-card .field__error { margin-block-start: 6px; }
+            .sa-card .alert { margin-block-end: var(--space-5); align-items: center; }
+            .sa-card .alert__icon { display: grid; place-items: center; }
+            .sa-card .alert__icon svg { width: 18px; height: 18px; }
+            .sa-card .alert__body { font-size: var(--text-sm); }
+            .sa-foot { margin-block-start: var(--space-6); padding-block-start: var(--space-5); border-top: 1px solid var(--color-border-subtle); display: flex; align-items: center; justify-content: center; gap: var(--space-3); flex-wrap: wrap; }
+            .sa-foot .btn svg { width: 16px; height: 16px; }
+            [dir="rtl"] .sa-flip svg { transform: scaleX(-1); }
+            /* reset-flow progress: Email · Code · New password */
+            .sa-steps { list-style: none; margin: 0 0 var(--space-6); padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); }
+            .sa-step { display: grid; gap: 6px; font-size: var(--text-xs); font-weight: var(--weight-medium); color: var(--color-text-tertiary); min-inline-size: 0; }
+            .sa-step::before { content: ""; block-size: 4px; border-radius: var(--radius-full); background: var(--color-border); }
+            .sa-step.is-done::before, .sa-step.is-current::before { background: var(--color-primary); }
+            .sa-step.is-done { color: var(--color-text-secondary); }
+            .sa-step.is-current { color: var(--color-text); }
+            .sa-step > span { line-height: 1.35; overflow-wrap: anywhere; }
+            .sa-step b { font-family: var(--font-mono); font-weight: var(--weight-medium); margin-inline-end: 4px; }
+            /* phones: the theme / language tools are fixed top-end, so keep the
+               card clear of them when it is taller than the screen, and tighten
+               the head a step */
+            @media (max-width: 860px) {
+                .auth-main { align-items: safe center; }
+                .sa-card { margin-block-start: var(--space-12); }
+                .sa-card .auth-head { margin-block-end: var(--space-5); }
+                .sa-head-ic { width: 40px; height: 40px; margin-block-end: var(--space-3); }
+                .sa-head-ic svg { width: 20px; height: 20px; }
+                .sa-steps { margin-block-end: var(--space-5); }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="auth">
+            <!-- The decoration layer (.lg-deco: bloom + wave) is injected by
+                 AUTH.init() (assets/js/auth.js) and styled by the "AUTH — brand
+                 panel + raised card" section of assets/css/components.css.
+                 The brand rail is filled by AUTH.init() and then re-rendered
+                 below with Super Admin copy (same .lg-* classes, no Partner
+                 pitch). -->
+            <aside class="auth-brand"></aside>
+            <main class="auth-main">
+                <form class="auth-card sa-card" id="loginForm" novalidate>
+                    <div class="sa-kicker">
+                        <a class="auth-card__logo" href="login.html"></a>
+                        <span class="badge badge--primary"><span data-ic="shield"></span><span data-ar="المدير العام">Super Admin</span></span>
+                    </div>
+                    <div class="auth-head">
+                        <h1 data-ar="تسجيل الدخول">Sign in</h1>
+                        <p data-ar="أدخل البريد الإلكتروني أو رقم الهاتف وكلمة المرور الخاصة بالمدير">Please enter the admin email or phone number and password.</p>
+                    </div>
+
+                    <div class="auth-field">
+                        <label class="field__label" for="username" data-ar="البريد الإلكتروني أو الهاتف">Email or phone</label>
+                        <div class="sa-ctl">
+                            <input
+                                class="input"
+                                id="username"
+                                type="email"
+                                autocomplete="username"
+                                placeholder="Enter email or phone"
+                                data-ar-placeholder="أدخل البريد الإلكتروني أو رقم الهاتف"
+                            />
+                            <!-- leading field icon (.lg-fi) — shared treatment -->
+                            <span class="lg-fi" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
+                        </div>
+                    </div>
+
+                    <div class="auth-field">
+                        <!-- "Forgot password?" sits on the password label row -->
+                        <div class="sa-label-row">
+                            <label class="field__label" for="password" data-ar="كلمة المرور">Password</label>
+                            <a class="sa-link" href="forgot-password.html" data-ar="هل نسيت كلمة المرور؟">Forgot password?</a>
+                        </div>
+                        <div class="auth-pw">
+                            <input
+                                class="input"
+                                id="password"
+                                type="password"
+                                autocomplete="current-password"
+                                placeholder="Password"
+                                data-ar-placeholder="كلمة المرور"
+                            />
+                            <span
+                                class="auth-pw__eye"
+                                data-eye="password"
+                                aria-label="Show password"
+                            ></span>
+                            <span class="lg-fi" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+                        </div>
+                    </div>
+
+                    <div class="auth-actions">
+                        <button class="btn" type="submit" id="btnLogin" data-ar="تسجيل الدخول">Sign in</button>
+                    </div>
+
+                    <!-- "Not a Member yet? Sign up" is commented out in the dashboard — not shown -->
+                </form>
+            </main>
+        </div>
+
+        <script src="assets/js/env.js"></script>
+        <script src="assets/js/api.js"></script>
+        <script src="assets/shell.js"></script>
+        <script src="assets/js/auth.js"></script>
+        <script>
+            (() => {
+                AUTH.init();
+                const $ = (id) => document.getElementById(id);
+                const btn = $("btnLogin");
+                const ar = document.documentElement.dir === "rtl", T = (en, a) => (ar ? a : en);
+                document.querySelectorAll("[data-ar-placeholder]").forEach((i) => ar && (i.placeholder = i.dataset.arPlaceholder));
+                /* icons for [data-ic] slots (badge, alerts, head tile, footer) */
+                document.querySelectorAll("[data-ic]").forEach((x) => (x.innerHTML = RD.icon(x.dataset.ic)));
+                /* Brand rail: AUTH.init() fills it with the shared (Partner)
+                   pitch; re-render it with the same .lg-* building blocks but
+                   Super Admin copy. Arabic is picked here because arInit()
+                   already ran inside AUTH.init(). */
+                const rail = document.querySelector(".auth-brand");
+                if (rail) {
+                    const feats = [
+                        ["users", T("Partners & services", "الشركاء والخدمات"), T("Partners, their services, lists and translations.", "الشركاء وخدماتهم وقوائمهم وترجماتها.")],
+                        ["ticket", T("Bookings & financials", "الحجوزات والماليات"), T("Every booking, payment and promo code.", "كل حجز ودفعة وكود خصم.")],
+                        ["gear", T("Setup & content", "الإعدادات والمحتوى"), T("Types, locations, pages and notifications.", "الأنواع والمواقع والصفحات والإشعارات.")],
+                    ];
+                    rail.innerHTML = `
+                        <div class="lg-lockup">${AUTH.MARK("lgMarkGrad", 58, 48)}<span class="lg-wordmark">High<b>Five</b></span></div>
+                        <div class="lg-d__head" style="--d:.1s">
+                            <h2 class="lg-h">${T("Every partner,", "كل شريك،")}<br />${T("every booking", "كل حجز")}</h2>
+                            <div class="lg-h__soft">${T("one control room.", "في لوحة تحكم واحدة.")}</div>
+                        </div>
+                        <div class="lg-feats">${feats
+                            .map(
+                                ([ic, t, s], i) => `<div class="lg-feat" style="--d:${0.25 + i * 0.1}s">
+                            <span class="lg-feat__ic" aria-hidden="true">${RD.icon(ic)}</span>
+                            <div><div class="lg-feat__t">${t}</div><div class="lg-feat__s">${s}</div></div>
+                        </div>`,
+                            )
+                            .join("")}</div>`;
+                }
+                if (ar) document.title = "تسجيل الدخول · High Five";
+                const setLoading = (on) => {
+                    btn.disabled = on;
+                    btn.textContent = on ? T("Please wait...", "يرجى الانتظار...") : T("Sign in", "تسجيل الدخول");
+                };
+
+                /* Only a relative, same-origin path (leading single "/") is honored, to avoid an
+     open-redirect via a crafted ?redirect= param — mirrors RD.boot's own
+     redirectToLogin() in assets/shell.js, which sends users here the same way. */
+                function safeRedirect() {
+                    const r = new URLSearchParams(location.search).get(
+                        "redirect",
+                    );
+                    return r && /^\/(?!\/)/.test(r) ? r : "index.html";
+                }
+
+                /* POST /auth/login (#2525): email + password created by the Super Admin.
+     Client-side validation only blocks empty fields — the server is the source of
+     truth for whether the credentials/account are actually valid. */
+                $("loginForm").addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const email = $("username").value.trim(),
+                        password = $("password").value.trim();
+                    /* the dashboard's Yup copy: required · min 3 · max 50 */
+                    if (!email) return RD.toast("danger", T("Email this field is required", "البريد الإلكتروني: هذا الحقل مطلوب"));
+                    if (!password) return RD.toast("danger", T("Password is required", "كلمة المرور مطلوبة"));
+                    if (email.length < 3 || password.length < 3) return RD.toast("danger", T("Minimum 3 symbols", "3 رموز على الأقل"));
+                    if (email.length > 50 || password.length > 50) return RD.toast("danger", T("Maximum 50 symbols", "50 رمزًا كحد أقصى"));
+
+                    setLoading(true);
+                    try {
+                        const { token, expiresIn } = await API.login(
+                            email,
+                            password,
+                        );
+                        API.saveSession(
+                            token,
+                            expiresIn,
+                            true,
+                        );
+                        RD.toast("success", T("Login successful", "تم تسجيل الدخول بنجاح"));
+                        setTimeout(() => (location.href = safeRedirect()), 500);
+                    } catch (err) {
+                        setLoading(false);
+                        if (err.status === 403)
+                            RD.toast(
+                                "danger",
+                                T("This account has no access yet — ask your Super Admin to add you first.", "هذا الحساب لا يملك صلاحية الوصول بعد — اطلب من المدير العام إضافتك أولًا."),
+                            );
+                        else if (err.status === 401)
+                            RD.toast("danger", T("The login details are incorrect", "بيانات تسجيل الدخول غير صحيحة"));
+                        else
+                            RD.toast(
+                                "danger",
+                                T("Couldn't reach the server. Please try again.", "تعذّر الوصول إلى الخادم، يرجى المحاولة مرة أخرى."),
+                            );
+                    }
+                });
+            })();
+        </script>
+    </body>
+</html>

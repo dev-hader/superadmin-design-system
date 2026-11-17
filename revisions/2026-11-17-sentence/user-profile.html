@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>User profile · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+
+  /* ---- redesign frame (2026-11-17): record header + grouped section nav ---- */
+  .pp-head { margin-bottom: var(--space-6); }
+  .pp-head__media { display: grid; place-items: center; font-size: var(--text-h3); font-weight: var(--weight-bold); color: var(--color-primary-ink); background: var(--color-primary-subtle); }
+  .pp-head__bio { max-width: 680px; margin-top: var(--space-2); }
+  .pp-head .record-head__meta > span { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .pp-head .record-head__meta svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .pp-layout { display: grid; grid-template-columns: 264px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .pp-layout.is-solo, .pp-layout.is-tabs { grid-template-columns: minmax(0, 1fr); }
+  .pp-body { min-width: 0; }
+
+  /* shared bits: the section card, its head and the side / tabs switch */
+  .pp-nav__card { background: var(--color-surface); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-lg); box-shadow: var(--shadow-xs); }
+  .pp-nav__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border-subtle); }
+  .pp-nav__bar b { font-size: var(--text-sm); }
+  .pp-view { display: inline-flex; padding: 2px; gap: 2px; background: var(--color-surface-sunken); border-radius: var(--radius-md); }
+  .pp-view button { width: 30px; height: 28px; display: grid; place-items: center; border-radius: var(--radius-sm); color: var(--color-text-tertiary); }
+  .pp-view button svg { width: 16px; height: 16px; }
+  .pp-view button:hover { color: var(--color-text); }
+  .pp-view button[aria-pressed="true"] { background: var(--color-surface); color: var(--color-primary-ink); box-shadow: var(--shadow-xs); }
+  .pp-ic { display: inline-grid; place-items: center; width: 18px; height: 18px; flex-shrink: 0; color: var(--color-text-tertiary); }
+  .pp-ic svg { width: 16px; height: 16px; }
+
+  /* side view */
+  .pp-nav { position: sticky; top: calc(var(--topbar-height) + var(--space-4)); }
+  .pp-nav__list { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-3) var(--space-2) var(--space-4); max-height: calc(100vh - var(--topbar-height) - 7rem); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--color-border) transparent; }
+  .pp-nav__group { display: flex; flex-direction: column; gap: 1px; }
+  .pp-nav__title { display: flex; align-items: center; justify-content: space-between; font-size: var(--text-xs); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--color-text-tertiary); padding: 0 var(--space-3) var(--space-1); }
+  .pp-nav__title span:last-child { font-variant-numeric: tabular-nums; letter-spacing: 0; }
+  .pp-nav__link { position: relative; display: flex; align-items: center; gap: var(--space-3); padding: 9px var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); line-height: 1.3; color: var(--color-text-secondary); text-decoration: none; transition: background-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
+  .pp-nav__link:hover { background: var(--color-surface-hover); color: var(--color-text); }
+  .pp-nav__link:hover .pp-ic { color: var(--color-text-secondary); }
+  .pp-nav__link.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .pp-nav__link.is-active .pp-ic { color: var(--color-primary); }
+  /* the accent rail on the reading-start edge (RTL-aware) */
+  .pp-nav__link.is-active::before { content: ""; position: absolute; inset-block: 8px; inset-inline-start: 0; width: 3px; border-radius: var(--radius-full); background: var(--color-primary); }
+
+  /* tabs view: groups on top, that group's sections underneath — nothing hidden */
+  .pp-tabs { margin-bottom: var(--space-5); }
+  .pp-tabs__groups { display: flex; gap: var(--space-2); flex-wrap: wrap; flex: 1; min-width: 0; }
+  .pp-tabs__group { display: inline-flex; align-items: center; gap: var(--space-2); padding: 6px var(--space-3); border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--color-text-secondary); border: 1px solid var(--color-border-subtle); }
+  .pp-tabs__group:hover { color: var(--color-text); background: var(--color-surface-hover); }
+  .pp-tabs__group[aria-pressed="true"] { color: var(--color-primary-ink); background: var(--color-primary-subtle); border-color: transparent; }
+  .pp-tabs__count { font-size: var(--text-xs); font-variant-numeric: tabular-nums; color: var(--color-text-tertiary); }
+  .pp-tabs__scroller { position: relative; }
+  .pp-tabs__row { display: flex; gap: var(--space-1); padding: 0 var(--space-3); overflow-x: auto; scrollbar-width: none; scroll-padding-inline: 44px; }
+  .pp-tabs__row::-webkit-scrollbar { display: none; }
+  .pp-tabs__arrow { position: absolute; inset-block: 0; z-index: 1; width: 44px; display: grid; place-items: center; color: var(--color-text-secondary); background: var(--color-surface); }
+  .pp-tabs__arrow[hidden] { display: none; }
+  .pp-tabs__arrow:hover { color: var(--color-primary-ink); }
+  .pp-tabs__arrow svg { width: 18px; height: 18px; }
+  .pp-tabs__arrow[data-scroll="start"] { inset-inline-start: 0; border-end-start-radius: var(--radius-lg); box-shadow: 14px 0 12px -8px var(--color-surface); }
+  .pp-tabs__arrow[data-scroll="end"] { inset-inline-end: 0; border-end-end-radius: var(--radius-lg); box-shadow: -14px 0 12px -8px var(--color-surface); }
+  [dir="rtl"] .pp-tabs__arrow[data-scroll="start"] { box-shadow: -14px 0 12px -8px var(--color-surface); }
+  [dir="rtl"] .pp-tabs__arrow[data-scroll="end"] { box-shadow: 14px 0 12px -8px var(--color-surface); }
+  .pp-tabs__tab { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-3); font-size: var(--text-sm); color: var(--color-text-secondary); text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .pp-tabs__tab:hover { color: var(--color-text); }
+  .pp-tabs__tab.is-active { color: var(--color-primary-ink); font-weight: var(--weight-semibold); border-bottom-color: var(--color-primary); }
+  .pp-tabs__tab.is-active .pp-ic { color: var(--color-primary); }
+
+  /* phones / narrow: one grouped select, whichever view is chosen */
+  /* narrow-screen picker */
+  .pp-pick { display: none; position: relative; z-index: 50; } /* above the animated section cards that follow it, below modals */
+  .pp-pick__btn { width: 100%; display: flex; align-items: center; gap: var(--space-3); height: 44px; padding: 0 var(--space-3); margin-top: var(--space-1); background: var(--color-surface); border: 1.5px solid var(--input-border); border-radius: var(--radius-md); font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-text); text-align: start; }
+  .pp-pick__btn:hover, .pp-pick__btn[aria-expanded="true"] { border-color: var(--input-border-hover); }
+  .pp-pick__btn .pp-ic { color: var(--color-primary); }
+  .pp-pick__cur { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pp-pick__btn > svg { width: 16px; height: 16px; color: var(--color-text-tertiary); transition: transform var(--duration-fast) var(--ease-out); }
+  .pp-pick__btn[aria-expanded="true"] > svg { transform: rotate(180deg); }
+  .pp-pick__menu { inset-inline: 0; top: calc(100% + 6px); max-height: min(60vh, 460px); overflow-y: auto; padding: var(--space-2); }
+  .pp-pick__group + .pp-pick__group { margin-top: var(--space-2); padding-top: var(--space-2); border-top: 1px solid var(--color-border-subtle); }
+  .pp-pick__title { display: block; padding: var(--space-1) var(--space-3); font-size: var(--text-xs); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--color-text-tertiary); }
+  .pp-pick__item { display: flex; align-items: center; gap: var(--space-3); justify-content: flex-start; text-decoration: none; }
+  .pp-pick__item.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .pp-pick__item.is-active .pp-ic { color: var(--color-primary); }
+  .pp-pick__check { margin-inline-start: auto; display: inline-flex; color: var(--color-primary); }
+  .pp-pick__check svg { width: 16px; height: 16px; }
+  @media (prefers-reduced-motion: reduce) { .pp-pick__btn > svg { transition: none; } }
+  @media (max-width: 1100px) {
+    .pp-layout { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+    .pp-nav { position: static; }
+    .pp-nav__card { display: none; }
+    .pp-pick { display: block; }
+  }
+  @media (prefers-reduced-motion: reduce) { .pp-nav__link { transition: none; } }
+  .up-status { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); margin: var(--space-3) 0 0; padding-top: var(--space-3); border-top: 1px dashed var(--color-border-subtle); }
+  .up-status dt { font-size: var(--text-xs); color: var(--color-text-tertiary); }
+  .up-status dd { margin: 2px 0 0; font-size: var(--text-sm); font-weight: var(--weight-semibold); }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div class="pp-layout" id="ppLayout">
+        <nav class="pp-nav" id="ppNav" aria-label="User sections"></nav>
+        <div id="usBody" class="pp-body"></div>
+      </div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/pp/pp-info.js"></script>
+<script src="assets/js/pp/pp-ops.js"></script>
+<script src="assets/js/kp/kp-info.js"></script>
+<script src="assets/js/kp/kp-ops.js"></script>
+<script src="assets/js/us/us-tabs.js"></script>
+<script src="assets/js/us/us-wallet.js"></script>
+<script>
+(() => {
+  /* User profile — mirrors pages/users/profile (ProfilePage + header/ProfileHeader
+     + EditStatusModal): title "user profile", back (keeps redirect_to_page),
+     hero (photo · name · (username) · bio · country · gender · age · wallet) with
+     the user-status block, and the 8 tabs. Tabs: assets/js/us/*.js.
+     Redesign (2026-11-17): the hero + status block + tab strip became the
+     partner profile's frame — a record header (identity, status, the status
+     action, back) and a grouped section nav (side list or tabs; a picker on
+     phones). The tab bodies are untouched. Previous layout:
+     revisions/2026-11-17-all-pages/user-profile.html
+     URL: user-profile.html?id=<userId>&tab=<key>[&redirect_to_page=…]
+     Demo flags (samples, off by default): ?demo=status-error (Update status
+     answers with an API error → shown in the modal's alert), ?demo=error (the
+     Packages tab failed to load — "Could not load the subscribers." + Retry).
+     Permissions (job keys, as the dashboard — data-perm, demo ?perm=limited | ?perm=none):
+     page view_user (UsersPage wraps the profile routes) · Update status update_user
+     (ProfileHeader) · section nav (ProfileHeader): Info open · Bookings view_bookings ·
+     Multi-bookings view_multi_bookings · Public events view_public_events · Packages
+     PERMISSIONS.USERS.VIEW_USER_PACKAGES = "" in the dashboard (open to all — untagged) ·
+     Wallet view_user_wallet · Comments view_user_comments · Notes view_user_notes. A section
+     whose key is missing is left out of the side list, the tabs and the phone picker; a group
+     is tagged only when every section in it is (neither is today: Info and Packages are open).
+     In-tab keys: assets/js/us/us-tabs.js + us-wallet.js. */
+  RD.boot({ activeId: "users", title: "User profile", perm: "view_user" });
+  if (!document.getElementById("usBody")) return;
+  const { L, esc, ic, badge } = SA;
+  const qs = new URLSearchParams(location.search);
+  const user = HF.SA.users.find((x) => String(x.id) === qs.get("id")) || HF.SA.users[0];
+  US.user = user;
+  const back = `users.html${qs.get("redirect_to_page") ? "?page=" + qs.get("redirect_to_page") : ""}`;
+  const GENDER = { male: ["Male", "ذكر"], female: ["Female", "أنثى"] };
+
+  /* ---------- record header (no phone / email here — as in the dashboard) ---------- */
+  function hero() {
+    const u = user;
+    const g = GENDER[String(u.gender || "").toLowerCase()];
+    document.getElementById("pageHead").innerHTML = `<header class="page-head pp-head animate-in" style="max-width:none">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="${back}">${L("Users", "المستخدمون")}</a><span aria-hidden="true">›</span><span>${L("User profile", "ملف المستخدم الشخصي")}</span></nav>
+      <div class="record-head">
+        <span class="record-head__media pp-head__media" aria-hidden="true" style="overflow:hidden">${u.photo ? `<img src="${esc(u.photo)}" alt="" style="width:100%;height:100%;object-fit:cover">` : esc(PP.initials(u.name))}</span>
+        <div class="record-head__id">
+          <h1>${esc(u.name)}</h1>
+          <span class="t-sm text-tertiary">(${u.high_five_user_name ? esc(u.high_five_user_name) : "---"})</span>
+          <p class="t-sm text-secondary pp-head__bio">${u.biography ? esc(u.biography) : "---"}</p>
+          <div class="record-head__meta">
+            <span>${ic("pin")} ${u.country ? esc(u.country.name) : "---"}</span>
+            <span>${g ? L(g[0], g[1]) : u.gender ? esc(u.gender) : "---"} · ${u.age || 0} ${L("years", "سنوات")}</span>
+            <span>${L("Wallet", "المحفظة")}: <b>${u.wallet_amount || 0}</b> ${esc(u.country.currency.code)}</span>
+          </div>
+          <!-- user status (the dashboard's status column) -->
+          <dl class="up-status">
+            <div><dt>${L("User status", "حالة المستخدم")}</dt><dd>${u.status === 0 ? badge("danger", L("Blocked", "محظور")) : badge("primary", L("Active", "نشط"))}</dd></div>
+            <div><dt>${L("Action by", "الإجراء بواسطة")}</dt><dd>${u.status_action_by ? esc(u.status_action_by.name) : "---"}</dd></div>
+            <div><dt>${L("Action on", "الإجراء في")}</dt><dd>${u.status_action_at ? esc(u.status_action_at) : "---"}</dd></div>
+          </dl>
+        </div>
+        <div class="record-head__actions">
+          <button type="button" class="btn btn--secondary" id="usEditStatus" data-perm="update_user">${ic("edit")}<span>${L("Update status", "تحديث الحالة")}</span></button>
+          <a class="icon-btn" href="${back}" aria-label="${L("Back", "رجوع")}" data-tip="${L("Back", "رجوع")}">${ic(document.documentElement.dir === "rtl" ? "chevronRight" : "chevronLeft")}</a>
+        </div>
+      </div>
+    </header>`;
+    /* update status — PUT /users/{id}/update-status {status}; no toast, in-modal alert on error */
+    document.getElementById("usEditStatus").onclick = () => {
+      /* the API's error message lands in the modal's alert slot (no toast) — sample: ?demo=status-error */
+      const el = SA.modal({ id: "usSt", title: L("Update status", "تحديث الحالة"), body: `<div class="stack gap-4"><div data-alert></div>${SA.field(["Status", "الحالة"], SA.select([["0", L("Blocked", "محظور"), user.status === 0], ["1", L("Active", "نشط"), user.status !== 0]], "data-s"))}</div>`,
+        foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${L("Update", "تحديث")}</button>` });
+      el.querySelector("[data-ok]").onclick = (e) => {
+        const b = e.currentTarget; b.disabled = true; b.textContent = L("Updating...", "جاري التحديث...");
+        if (new URLSearchParams(location.search).get("demo") === "status-error") return setTimeout(() => {
+          el.querySelector("[data-alert]").innerHTML = `<div class="alert alert--danger" role="alert"><span class="alert__icon">${ic("warn")}</span><div class="alert__body">${L("You can't block a user with an active booking.", "لا يمكنك حظر مستخدم لديه حجز نشط.")}</div></div>`;
+          b.disabled = false; b.textContent = L("Update", "تحديث");
+        }, 400);
+        setTimeout(() => { user.status = +el.querySelector("[data-s]").value; user.status_action_by = { name: "Super Admin" }; user.status_action_at = "2026-11-15 12:00:00"; SA.close(el); hero(); }, 400);
+      };
+    };
+  }
+  US.refreshHero = hero;
+
+  /* ---------- sections (the same 8 tab keys) ---------- */
+  const GROUPS = [
+    ["profile", L("Profile", "الملف"), [
+      ["details", "Info", "معلومات", "users"], ["wallet", "Wallet", "المحفظة", "revenue"], ["comments", "Comments", "تعليقات", "chat"], ["notes", "Notes", "ملحوظات", "paperclip"]]],
+    ["activity", L("Activity", "النشاط"), [
+      ["bookings", "Bookings", "الحجوزات", "booking"], ["multi-bookings", "Multi-bookings", "الحجوزات المتعددة", "calendar"], ["public-events", "Public events", "الأحداث العامة", "ticket"], ["packages", "Packages", "الباقات", "package"]]],
+  ];
+  /* section -> dashboard job key (ProfileHeader nav); no entry = open to all */
+  const TAB_PERM = { bookings: "view_bookings", "multi-bookings": "view_multi_bookings", "public-events": "view_public_events", wallet: "view_user_wallet", comments: "view_user_comments", notes: "view_user_notes" };
+  const can = (k) => !k || !window.RD || !RD.can || RD.can(k);
+  GROUPS.forEach((g) => { g[2] = g[2].filter((t) => can(TAB_PERM[t[0]])); });
+  for (let i = GROUPS.length - 1; i >= 0; i--) if (!GROUPS[i][2].length) GROUPS.splice(i, 1);
+  const tPerm = (t) => (TAB_PERM[t[0]] ? ` data-perm="${TAB_PERM[t[0]]}"` : "");
+  /* a group hides only when all its sections are gated: any-of their keys */
+  const gPerm = (items) => (items.every((t) => TAB_PERM[t[0]]) ? ` data-perm="${items.map((t) => TAB_PERM[t[0]]).join("|")}"` : "");
+  const KEYS = GROUPS.flatMap((g) => g[2].map((t) => t[0]));
+  function href(key, extra) {
+    const u = new URLSearchParams();
+    u.set("id", user.id); u.set("tab", key);
+    if (qs.get("redirect_to_page")) u.set("redirect_to_page", qs.get("redirect_to_page"));
+    Object.entries(extra || {}).forEach(([k, v]) => v != null && u.set(k, v));
+    return "?" + u.toString();
+  }
+  US.href = href;
+  PP.href = href; /* the shared booking / event views and notes build links through PP.href */
+  const curTab = () => { const t = new URLSearchParams(location.search).get("tab"); return KEYS.includes(t) ? t : "details"; };
+  const NAV_KEY = "rd-pp-nav"; // one choice for every profile (partner · user · unit · package)
+  /* ---------------- section navigation (partner-profile's frame) ----------------
+     A grouped side list or two-row tabs (groups, then that group's sections) —
+     a per-viewer preference kept in localStorage (NAV_KEY). Below
+     1100px both collapse to one grouped picker. Every section stays visible. */
+  const VIEW_KEY = NAV_KEY;
+  let view = "side";
+  try { if (localStorage.getItem(VIEW_KEY) === "tabs") view = "tabs"; } catch (e) {}
+  let shownGroup = null;
+  const rtl = () => document.documentElement.dir === "rtl";
+  const groupOf = (key) => (GROUPS.find((g) => g[2].some((t) => t[0] === key)) || GROUPS[0])[0];
+  const icon = (name) => `<span class="pp-ic" aria-hidden="true">${ic(name)}</span>`;
+  const viewSwitch = () => `<div class="pp-view" role="group" aria-label="${L("Section layout", "شكل الأقسام")}">
+      <button type="button" data-view="side" aria-pressed="${view === "side"}" data-tip="${L("Side list", "قائمة جانبية")}" aria-label="${L("Side list", "قائمة جانبية")}">${ic("layout")}</button>
+      <button type="button" data-view="tabs" aria-pressed="${view === "tabs"}" data-tip="${L("Tabs on top", "تبويبات بالأعلى")}" aria-label="${L("Tabs on top", "تبويبات بالأعلى")}">${ic("menu")}</button>
+    </div>`;
+  const selectNav = (active) => {
+    const cur = GROUPS.flatMap((g) => g[2]).find((t) => t[0] === active) || GROUPS[0][2][0];
+    return `<div class="pp-pick">
+      <span class="field__label" id="ppPickLbl">${L("Section", "القسم")}</span>
+      <button type="button" class="pp-pick__btn" data-pick aria-haspopup="true" aria-expanded="false" aria-labelledby="ppPickLbl ppPickCur">
+        ${icon(cur[3])}<span id="ppPickCur" class="pp-pick__cur">${esc(L(cur[1], cur[2]))}</span>${ic("chevronDown")}</button>
+      <div class="menu pp-pick__menu" role="menu">
+        ${GROUPS.map(([, title, items]) => `<div class="pp-pick__group"${gPerm(items)}><span class="pp-pick__title">${title}</span>
+          ${items.map((t) => `<a role="menuitem"${tPerm(t)} href="${href(t[0])}" class="menu__item pp-pick__item${t[0] === active ? " is-active" : ""}"${t[0] === active ? ' aria-current="page"' : ""}>${icon(t[3])}<span>${esc(L(t[1], t[2]))}</span>${t[0] === active ? `<span class="pp-pick__check">${ic("check")}</span>` : ""}</a>`).join("")}</div>`).join("")}
+      </div>
+    </div>`;
+  };
+  const pickOpen = (open) => {
+    const btn = document.querySelector("[data-pick]"), menu = document.querySelector(".pp-pick__menu");
+    if (!btn) return;
+    btn.setAttribute("aria-expanded", String(open));
+    menu.classList.toggle("is-open", open);
+    if (open) { const on = menu.querySelector(".is-active"); if (on) on.scrollIntoView({ block: "nearest" }); }
+  };
+  document.addEventListener("click", (e) => { if (!e.target.closest(".pp-pick")) pickOpen(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") pickOpen(false); });
+  function arrows() {
+    const row = document.querySelector(".pp-tabs__row");
+    if (!row) return;
+    const max = row.scrollWidth - row.clientWidth, pos = Math.abs(row.scrollLeft);
+    document.querySelector('[data-scroll="start"]').hidden = pos <= 4;
+    document.querySelector('[data-scroll="end"]').hidden = max <= 4 || pos >= max - 4;
+  }
+  const scrollRow = (dir) => {
+    const row = document.querySelector(".pp-tabs__row");
+    const sign = (dir === "end" ? 1 : -1) * (rtl() ? -1 : 1);
+    row.scrollBy({ left: sign * row.clientWidth * 0.7, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    setTimeout(arrows, 450);
+  };
+  addEventListener("resize", arrows);
+  const tabLabel = (t) => `${icon(t[3])}<span>${esc(L(t[1], t[2]))}</span>${t[4] != null ? `<span class="pp-tabs__count pp-count">${t[4]}</span>` : ""}`;
+  function sideNav(active) {
+    return `<div class="pp-nav__card">
+        <div class="pp-nav__bar"><b>${L("Sections", "الأقسام")}</b>${viewSwitch()}</div>
+        <div class="pp-nav__list">
+          ${GROUPS.map(([, title, items]) => `<div class="pp-nav__group"${gPerm(items)}>
+            <span class="pp-nav__title"><span>${title}</span><span>${items.length}</span></span>
+            ${items.map((t) => `<a${tPerm(t)} href="${href(t[0])}" class="pp-nav__link${t[0] === active ? " is-active" : ""}"${t[0] === active ? ' aria-current="page"' : ""}>${tabLabel(t)}</a>`).join("")}
+          </div>`).join("")}
+        </div>
+      </div>${selectNav(active)}`;
+  }
+  function tabsNav(active) {
+    const g = GROUPS.find((x) => x[0] === (shownGroup || groupOf(active)));
+    return `<div class="pp-nav__card">
+        <div class="pp-nav__bar">
+          <div class="pp-tabs__groups" role="group" aria-label="${L("Section groups", "مجموعات الأقسام")}">
+            ${GROUPS.map(([key, title, items]) => `<button type="button" class="pp-tabs__group"${gPerm(items)} data-group="${key}" aria-pressed="${key === g[0]}">${title}<span class="pp-tabs__count">${items.length}</span></button>`).join("")}
+          </div>
+          ${viewSwitch()}
+        </div>
+        <div class="pp-tabs__scroller">
+          <button type="button" class="pp-tabs__arrow" data-scroll="start" hidden aria-label="${L("Scroll back", "تمرير للخلف")}">${ic(rtl() ? "chevronRight" : "chevronLeft")}</button>
+          <nav class="pp-tabs__row" data-group="${g[0]}" aria-label="${esc(g[1])}">
+            ${g[2].map((t) => `<a${tPerm(t)} href="${href(t[0])}" class="pp-tabs__tab${t[0] === active ? " is-active" : ""}"${t[0] === active ? ' aria-current="page"' : ""}>${tabLabel(t)}</a>`).join("")}
+          </nav>
+          <button type="button" class="pp-tabs__arrow" data-scroll="end" hidden aria-label="${L("Scroll forward", "تمرير للأمام")}">${ic(rtl() ? "chevronLeft" : "chevronRight")}</button>
+        </div>
+      </div>${selectNav(active)}`;
+  }
+  function nav(active) {
+    const el = document.getElementById("ppNav");
+    el.className = view === "tabs" ? "pp-tabs" : "pp-nav";
+    document.getElementById("ppLayout").classList.toggle("is-tabs", view === "tabs");
+    const old = el.querySelector(".pp-tabs__row");
+    const keep = old ? { group: old.dataset.group, left: old.scrollLeft } : null;
+    el.innerHTML = view === "tabs" ? tabsNav(active) : sideNav(active);
+    const row = el.querySelector(".pp-tabs__row");
+    if (row) {
+      if (keep && keep.group === row.dataset.group) row.scrollLeft = keep.left;
+      const on = row.querySelector(".is-active");
+      if (on) {
+        const r = row.getBoundingClientRect(), a = on.getBoundingClientRect(), pad = 44;
+        if (a.left < r.left + pad) row.scrollLeft += a.left - (r.left + pad);
+        else if (a.right > r.right - pad) row.scrollLeft += a.right - (r.right - pad);
+      }
+      row.addEventListener("scroll", arrows, { passive: true });
+      row.addEventListener("scrollend", arrows);
+      arrows();
+    }
+  }
+  document.getElementById("ppNav").addEventListener("click", (e) => {
+    const s = e.target.closest("[data-scroll]");
+    if (s) return scrollRow(s.dataset.scroll);
+    const pk = e.target.closest("[data-pick]");
+    if (pk) { e.stopPropagation(); return pickOpen(pk.getAttribute("aria-expanded") !== "true"); }
+    const v = e.target.closest("[data-view]");
+    if (v) {
+      view = v.dataset.view; shownGroup = null;
+      try { localStorage.setItem(VIEW_KEY, view); } catch (x) {}
+      return nav(curTab());
+    }
+    const g = e.target.closest("[data-group]");
+    if (g) { shownGroup = g.dataset.group; nav(curTab()); }
+  });
+  function render() {
+    const u = new URLSearchParams(location.search), tab = curTab();
+    shownGroup = null; nav(tab);
+    const body = document.createElement("div");
+    body.className = "stack gap-6";
+    document.getElementById("usBody").replaceChildren(body);
+    US.tabs[tab](body, { user, params: u, rerender: render });
+    window.scrollTo({ top: 0 });
+  }
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("a[href^='?']");
+    if (!a || e.metaKey || e.ctrlKey || e.button) return;
+    e.preventDefault();
+    history.pushState(null, "", a.getAttribute("href"));
+    render();
+  });
+  window.addEventListener("popstate", render);
+  hero();
+  render();
+})();
+</script>
+</body>
+</html>

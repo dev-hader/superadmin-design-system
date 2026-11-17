@@ -30,7 +30,7 @@
       access_schedule: { label: i % 2 ? L("Any time", "في أي وقت") : L("Specific days", "أيام محددة"), days: i % 2 ? null : ["sun", "tue"] },
       capacityD: { type: ["unlimited", "total", "active"][i % 3], limit: i % 3 ? 120 : null, used: k.subscribers.active, fully_purchased: i % 3 === 1 && k.subscribers.active >= 120 },
       usage_rules: i % 2 ? { type: "limited", limit: 10, reset_period: "month" } : { type: "unlimited" },
-      renew: { manual_renew: { label: L("Manual Renew", "التجديد اليدوي"), enabled: i % 2 === 0, can_change: true }, automatic_renew: { label: L("Automatic Renew", "التجديد التلقائي"), enabled: false, can_change: false, badge: L("Coming soon", "قريباً"), tooltip: L("Available in a later release", "متاح في إصدار لاحق") } },
+      renew: { manual_renew: { label: L("Manual renew", "التجديد اليدوي"), enabled: i % 2 === 0, can_change: true }, automatic_renew: { label: L("Automatic renew", "التجديد التلقائي"), enabled: false, can_change: false, badge: L("Coming soon", "قريباً"), tooltip: L("Available in a later release", "متاح في إصدار لاحق") } },
       planList: planNames.map((n, j) => {
         const price = k.plans.from_price * (j === 0 ? 1 : j === 1 ? 2.7 : 10);
         const tax = +(price * 0.15).toFixed(2);
@@ -55,13 +55,15 @@
     if (!d) return `${n} ${unit}`;
     return L(`${n} ${n === 1 ? d[0] : d[1]}`, n === 1 ? d[2] : n === 2 ? d[3] : n <= 10 ? `${n} ${d[4]}` : `${n} ${d[5]}`);
   };
+  /* PACKAGES.PLANS_COUNT — AR plural: zero "لا توجد خطط" · one · two · 3–10 "# خطط" · other "# خطة" */
+  KP.plansCount = (n) => L(`${n} plan${n === 1 ? "" : "s"}`, n === 0 ? "لا توجد خطط" : n === 1 ? "خطة واحدة" : n === 2 ? "خطتان" : n % 100 >= 3 && n % 100 <= 10 ? `${n} خطط` : `${n} خطة`);
   KP.money = (v, cur) => `${fmt(v)} ${esc(cur)}`;
-  KP.approvalBadge = (v) => (v === "pending" ? badge("warning", L("Pending", "قيد المراجعة")) : v === "approved" ? badge("success", L("Approved", "مقبولة")) : v === "not_approved" ? badge("danger", L("Not Approved", "غير مقبولة")) : badge("", esc(v)));
+  KP.approvalBadge = (v) => (v === "pending" ? badge("warning", L("Pending", "قيد المراجعة")) : v === "approved" ? badge("success", L("Approved", "مقبولة")) : v === "not_approved" ? badge("danger", L("Not approved", "غير مقبولة")) : badge("", esc(PP.cap(v))));
   KP.statusBadge = (v) => (v === "active" ? badge("success", L("Active", "نشطة")) : badge("danger", L("Inactive", "غير نشطة")));
   KP.actionBy = (k) => L(`By ${k.action_by === "admin" ? "HighFive" : k.action_by === "partner" ? "the partner" : k.action_by} · ${k.action_on}`, `بواسطة ${k.action_by === "admin" ? "HighFive" : k.action_by === "partner" ? "الشريك" : k.action_by} · ${k.action_on}`);
   KP.editBtn = (section) => `<a class="btn btn--sm btn--secondary" href="package-edit.html?id=${KP.pkg.id}${section ? "&section=" + section : ""}">${ic("edit")}<span>${L("Edit", "تعديل")}</span></a>`;
   const block = (title, rows) => `<section class="stack gap-3" style="padding-block:var(--space-4);border-top:var(--border-thin) dashed var(--color-border)"><h5 class="t-title" style="font-size:var(--text-body)">${title}</h5>${kv(rows)}</section>`;
-  const genderTxt = (g) => ({ male: L("Male", "ذكور"), female: L("Female", "إناث"), both: L("Both", "الكل") }[g] || g);
+  const genderTxt = (g) => ({ male: L("Male", "ذكور"), female: L("Female", "إناث"), both: L("Both", "الكل") }[g] || PP.cap(g));
 
   /* ================= details ================= */
   KP.tabs.details = (mount, ctx) => {
@@ -74,26 +76,26 @@
       const expl = { fixed_date_range: L("All subscribers start and end on the same dates.", "يبدأ جميع المشتركين وينتهون في نفس التواريخ."), from_purchase: L("Each subscriber starts on the day they buy.", "يبدأ كل مشترك في يوم الشراء."), user_activation: L("The subscriber activates the plan when they choose.", "يفعّل المشترك الخطة متى شاء.") }[k.validity.type];
       const capLbl = { unlimited: [L("Unlimited", "غير محدودة"), ""], total: [L("Total subscribers", "إجمالي المشتركين"), L("Maximum number of subscriptions ever sold on this package.", "الحد الأقصى لعدد الاشتراكات المباعة على هذه الباقة.")], active: [L("Active subscribers", "المشتركون النشطون"), L("Maximum number of active subscribers at any one time.", "الحد الأقصى لعدد المشتركين النشطين في أي وقت.")] }[k.capacityD.type];
       mount.innerHTML = card(L("Details", "التفاصيل"), KP.editBtn(), `
-        <section class="stack gap-1"><h5 class="t-title" style="font-size:var(--text-body)">${L("Renew Setting", "إعدادات التجديد")}</h5>${toggle("manual_renew", r.manual_renew)}${toggle("automatic_renew", r.automatic_renew)}</section>
-        ${block(L("Basic Information", "المعلومات الأساسية"), [[L("Age Groups", "الفئات العمرية"), k.all_age_groups ? L("All age groups", "جميع الفئات العمرية") : k.age_groups.length ? k.age_groups.map((a) => badge("primary", esc(a.name))).join(" ") : `<span class="text-tertiary">${L("No age groups", "لا توجد فئات عمرية")}</span>`], [L("Gender", "الجنس"), genderTxt(k.gender)]])}
-        ${block(L("Package Status", "حالة الباقة"), [[L("Package approval", "اعتماد الباقة"), KP.approvalBadge(k.approval_status.value)], [L("Package Status", "حالة الباقة"), KP.statusBadge(k.package_status)], [L("Last action", "آخر إجراء"), KP.actionBy(k)], k.rejection_reason ? [L("Rejection reason", "سبب الرفض"), esc(k.rejection_reason)] : null])}
+        <section class="stack gap-1"><h5 class="t-title" style="font-size:var(--text-body)">${L("Renew setting", "إعدادات التجديد")}</h5>${toggle("manual_renew", r.manual_renew)}${toggle("automatic_renew", r.automatic_renew)}</section>
+        ${block(L("Basic information", "المعلومات الأساسية"), [[L("Age groups", "الفئات العمرية"), k.all_age_groups ? L("All age groups", "جميع الفئات العمرية") : k.age_groups.length ? k.age_groups.map((a) => badge("primary", esc(a.name))).join(" ") : `<span class="text-tertiary">${L("No age groups", "لا توجد فئات عمرية")}</span>`], [L("Gender", "الجنس"), genderTxt(k.gender)]])}
+        ${block(L("Package status", "حالة الباقة"), [[L("Package approval", "اعتماد الباقة"), KP.approvalBadge(k.approval_status.value)], [L("Package status", "حالة الباقة"), KP.statusBadge(k.package_status)], [L("Last action", "آخر إجراء"), KP.actionBy(k)], k.rejection_reason ? [L("Rejection reason", "سبب الرفض"), esc(k.rejection_reason)] : null])}
         ${block(L("Availability", "الإتاحة"), [[L("Type", "النوع"), esc(k.availability.label)], k.availability.display_starts_at ? [L("Period", "الفترة"), L(`From ${k.availability.display_starts_at} to ${k.availability.display_ends_at}`, `من ${k.availability.display_starts_at} إلى ${k.availability.display_ends_at}`)] : null])}
-        <section class="stack gap-3" style="padding-block:var(--space-4);border-top:var(--border-thin) dashed var(--color-border)"><h5 class="t-title" style="font-size:var(--text-body)">${L("Subscription Validity", "صلاحية الاشتراك")}</h5>
+        <section class="stack gap-3" style="padding-block:var(--space-4);border-top:var(--border-thin) dashed var(--color-border)"><h5 class="t-title" style="font-size:var(--text-body)">${L("Subscription validity", "صلاحية الاشتراك")}</h5>
           ${kv([[L("Type", "النوع"), `${esc(k.validity.label)}<div class="t-xs text-tertiary" style="font-weight:var(--weight-regular)">${expl || ""}</div>`]])}
           ${SA.table({ rows: k.planList, empty: ["No plans", "لا توجد خطط"], columns: [
             { head: ["Plan", "الخطة"], cell: (p) => esc(p.name) },
             { head: fixed ? ["Dates", "التواريخ"] : ["Duration", "المدة"], cell: (p) => (fixed ? `${p.starts_on} → ${p.ends_on}` : KP.dur(p.duration_value, p.duration_unit)) },
             { head: ["Status", "الحالة"], cell: (p) => (p.active ? badge("success", L("Active", "نشطة")) : badge("danger", L("Inactive", "غير نشطة"))) }] })}</section>
-        ${block(L("Access Schedule", "جدول الدخول"), [[L("Type", "النوع"), `${esc(k.access_schedule.label)}${k.access_schedule.days ? `<div class="t-xs text-tertiary" style="font-weight:var(--weight-regular)">${L("Schedule details — coming soon", "تفاصيل الجدول — قريباً")}</div>` : ""}`]])}
+        ${block(L("Access schedule", "جدول الدخول"), [[L("Type", "النوع"), `${esc(k.access_schedule.label)}${k.access_schedule.days ? `<div class="t-xs text-tertiary" style="font-weight:var(--weight-regular)">${L("Schedule details — coming soon", "تفاصيل الجدول — قريباً")}</div>` : ""}`]])}
         ${block(L("Capacity", "السعة"), [[L("Type", "النوع"), `${capLbl[0]}${capLbl[1] ? `<div class="t-xs text-tertiary" style="font-weight:var(--weight-regular)">${capLbl[1]}</div>` : ""}`], [L("Usage", "الاستخدام"), `${k.capacityD.limit ? `${k.capacityD.used} / ${k.capacityD.limit}` : k.capacityD.used} ${k.capacityD.fully_purchased ? badge("warning", L("Fully purchased", "مكتمل الشراء")) : ""}`]])}
-        ${block(L("Usage Rules", "قواعد الاستخدام"), [[L("Type", "النوع"), k.usage_rules.type === "limited" ? L("Limited", "محدود") : L("Unlimited", "غير محدود")]]
+        ${block(L("Usage rules", "قواعد الاستخدام"), [[L("Type", "النوع"), k.usage_rules.type === "limited" ? L("Limited", "محدود") : L("Unlimited", "غير محدود")]]
           .concat(k.usage_rules.type === "limited" ? [[L("Visits", "عدد الزيارات"), k.usage_rules.limit], [L("Reset every", "إعادة الضبط كل"), { day: L("Day", "يوم"), week: L("Week", "أسبوع"), month: L("Month", "شهر") }[k.usage_rules.reset_period]]] : []))}`);
     };
     mount.onchange = (e) => {
       if (e.target.dataset.renew !== "manual_renew") return;
       /* PUT /packages/{id}/renew-setting {manual_renew} — saves on toggle */
       k.renew.manual_renew.enabled = e.target.checked;
-      RD.toast("success", e.target.checked ? L("Manual Renew enabled", "تم تفعيل التجديد اليدوي") : L("Manual Renew disabled", "تم إيقاف التجديد اليدوي"));
+      RD.toast("success", e.target.checked ? L("Manual renew enabled", "تم تفعيل التجديد اليدوي") : L("Manual renew disabled", "تم إيقاف التجديد اليدوي"));
     };
     paint();
   };
@@ -107,7 +109,7 @@
     const paint = () => {
       const rows = P.filter((p) => f === "all" || (f === "active" ? p.active : !p.active));
       const n = P.length;
-      mount.innerHTML = card(`${L("Plans", "الخطط")} <span class="t-sm text-tertiary" style="font-weight:var(--weight-regular)">${L(`${n} plan${n === 1 ? "" : "s"}`, n === 1 ? "خطة واحدة" : n === 2 ? "خطتان" : `${n} خطط`)}</span>`, KP.editBtn("plans"),
+      mount.innerHTML = card(`${L("Plans", "الخطط")} <span class="t-sm text-tertiary" style="font-weight:var(--weight-regular)">${KP.plansCount(n)}</span>`, KP.editBtn("plans"),
         !n ? `<div class="stack gap-2" style="align-items:center;padding:var(--space-10)">${ic("layout")}<b>${L("No plans yet", "لا توجد خطط بعد")}</b></div>`
           : `<div class="tabs">${[["all", L("All", "الكل"), n], ["active", L("Active", "نشطة"), P.filter((p) => p.active).length], ["inactive", L("Inactive", "غير نشطة"), P.filter((p) => !p.active).length]].map(([key, t, c]) => `<button type="button" data-pf="${key}" class="${key === f ? "is-active" : ""}">${t} <span class="badge">${c}</span></button>`).join("")}</div>
           ${rows.length ? SA.table({ rows, empty: [""], columns: [
@@ -157,7 +159,7 @@
     const show = () => {
       el = SA.modal({ id: "kpLight", wide: true, title: L(`${cur + 1} of ${imgs.length}`, `${cur + 1} من ${imgs.length}`),
         body: `<div class="row gap-3" style="align-items:center">${imgs.length > 1 ? SA.iconBtn("chevronLeft", L("Previous image", "الصورة السابقة"), "data-prev") : ""}
-          <div class="sa-tile__media" style="flex:1;height:min(70vh,420px);border-radius:var(--radius-lg)">${ic("camera")}<span class="t-xs">${cur === 0 ? L("Cover", "الغلاف") : L("image", "صورة")} ${cur + 1}</span></div>
+          <div class="sa-tile__media" style="flex:1;height:min(70vh,420px);border-radius:var(--radius-lg)">${ic("camera")}<span class="t-xs">${cur === 0 ? L("Cover", "الغلاف") : L("Image", "صورة")} ${cur + 1}</span></div>
           ${imgs.length > 1 ? SA.iconBtn("chevronRight", L("Next image", "الصورة التالية"), "data-next") : ""}</div>`,
         foot: `<button class="btn btn--ghost" data-close>${L("Close", "إغلاق")}</button>` });
       el.querySelector(".modal__body").onclick = (e) => { if (e.target.closest("[data-prev]")) { cur = (cur - 1 + imgs.length) % imgs.length; show(); } if (e.target.closest("[data-next]")) { cur = (cur + 1) % imgs.length; show(); } };

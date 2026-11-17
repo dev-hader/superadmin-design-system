@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Advertisement Management · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/sa-crud.js"></script>
+<script>
+(() => {
+  /* Advertisement Management — mirrors pages/marketing/advertisements:
+       list   marketing-advertisements.html            pills (all · active · inactive · scheduled · expired), search, 8 columns,
+                                                        view · edit · activate/deactivate · delete
+       form   ?new=1 · ?edit=<id>                      3-step campaign form (details · trigger · content) + live phone preview
+       view   ?view=<id>                               detail cards + the same preview
+     Display status is computed client-side (advertisementStatus.js). No toasts — success goes back to the list. */
+  const qs = new URLSearchParams(location.search);
+  RD.boot({ activeId: "mk-advertisements", title: "Advertisement Management" });
+  if (!document.getElementById("listMount")) return;
+  const { L, T, esc, ic, badge } = SA;
+  const S = HF.SA, mount = document.getElementById("listMount");
+  const crumbs = [["Marketing", "التسويق", "marketing-advertisements.html"], ["Advertisement Management", "إدارة الإعلانات", "marketing-advertisements.html"]];
+  const title = (s) => String(s || "").replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const PRIO = { 1: ["Critical", "danger"], 2: ["High", "warning"], 3: ["Medium", "primary"], 4: ["Low", ""] };
+  const PRIO_KEY = { critical: 1, high: 2, medium: 3, low: 4 };
+
+  /* ---------------- data (GET /advertisement) ---------------- */
+  const fmt = (d) => `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  const day = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return d; };
+  if (!S.ads) {
+    const base = () => ({ campaign_description: "", schedule_type: "one_time", start_mode: "asap", timezone: "Asia/Riyadh", recurrence_type: "daily", periodic_end_type: "never", limit_on: false, max_displays: 1, delay_on: false, delay_value: 4, delay_unit: "hours",
+      user_type: "all", activity_status: "all", location_type: "", country: "", state: "", city: "", gender: "all", age: "all", age_group_id: "", app_lang: "all",
+      trigger_type: "app_launch", target_screen: "", event_name: "", display_timing: "immediately", delay_seconds: "", image: null, fullscreen: false,
+      show_button: true, button_text: "Book now", button_action: "company_page", phone_number: "", coupon_code: "", external_url: "", deep_link: "", partner_id: String(S.partners[0].id),
+      show_close_button: true, close_button_style: "icon", button_type: "filled", button_text_color: "#FFFFFF", button_color: "#FC6404", button_font_size: 14, button_border_radius: "16", entry_animation: "fade_in", exit_animation: "fade_out", overlay_color: "#000000", overlay_opacity: 50 });
+    S.ads = [
+      ["Ramadan Padel Week", 1, 1, -3, 20, "app_launch", "one_time"], ["Summer Swim Offers", 2, 1, 5, 40, "screen_load", "periodic"], ["Kids Camp Early Bird", 3, 1, -40, -5, "custom_event", "one_time"],
+      ["New Branch Opening", 2, 0, -2, 30, "app_launch", "one_time"], ["Weekend Football Leagues", 4, 1, -10, null, "screen_load", "periodic"], ["Bowling Night Promo", 3, 1, 12, 45, "app_launch", "periodic"],
+    ].map((a, i) => Object.assign(base(), { id: 41 + i, campaign_name: a[0], priority: a[1], active: a[2], start_at: fmt(day(a[3])), end_at: a[4] == null ? null : fmt(day(a[4])), periodic_end_type: a[4] == null ? "never" : "on_date",
+      trigger_type: a[5], schedule_type: a[6], start_mode: "specific_datetime", target_screen: a[5] === "screen_load" ? "home" : "", event_name: a[5] === "custom_event" ? "booking_completed" : "", created_at: fmt(day(-50 + i * 4)),
+      user_type: i % 2 ? "registered" : "all", location_type: i % 2 ? "phone" : "", country: i % 2 ? "SA" : "", gender: i % 3 === 1 ? "male" : "all", app_lang: i === 0 ? "ar" : "all" }));
+  }
+  const parse = (s) => { if (!s) return null; const [d, t] = s.split(" "); const [dd, mm, yy] = d.split("/"); return new Date(+yy, +mm - 1, +dd, ...(t || "0:0").split(":").map(Number)); };
+  const dispStatus = (a) => (!+a.active ? "inactive" : parse(a.start_at) > new Date() ? "scheduled" : a.end_at && parse(a.end_at) < new Date() ? "expired" : "active");
+  const ST = { active: [L("Active", "نشط"), "primary"], scheduled: [L("Scheduled", "مجدول"), "info"], expired: [L("Expired", "منتهي"), ""], inactive: [L("Inactive", "غير نشط"), "danger"] };
+  const SCREENS = [["home", "Home"], ["search", "Search"], ["partner_profile", "Partner Profile"], ["bookings", "My Bookings"], ["wallet", "Wallet"]];
+  const EVENTS = [["booking_completed", "Booking Completed"], ["package_purchased", "Package Purchased"], ["event_joined", "Event Joined"], ["wallet_topup", "Wallet Top-up"]];
+
+  /* ---------------- live phone preview (AdvertisementPreview) ---------------- */
+  function preview(a, big) {
+    const w = big ? 340 : 280, h = big ? 640 : 520, rgba = (hex, op) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${(op || 0) / 100})`; };
+    const radius = a.button_border_radius === "custom" ? a.radius_custom || 8 : a.button_border_radius;
+    const btn = a.show_button ? `<span style="display:inline-block;padding:8px 18px;font-size:${a.button_font_size}px;border-radius:${radius}px;${a.button_type === "filled" ? `background:${a.button_color};color:${a.button_text_color}` : a.button_type === "outlined" ? `border:1.5px solid ${a.button_color};color:${a.button_color}` : `color:${a.button_color}`};font-weight:600">${esc(a.button_text || "---")}</span>` : "";
+    const close = a.show_close_button ? `<span style="position:absolute;top:8px;inset-inline-end:8px;display:inline-flex;gap:4px;align-items:center;font-size:11px;color:#071437;background:#fff;border-radius:999px;padding:3px 7px" data-adclose>${a.close_button_style !== "text" ? "✕" : ""}${a.close_button_style !== "icon" ? ` ${L("Close", "إغلاق")}` : ""}</span>` : "";
+    const img = `<div style="height:${a.fullscreen ? "100%" : "140px"};background:linear-gradient(135deg,#FC6404,#FFB27A);display:grid;place-content:center;color:#fff;font-size:12px;text-align:center;padding:8px">${a.image ? esc(a.image) : L("Upload an image to preview", "ارفع صورة للمعاينة")}</div>`;
+    return `<div data-phone dir="${a._rtl ? "rtl" : "ltr"}" style="width:${w}px;height:${h}px;margin:auto;border-radius:36px;padding:10px;background:linear-gradient(160deg,#1c1c1c,#3a3a3a)">
+      <div style="position:relative;width:100%;height:100%;border-radius:28px;overflow:hidden;background:#f4f5f7">
+        <div style="display:flex;justify-content:space-between;padding:8px 16px;font-size:11px;font-weight:600;color:#071437" dir="ltr"><span>9:41</span><span style="width:70px;height:16px;background:#1c1c1c;border-radius:10px"></span><span>▮▮ ◔ ▬</span></div>
+        <div style="padding:12px;display:grid;gap:10px">${[60, 90, 90, 40, 90].map((x) => `<div style="height:${x === 40 ? 12 : 54}px;width:${x}%;background:#e3e6ee;border-radius:10px"></div>`).join("")}</div>
+        <div data-adlayer style="position:absolute;inset:0;background:${rgba(a.overlay_color, a.overlay_opacity)};display:grid;place-items:center;animation:adIn .4s ease">
+          <div style="position:relative;${a.fullscreen ? "position:absolute;inset:0" : "width:230px;border-radius:14px;overflow:hidden;background:#fff"}">${close}${img}${btn ? `<div style="padding:12px;text-align:center;${a.fullscreen ? "position:absolute;bottom:40px;inset-inline:0" : ""}">${btn}</div>` : ""}</div></div>
+        <div style="position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:100px;height:4px;border-radius:2px;background:#071437;opacity:.6"></div></div></div>`;
+  }
+  const previewCard = (a) => `<section class="card card--pad stack gap-3" style="position:sticky;top:90px">
+      <div class="row between gap-2" style="align-items:center;flex-wrap:wrap"><h3 class="t-title">${L("Live Advertisement Preview", "معاينة الإعلان المباشرة")}</h3>
+        <div class="row gap-1" style="flex-wrap:wrap"><button type="button" class="btn btn--sm btn--secondary" data-replay>${ic("refresh")}<span>${L("Replay Animation", "إعادة تشغيل الحركة")}</span></button>
+        <button type="button" class="btn btn--sm ${a._rtl ? "" : "btn--secondary"}" data-rtl>${L("RTL", "من اليمين لليسار")}</button><button type="button" class="btn btn--sm btn--secondary" data-full>${L("Full Screen", "ملء الشاشة")}</button></div></div>
+      <div data-prev>${preview(a)}</div>
+      <p class="t-xs text-tertiary" style="text-align:center">${L("Click overlay or close button to preview exit animation. Use Replay to show entry animation again.", "انقر على الخلفية أو زر الإغلاق لمعاينة حركة الخروج. استخدم إعادة التشغيل لعرض حركة الدخول مرة أخرى.")}</p></section>`;
+  const style = document.createElement("style");
+  style.textContent = "@keyframes adIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}@keyframes adOut{to{opacity:0;transform:scale(.92)}}";
+  document.head.appendChild(style);
+  const wirePreview = (root, a, repaint) => root.addEventListener("click", (e) => {
+    if (e.target.closest("[data-replay]")) return repaint();
+    if (e.target.closest("[data-rtl]")) { a._rtl = !a._rtl; return repaint(); }
+    if (e.target.closest("[data-full]")) { const el = SA.modal({ id: "adFull", wide: true, title: L("Live Advertisement Preview", "معاينة الإعلان المباشرة"), body: preview(a, true), foot: "" }); return el; }
+    const lay = e.target.closest("[data-adlayer]");
+    if (lay && (e.target === lay || e.target.closest("[data-adclose]"))) { lay.style.animation = "adOut .4s ease forwards"; }
+  });
+
+  /* ================= view ================= */
+  if (qs.get("view")) {
+    const a = S.ads.find((x) => String(x.id) === qs.get("view"));
+    SA.head(document.getElementById("pageHead"), { title: ["View Advertisement Campaign", "عرض حملة إعلانية"], crumbs,
+      actions: a ? `<a class="btn btn--sm" href="marketing-advertisements.html?edit=${a.id}">${L("Edit", "تعديل")}</a><a class="btn btn--sm btn--secondary" href="marketing-advertisements.html">${L("Back", "رجوع")}</a>` : "" });
+    if (!a) { mount.innerHTML = CRUD.alert("warning", L("Campaign not found", "الحملة غير موجودة")); return; }
+    const yes = (v) => (v ? L("Yes", "نعم") : L("No", "لا")), sw = (c) => `<span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:${c};vertical-align:middle;border:1px solid var(--color-border)"></span> ${esc(c)}`;
+    const c = (t, rows) => PP.card(t, "", PP.kv(rows.filter(Boolean)));
+    const unit = { daily: L("Per Day", "يومياً"), weekly: L("Per Week", "أسبوعياً"), monthly: L("Per Month", "شهرياً") }[a.recurrence_type];
+    const paint = () => {
+      mount.innerHTML = `<div class="sa-side" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))"><div class="stack gap-5">
+        ${c(L("Basic Information", "المعلومات الأساسية"), [[L("Campaign ID", "معرف الحملة"), a.id], [L("Campaign Name", "اسم الحملة"), esc(a.campaign_name)], [L("Campaign Description", "وصف الحملة"), esc(a.campaign_description || "---")], [L("status", "الحالة"), +a.active ? L("active", "نشط") : L("Inactive", "غير نشط")], [L("Display Status", "حالة العرض"), ST[dispStatus(a)][0]], [L("Created Date", "تاريخ الإنشاء"), a.created_at]])}
+        ${c(L("Campaign priority", "أولوية الحملة"), [[L("Priority", "الأولوية"), PRIO[a.priority][0]]])}
+        ${c(L("Send campaign", "إرسال الحملة"), [[L("Campaign Schedule Type", "نوع الجدولة"), a.schedule_type === "periodic" ? L("Periodic", "دوري") : L("One Time", "مرة واحدة")],
+          a.schedule_type === "periodic" ? [L("Recurrence", "التكرار"), title(a.recurrence_type)] : [L("One Time Options", "خيارات المرة الواحدة"), a.start_mode === "asap" ? L("As soon As Possible", "في أقرب وقت ممكن") : L("At Specific date and time", "في تاريخ ووقت محدد")],
+          [L("Campaign Time Zone", "المنطقة الزمنية"), a.timezone], [L("Start Date & Time", "تاريخ ووقت البداية"), a.start_at || "---"], [L("Ends", "ينتهي"), a.periodic_end_type === "on_date" ? L("On", "في") : L("Never", "أبداً")],
+          a.periodic_end_type === "on_date" ? [L("On (End Date & Time)", "في (تاريخ ووقت النهاية)"), a.end_at] : null])}
+        ${a.schedule_type === "periodic" ? c(L("Delivery controls", "ضوابط التسليم"), [[L("Limit the maximum number of times this campaign is shown per device to", "تحديد الحد الأقصى لعدد مرات عرض هذه الحملة لكل جهاز إلى"), yes(a.limit_on)], a.limit_on ? [`${L("Maximum Displays Per User", "الحد الأقصى للعرض لكل مستخدم")} ${unit}`, a.max_displays] : null,
+          [L("Add a minimum delay between two messages of this campaign", "إضافة حد أدنى للتأخير بين رسالتين من هذه الحملة"), yes(a.delay_on)], a.delay_on ? [L("Time Between Repeated Displays", "الوقت بين العروض المتكررة"), `${a.delay_value} ${a.delay_unit}`] : null]) : ""}
+        ${c(L("Targeting Criteria", "معايير الاستهداف"), [[L("User Type", "نوع المستخدم"), title(a.user_type)], [L("User Activity", "نشاط المستخدم"), title(a.activity_status)], [L("Location Type", "نوع الموقع"), a.location_type ? title(a.location_type) : "---"], a.location_type ? [L("Country", "البلد"), esc(a.country)] : null,
+          [L("Gender", "الجنس"), title(a.gender)], [L("Age", "العمر"), title(a.age)], [L("Language", "اللغة"), a.app_lang === "all" ? L("All", "الكل") : a.app_lang.toUpperCase()]])}
+        ${c(L("Advertisement Trigger Settings", "إعدادات محفز الإعلان"), [[L("Trigger Type", "نوع المحفز"), title(a.trigger_type)], a.target_screen ? [L("Target Screen", "الشاشة المستهدفة"), title(a.target_screen)] : null, a.event_name ? [L("Event Name", "اسم الحدث"), title(a.event_name)] : null,
+          [L("Then trigger the message", "ثم تفعيل الرسالة"), a.display_timing === "after_delay" ? L("After Delay", "بعد تأخير") : L("Immediately", "فوراً")], a.display_timing === "after_delay" ? [L("Delay Duration (Seconds)", "مدة التأخير (ثواني)"), a.delay_seconds] : null])}
+        ${c(L("Image and Content", "الصورة والمحتوى"), [[L("Advertisement Image", "صورة الإعلان"), a.image ? esc(a.image) : "---"]])}
+        ${c(L("Action Button", "زر الإجراء"), [[L("Show Button", "إظهار الزر"), yes(a.show_button)]].concat(a.show_button ? [[L("Button Text", "نص الزر"), esc(a.button_text)], [L("Button Action", "إجراء الزر"), title(a.button_action)], [L("Button Type", "نوع الزر"), title(a.button_type)],
+          [L("Button Text Color", "لون نص الزر"), sw(a.button_text_color)], [L("Button Color", "لون الزر"), sw(a.button_color)], [L("Button Font Size", "حجم خط الزر"), a.button_font_size], [L("Button Border Radius", "انحناء زوايا الزر"), a.button_border_radius]] : []))}
+        ${c(L("Close Button", "زر الإغلاق"), [[L("Show Close Button", "إظهار زر الإغلاق"), yes(a.show_close_button)], a.show_close_button ? [L("Close Button Style", "نمط زر الإغلاق"), title(a.close_button_style)] : null])}
+        ${c(L("Popup Settings", "إعدادات النافذة المنبثقة"), [[L("Full Screen Ad", "إعلان ملء الشاشة"), yes(a.fullscreen)], [L("Entry Animation", "حركة الدخول"), title(a.entry_animation)], [L("Exit Animation", "حركة الخروج"), title(a.exit_animation)], [L("Background Overlay Color", "لون الخلفية الشفافة"), sw(a.overlay_color)], [L("Background Opacity", "شفافية الخلفية"), `${a.overlay_opacity}%`]])}
+      </div>${previewCard(a)}</div>`;
+    };
+    paint(); wirePreview(mount, a, paint);
+    return;
+  }
+
+  /* ================= create / edit ================= */
+  if (qs.get("new") || qs.get("edit")) {
+    const src = qs.get("edit") ? S.ads.find((x) => String(x.id) === qs.get("edit")) : null;
+    const a = JSON.parse(JSON.stringify(src || Object.assign({}, S.ads[0], { id: null, campaign_name: "", campaign_description: "", active: 1, priority: 3, schedule_type: "one_time", start_mode: "asap", start_at: "", end_at: "", periodic_end_type: "never", user_type: "all", location_type: "", country: "", gender: "all", app_lang: "all", trigger_type: "app_launch", target_screen: "", event_name: "", image: null, show_button: false, button_text: "", button_action: "none", button_color: "#009EF7", overlay_opacity: 0 })));
+    SA.head(document.getElementById("pageHead"), { title: src ? ["Edit Advertisement Campaign", "تعديل حملة إعلانية"] : ["Add Advertisement Campaign", "إضافة حملة إعلانية"], crumbs });
+    let step = 0, err = "", touched = false;
+    const STEPS = [L("Campaign Details", "تفاصيل الحملة"), L("Advertisement Trigger Settings", "إعدادات محفز الإعلان"), L("Advertisement Content", "محتوى الإعلان")];
+    const REQ = L("This field is required", "هذا الحقل مطلوب");
+    const toISO = (s) => { const d = parse(s); return d ? new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ""; };
+    const stepErrors = (n) => {
+      const e = {};
+      if (n === 0) {
+        if (!a.campaign_name.trim()) e.campaign_name = L("Campaign name is required", "اسم الحملة مطلوب");
+        if (a.user_type === "all" && a.activity_status === "all" && !a.location_type && a.gender === "all" && a.age === "all" && a.app_lang === "all") e.targeting = L("At least one targeting criterion must be selected", "يجب تحديد معيار استهداف واحد على الأقل");
+        if (a.location_type && !a.country) e.country = REQ;
+        if (a.age === "age_group" && !a.age_group_id) e.age_group_id = REQ;
+        if (a.periodic_end_type === "on_date" && a.start_at && a.end_at && parse(a.start_at) >= parse(a.end_at)) e.end_at = L("Start Date & Time must be earlier than End Date & Time.", "يجب أن يكون تاريخ ووقت البداية أسبق من تاريخ ووقت النهاية.");
+      }
+      if (n === 1) {
+        if (a.trigger_type === "screen_load" && !a.target_screen) e.target_screen = REQ;
+        if (a.trigger_type === "custom_event" && !a.event_name) e.event_name = REQ;
+        if (a.display_timing === "after_delay" && !a.delay_seconds) e.delay_seconds = REQ;
+      }
+      return e;
+    };
+    const errs = () => (touched ? stepErrors(step) : {});
+    const fe = (k) => (errs()[k] ? `<span class="field__error">${ic("warn")} ${errs()[k]}</span>` : "");
+    const radio = (k, v, t) => `<label class="check check--radio"><input type="radio" name="ad_${k}" data-a="${k}" value="${v}" ${String(a[k]) === String(v) ? "checked" : ""}><span class="check__box"><span class="check__dot"></span></span>${t}</label>`;
+    const sel = (k, opts, ph) => SA.select((ph ? [["", ph]] : []).concat(opts.map((o) => [o[0], o[1], String(a[k]) === String(o[0])])), `data-a="${k}"`);
+    const sw = (k, t) => `<label class="row gap-2" style="align-items:center"><span class="switch"><input type="checkbox" data-a="${k}" ${a[k] ? "checked" : ""}><span class="switch__track"></span></span><span class="t-sm">${t}</span></label>`;
+    const color = (k) => `<div class="row gap-2" style="align-items:center"><input type="color" data-a="${k}" value="${a[k]}" style="width:42px;height:38px;border:0;background:none;padding:0"><input class="input" data-a="${k}" value="${a[k]}" maxlength="7" style="max-width:110px"></div>`;
+    const sec = (t, body, extra) => `<section class="card card--pad stack gap-4"><div class="row gap-2" style="align-items:center"><h3 class="t-title">${t}</h3>${extra || ""}</div>${body}</section>`;
+    const fld = (t, c, k, req) => `<div class="field"><label class="field__label">${t}${req ? ' <span class="req">*</span>' : ""}</label>${c}${k ? fe(k) : ""}</div>`;
+    const tab0 = () => {
+      const periodic = a.schedule_type === "periodic", choice = periodic ? a.recurrence_type : a.start_mode;
+      const H = { asap: L("Send now", "إرسال الآن"), specific_datetime: L("Send at specific date and time", "الإرسال في تاريخ ووقت محدد"), daily: L("Send daily", "إرسال يومي"), weekly: L("Send weekly", "إرسال أسبوعي"), monthly: L("Send monthly", "إرسال شهري") }[choice];
+      const sched = (v, t, p) => `<label class="check check--radio"><input type="radio" name="ad_sched" data-sched="${p}:${v}" ${choice === v && a.schedule_type === p ? "checked" : ""}><span class="check__box"><span class="check__dot"></span></span>${t}</label>`;
+      const suffix = { daily: L("per day", "في اليوم"), weekly: L("per week", "في الأسبوع"), monthly: L("per month", "في الشهر") }[a.recurrence_type];
+      return sec(L("Basic Information", "المعلومات الأساسية"), `${fld(L("Campaign Name", "اسم الحملة"), `<input class="input" data-a="campaign_name" value="${esc(a.campaign_name)}">`, "campaign_name", 1)}
+          ${fld(L("Campaign Description", "وصف الحملة"), `<textarea class="input" rows="3" data-a="campaign_description">${esc(a.campaign_description)}</textarea>`)}
+          ${fld(L("status", "الحالة"), `<div class="row gap-4">${radio("active", 1, L("active", "نشط"))}${radio("active", 0, L("Inactive", "غير نشط"))}</div>`, "", 1)}`)
+        + sec(L("Campaign priority", "أولوية الحملة"), `<div class="segmented">${Object.entries(PRIO_KEY).map(([k, v]) => `<button type="button" data-prio="${v}" class="${+a.priority === v ? "is-active" : ""}">${L(title(k), { critical: "حرج", high: "عالي", medium: "متوسط", low: "منخفض" }[k])}</button>`).join("")}</div>`,
+          `<span class="text-tertiary" title="${L("Higher priority campaigns are shown before lower priority ones when multiple ads compete.", "يتم عرض الحملات ذات الأولوية الأعلى قبل الحملات ذات الأولوية الأقل عند تنافس عدة إعلانات.")}">${ic("info")}</span>`)
+        + `<section class="card card--pad"><div class="sa-side"><div class="stack gap-3"><b>${L("Send campaign", "إرسال الحملة")} <span class="req">*</span></b>
+            <span class="t-xs text-tertiary">${L("One Time", "مرة واحدة")}</span>${sched("asap", L("As soon As Possible", "في أقرب وقت ممكن"), "one_time")}${sched("specific_datetime", L("At Specific date and time", "في تاريخ ووقت محدد"), "one_time")}
+            <span class="t-xs text-tertiary">${L("Periodic", "دوري")}</span>${sched("daily", L("Daily", "يومي"), "periodic")}${sched("weekly", L("Weekly", "أسبوعي"), "periodic")}${sched("monthly", L("Monthly", "شهري"), "periodic")}</div>
+          <div class="stack gap-4"><div class="row between"><h3 class="t-title">${H}</h3><button type="button" class="btn btn--sm btn--ghost" data-reset>${L("Reset to defaults", "إعادة التعيين للافتراضي")}</button></div>
+            ${choice !== "asap" ? fld(L("Start Date & Time", "تاريخ ووقت البداية"), `<input class="input" type="datetime-local" data-dt="start_at" value="${toISO(a.start_at)}">`) + fld(L("Ends", "ينتهي"), `<div class="row gap-4">${radio("periodic_end_type", "never", L("Never", "أبداً"))}${radio("periodic_end_type", "on_date", L("On", "في"))}</div>`)
+              + (a.periodic_end_type === "on_date" ? fld(L("End Date & Time", "تاريخ ووقت النهاية"), `<input class="input" type="datetime-local" data-dt="end_at" value="${toISO(a.end_at)}">`, "end_at") : "") : ""}
+            ${fld(L("Campaign Time Zone", "المنطقة الزمنية"), sel("timezone", [["Asia/Riyadh", "Asia/Riyadh (Saudi Arabia, …)"], ["Africa/Cairo", "Africa/Cairo (Egypt, …)"], ["Asia/Dubai", "Asia/Dubai (United Arab Emirates, …)"]], L("Select time zone", "اختر المنطقة الزمنية")))}</div></div></section>`
+        + (periodic ? sec(L("Delivery controls", "ضوابط التسليم"), `<div class="row gap-2" style="align-items:center;flex-wrap:wrap">${sw("limit_on", L("Limit the maximum number of times this campaign is shown per user to", "تحديد الحد الأقصى لعدد مرات عرض هذه الحملة لكل مستخدم إلى"))}<input class="input" type="number" min="1" data-a="max_displays" value="${a.max_displays}" ${a.limit_on ? "" : "disabled"} style="width:80px"><span class="t-sm">${suffix}</span></div>
+            ${a.limit_on && +a.max_displays > 1 ? `<div class="row gap-2" style="align-items:center;flex-wrap:wrap">${sw("delay_on", L("Add a minimum delay between two messages of this campaign", "إضافة حد أدنى للتأخير بين رسالتين من هذه الحملة"))}<input class="input" type="number" min="1" data-a="delay_value" value="${a.delay_value}" style="width:80px">${sel("delay_unit", [["minutes", L("Min (s)", "دقيقة")], ["hours", L("Hr (s)", "ساعة")]].concat(a.recurrence_type !== "daily" ? [["days", L("Day (s)", "يوم")]] : []))}</div>` : ""}`) : "")
+        + sec(L("Targeting Criteria", "معايير الاستهداف"), `<b class="t-sm">${L("users type settings", "إعدادات نوع المستخدمين")}</b>
+            ${fld(L("User Type", "نوع المستخدم"), `<div class="row gap-4">${radio("user_type", "registered", L("Registered", "مسجل"))}${radio("user_type", "guest", L("Guest", "زائر"))}${radio("user_type", "all", L("All", "الكل"))}</div>`)}
+            ${a.user_type === "registered" ? fld(L("User Activity", "نشاط المستخدم"), sel("activity_status", [["all", L("All", "الكل")], ["active", L("active", "نشط")], ["very_active", L("Very Active", "نشط جداً")], ["inactive", L("Inactive", "غير نشط")]])) : ""}
+            <b class="t-sm">${L("location settings", "إعدادات الموقع")}</b>
+            ${fld(L("Location Type", "نوع الموقع"), `<div class="row gap-4" style="align-items:center">${a.user_type === "registered" ? radio("location_type", "phone", L("Phone Country", "بلد الهاتف")) : `<span class="text-tertiary t-sm" style="opacity:.5">${L("Phone Country", "بلد الهاتف")}</span>`}${radio("location_type", "gps", L("GPS Location", "موقع GPS"))}${a.location_type ? `<button type="button" class="btn btn--sm btn--ghost" data-clearloc>${L("Clear selection", "إلغاء التحديد")}</button>` : ""}</div>`)}
+            ${a.location_type ? fld(L("Country", "البلد"), sel("country", [["SA", "Saudi Arabia"], ["EG", "Egypt"], ["AE", "United Arab Emirates"]], L("select", "اختر")), "country", 1) : ""}
+            ${a.user_type === "registered" && a.location_type === "phone" ? `<b class="t-sm">${L("profile settings", "إعدادات الملف الشخصي")}</b>${fld(L("Gender", "الجنس"), `<div class="row gap-4">${radio("gender", "all", L("All", "الكل"))}${radio("gender", "male", L("Male", "ذكر"))}${radio("gender", "female", L("Female", "أنثى"))}</div>`)}
+              ${fld(L("Age", "العمر"), `<div class="row gap-4" style="flex-wrap:wrap">${radio("age", "all", L("All", "الكل"))}${radio("age", "age_group", L("Specific Age Group", "فئة عمرية محددة"))}${radio("age", "undetermined", L("Undetermined Date Of Birth", "تاريخ ميلاد غير محدد"))}</div>`)}
+              ${a.age === "age_group" ? fld(L("Age Group", "الفئة العمرية"), sel("age_group_id", [["2", "Kids (4 - 12)"], ["3", "Teens (13 - 17)"], ["4", "Adults (18 - 59)"]], L("Select age group", "اختر الفئة العمرية")), "age_group_id", 1) : ""}` : ""}
+            <b class="t-sm">${L("app language settings", "إعدادات لغة التطبيق")}</b>${fld(L("Language", "اللغة"), sel("app_lang", [["all", L("All", "الكل")], ["en", "English"], ["ar", "العربية"]]))}${fe("targeting")}`);
+    };
+    const tab1 = () => sec(L("Advertisement Trigger Settings", "إعدادات محفز الإعلان"), `<div class="sa-stats" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">${[["app_launch", "click", L("On session start", "عند بدء الجلسة"), L("Show on any screen when the session starts.", "يظهر على أي شاشة عند بدء الجلسة."), L("The advertisement appears when the user opens the app or starts a new session.", "يظهر الإعلان عند فتح التطبيق أو بدء جلسة جديدة.")],
+        ["screen_load", "mobile", L("On Screen Load", "عند تحميل الشاشة"), L("Shows on any screen or targeted specific screens.", "يظهر على أي شاشة أو شاشات محددة مستهدفة."), L("Choose a specific screen to show the advertisement when it loads.", "اختر شاشة محددة لعرض الإعلان عند تحميلها.")],
+        ["custom_event", "flash", L("On Custom Event", "عند حدث مخصص"), L("Shows when the user performs any custom event", "يظهر عندما يقوم المستخدم بأي حدث مخصص"), L("Trigger the advertisement when a tracked custom event occurs in the app.", "تفعيل الإعلان عند حدوث حدث مخصص متتبع في التطبيق.")]]
+        .map(([k, i, t, d, tip]) => `<button type="button" data-trig="${k}" class="card card--pad stack gap-2" style="text-align:start;cursor:pointer;border:2px solid ${a.trigger_type === k ? "var(--color-primary)" : "var(--color-border)"};background:${a.trigger_type === k ? "var(--color-primary-subtle)" : "var(--color-surface)"}">${ic(i)}<b>${t}</b><span class="t-xs text-tertiary">${d}</span><span class="t-xs" style="color:var(--color-text-link)" title="${tip}">${L("Know more", "اعرف المزيد")}</span></button>`).join("")}</div>
+      ${a.trigger_type === "screen_load" ? fld(L("Target Screen", "الشاشة المستهدفة"), sel("target_screen", SCREENS, L("Select screen", "اختر الشاشة")), "target_screen", 1) : ""}
+      ${a.trigger_type === "custom_event" ? fld(L("Event Name", "اسم الحدث"), sel("event_name", EVENTS, L("Select event", "اختر الحدث")), "event_name", 1) : ""}
+      ${fld(L("Then trigger the message", "ثم تفعيل الرسالة"), `<div class="row gap-4">${radio("display_timing", "immediately", L("Immediately", "فوراً"))}${radio("display_timing", "after_delay", L("After Delay", "بعد تأخير"))}</div>`)}
+      ${a.display_timing === "after_delay" ? fld(L("Delay Duration (Seconds)", "مدة التأخير (ثواني)"), `<input class="input" type="number" min="1" data-a="delay_seconds" value="${esc(a.delay_seconds)}" style="max-width:200px">`, "delay_seconds", 1) : ""}`);
+    const acc = (id, t, sub, icn, body) => `<details ${id === "img" ? "open" : ""} class="card" style="padding:0"><summary class="row between" style="padding:var(--space-4);cursor:pointer;align-items:center"><span class="stack"><b>${t}</b><span class="t-xs text-tertiary">${sub}</span></span><span style="color:var(--color-primary)">${ic(icn)}</span></summary><div class="stack gap-4" style="padding:0 var(--space-4) var(--space-4)">${body}</div></details>`;
+    const ACT = { call: ["phone_number", L("Phone Number", "رقم الهاتف")], copy_coupon: ["coupon_code", L("Coupon Code", "كود الخصم")], external_url: ["external_url", "URL"], deep_link: ["deep_link", L("Deep Link", "رابط عميق")] };
+    const tab2 = () => `<h3 class="t-title">${L("Advertisement Content", "محتوى الإعلان")}</h3>`
+      + acc("img", L("Image and Content", "الصورة والمحتوى"), L("Customize the advertisement image, title and description.", "تخصيص صورة الإعلان والعنوان والوصف."), "camera", fld(L("Advertisement Image", "صورة الإعلان"), `<input class="input" type="file" accept=".jpg,.jpeg,.png,.webp" data-img style="padding-top:8px"><span class="t-xs text-tertiary">${L("Supported formats: JPG, JPEG, PNG, WEBP", "الصيغ المدعومة: JPG, JPEG, PNG, WEBP")}</span>`))
+      + acc("btn", L("Buttons", "الأزرار"), L("Configure CTA button, close button visibility and appearance styles.", "إعداد زر الإجراء وزر الإغلاق ومظهرهما."), "click", `<b>${L("Action Button", "زر الإجراء")}</b>${fld(L("Display", "العرض"), sw("show_button", L("Show Button", "إظهار الزر")))}
+          ${a.show_button ? `${fld(L("Button Text", "نص الزر"), `<input class="input" data-a="button_text" value="${esc(a.button_text)}">`)}${fld(L("Button Action", "إجراء الزر"), sel("button_action", [["none", L("None", "لا شيء")], ["call", L("Call", "اتصال")], ["copy_coupon", L("Copy Coupon Code", "نسخ كود الخصم")], ["external_url", L("Open External URL", "فتح رابط خارجي")], ["deep_link", L("Deep Link", "رابط عميق")], ["company_page", L("Company Page", "صفحة الشريك")]]))}
+            ${ACT[a.button_action] ? fld(ACT[a.button_action][1], `<input class="input" data-a="${ACT[a.button_action][0]}" value="${esc(a[ACT[a.button_action][0]])}">`) : a.button_action === "company_page" ? fld(L("Partner", "الشريك"), sel("partner_id", S.partners.slice(0, 8).map((p) => [String(p.id), `${p.company_name} (#${p.id} - ${p.owner_name || "---"})`]))) : ""}
+            <b>${L("Button Appearance", "مظهر الزر")}</b>${fld(L("Button Type", "نوع الزر"), `<div class="row gap-4">${radio("button_type", "filled", L("Filled", "ممتلئ"))}${radio("button_type", "outlined", L("Outlined", "محدد"))}${radio("button_type", "text", L("Text", "نص"))}</div>`)}
+            <div class="grid grid-2">${fld(L("Button Text Color", "لون نص الزر"), color("button_text_color"))}${fld(L("Button Color", "لون الزر"), color("button_color"))}</div>
+            ${fld(L("Button Font Size", "حجم خط الزر"), `<input class="input" type="number" min="10" max="24" data-a="button_font_size" value="${a.button_font_size}" style="max-width:120px">`)}
+            ${fld(L("Button Border Radius", "انحناء زوايا الزر"), `<div class="row gap-4" style="flex-wrap:wrap">${radio("button_border_radius", "0", L("Square", "مربع"))}${radio("button_border_radius", "16", L("Rounded", "مستدير"))}${radio("button_border_radius", "25", L("Pill Shape", "شكل حبة"))}${radio("button_border_radius", "custom", L("Custom", "مخصص"))}${a.button_border_radius === "custom" ? `<input type="range" min="0" max="50" data-a="radius_custom" value="${a.radius_custom || 8}">` : ""}</div>`)}` : ""}
+          <hr style="border:0;border-top:var(--border-thin) solid var(--color-border)"><b>${L("Close Button", "زر الإغلاق")}</b>${fld(L("Display", "العرض"), sw("show_close_button", L("Show Close Button", "إظهار زر الإغلاق")))}
+          ${a.show_close_button ? fld(L("Close Button Style", "نمط زر الإغلاق"), `<div class="row gap-4">${radio("close_button_style", "icon", L("Icon Only", "أيقونة فقط"))}${radio("close_button_style", "text", L("Text Only", "نص فقط"))}${radio("close_button_style", "icon_text", L("Icon + Text", "أيقونة + نص"))}</div>`) : ""}`)
+      + acc("pop", L("Popup Settings", "إعدادات النافذة المنبثقة"), L("Customize popup animations and overlay settings.", "تخصيص حركات النافذة المنبثقة وإعدادات الخلفية."), "layout", `${fld(L("Display", "العرض"), sw("fullscreen", L("Full Screen Ad", "إعلان ملء الشاشة")))}<b>${L("Animation", "الحركة")}</b>
+          <div class="grid grid-2">${fld(L("Entry Animation", "حركة الدخول"), sel("entry_animation", [["fade_in", "Fade In"], ["slide_up", "Slide Up"], ["slide_down", "Slide Down"], ["zoom_in", "Zoom In"]], L("None", "لا شيء")))}${fld(L("Exit Animation", "حركة الخروج"), sel("exit_animation", [["fade_out", "Fade Out"], ["slide_up", "Slide Up"], ["slide_down", "Slide Down"], ["zoom_out", "Zoom Out"]], L("None", "لا شيء")))}</div>
+          ${fld(L("Background Overlay Color", "لون الخلفية الشفافة"), `<div class="row gap-2" style="align-items:center">${color("overlay_color")}<span>|</span><input class="input" type="number" min="0" max="100" data-a="overlay_opacity" value="${a.overlay_opacity}" style="width:90px">%</div>`)}`);
+    const paint = () => {
+      const done = (n) => !Object.keys(stepErrors(n)).length;
+      mount.innerHTML = `<div class="stack gap-5">${err ? CRUD.alert("danger", err) : ""}
+        <section class="card card--pad row gap-3" style="align-items:center;flex-wrap:wrap">${STEPS.map((t, i) => `<button type="button" data-step="${i}" class="row gap-2" style="align-items:center;background:none;border:0;cursor:pointer;color:${i === step ? "var(--color-primary-ink)" : "var(--color-text-secondary)"};font-weight:${i === step ? 700 : 500}">
+            <span style="width:30px;height:30px;border-radius:50%;display:grid;place-content:center;background:${i === step ? "var(--color-primary)" : done(i) ? "var(--color-success-subtle)" : "var(--color-surface-sunken)"};color:${i === step ? "#fff" : done(i) ? "var(--color-success)" : "inherit"}">${done(i) && i !== step ? ic("check") : i + 1}</span>${t}</button>${i < 2 ? `<span style="flex:1;min-width:20px;height:2px;background:var(--color-border)"></span>` : ""}`).join("")}</section>
+        ${step === 2 ? `<div class="sa-side" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))"><div class="stack gap-4">${tab2()}</div>${previewCard(a)}</div>` : `<div class="stack gap-5">${step === 0 ? tab0() : tab1()}</div>`}
+        <section class="card card--pad row between gap-3"><div class="row gap-2"><a class="btn btn--danger" href="marketing-advertisements.html">${L("cancel", "إلغاء")}</a>${step ? `<button type="button" class="btn btn--secondary" data-back>${L("back", "رجوع")}</button>` : ""}</div>
+          <button type="button" class="btn" data-next>${step < 2 ? L("Next", "التالي") : L("Save Advertisement", "حفظ الإعلان")}</button></section></div>`;
+    };
+    const set = (k, v) => {
+      a[k] = v;
+      if (k === "user_type") { a.activity_status = "all"; a.location_type = ""; a.country = ""; a.gender = "all"; a.age = "all"; a.age_group_id = ""; }
+      if (k === "location_type") { a.country = ""; a.gender = "all"; a.age = "all"; }
+    };
+    mount.addEventListener("input", (e) => { const k = e.target.dataset.a; if (k && ["campaign_name", "campaign_description", "button_text"].includes(k)) a[k] = e.target.value; if (k && e.target.type === "color") { a[k] = e.target.value; paint(); } });
+    mount.addEventListener("change", (e) => {
+      const t = e.target, k = t.dataset.a;
+      if (t.dataset.sched) { const [p, v] = t.dataset.sched.split(":"); a.schedule_type = p; if (p === "periodic") a.recurrence_type = v; else a.start_mode = v; }
+      else if (t.dataset.dt) { const d = new Date(t.value); a[t.dataset.dt] = isNaN(d) ? "" : fmt(d); }
+      else if (t.matches("[data-img]")) { const f = t.files[0]; if (f && !/\.(jpe?g|png|webp)$/i.test(f.name)) err = L("Invalid image format", "صيغة الصورة غير صالحة"); else { err = ""; a.image = f ? f.name : null; } }
+      else if (k) set(k, t.type === "checkbox" ? t.checked : t.type === "radio" ? (k === "active" ? +t.value : t.value) : t.value);
+      paint();
+    });
+    mount.addEventListener("click", (e) => {
+      const pr = e.target.closest("[data-prio]"); if (pr) { a.priority = +pr.dataset.prio; return paint(); }
+      const tr = e.target.closest("[data-trig]"); if (tr) { a.trigger_type = tr.dataset.trig; return paint(); }
+      const st = e.target.closest("[data-step]"); if (st) { step = +st.dataset.step; err = ""; touched = false; return paint(); } /* every step is clickable, no validation */
+      if (e.target.closest("[data-reset]")) { Object.assign(a, { schedule_type: "one_time", start_mode: "asap", start_at: "", end_at: "", periodic_end_type: "never", timezone: "Asia/Riyadh", limit_on: false, delay_on: false }); return paint(); }
+      if (e.target.closest("[data-clearloc]")) { set("location_type", ""); return paint(); }
+      if (e.target.closest("[data-back]")) { step--; err = ""; touched = false; return paint(); }
+      if (e.target.closest("[data-next]")) {
+        touched = true;
+        if (step < 2) { if (Object.keys(stepErrors(step)).length) { err = L("Please complete all required fields in this step before continuing.", "يرجى إكمال جميع الحقول المطلوبة في هذه الخطوة قبل المتابعة."); paint(); return scrollTo({ top: 0 }); } step++; err = ""; touched = false; return paint(); }
+        const bad = [0, 1].find((n) => Object.keys(stepErrors(n)).length);
+        if (bad != null) { const e0 = stepErrors(bad); err = e0.end_at || L("Please complete all required fields in this step before continuing.", "يرجى إكمال جميع الحقول المطلوبة في هذه الخطوة قبل المتابعة."); step = bad; paint(); return scrollTo({ top: 0 }); }
+        const b = e.target.closest("[data-next]"); b.disabled = true; b.textContent = L("Confirm ...", "جاري التأكيد ...");
+        setTimeout(() => { if (src) Object.assign(src, a); else S.ads.unshift(Object.assign(a, { id: Math.max(...S.ads.map((x) => x.id)) + 1, created_at: fmt(new Date()) })); location.href = "marketing-advertisements.html"; }, 500);
+        return;
+      }
+    });
+    wirePreview(mount, a, paint);
+    paint();
+    return;
+  }
+
+  /* ================= list ================= */
+  SA.head(document.getElementById("pageHead"), { title: ["Advertisement Management", "إدارة الإعلانات"], actions: `<a class="btn btn--sm" href="marketing-advertisements.html?new=1">${ic("plus")}<span>${L("Add Advertisement", "إضافة إعلان")}</span></a>` });
+  const ctl = SA.list({
+    mount, data: S.ads,
+    pills: [["all", "All", "الكل"], ["active", "Active", "نشط"], ["inactive", "Inactive", "غير نشط"], ["scheduled", "Scheduled", "مجدول"], ["expired", "Expired", "منتهي"]].map((p) => ({ key: p[0], label: [p[1], p[2]] })),
+    pillMatch: (r, k) => k === "all" || dispStatus(r) === k,
+    search: ["Search by campaign name or ID", "البحث باسم الحملة أو المعرف"], searchMatch: (r, q) => (/^\d+$/.test(q) ? String(r.id) === q : r.campaign_name.toLowerCase().includes(q)),
+    empty: ["There is no data yet", "لا توجد بيانات بعد"],
+    columns: [
+      { head: ["Campaign ID", "معرف الحملة"], align: "center", cell: (r) => r.id },
+      { head: ["Campaign Name", "اسم الحملة"], align: "center", cell: (r) => `<b>${esc(r.campaign_name)}</b>` },
+      { head: ["Priority", "الأولوية"], align: "center", cell: (r) => (PRIO[r.priority] ? badge(PRIO[r.priority][1], PRIO[r.priority][0]) : "---") }, /* English-only labels in the dashboard */
+      { head: ["status", "الحالة"], align: "center", cell: (r) => { const s = ST[dispStatus(r)]; return badge(s[1], s[0]); } },
+      { head: ["Trigger Type", "نوع المحفز"], align: "center", cell: (r) => title(r.trigger_type) },
+      { head: ["Campaign Schedule Type", "نوع الجدولة"], align: "center", cell: (r) => title(r.schedule_type) },
+      { head: ["Created Date", "تاريخ الإنشاء"], align: "center", cell: (r) => esc(r.created_at) },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<div class="row gap-1" style="justify-content:center"><a class="icon-btn" href="marketing-advertisements.html?view=${r.id}" title="${L("View", "عرض")}" aria-label="${L("View", "عرض")}">${ic("eye")}</a><a class="icon-btn" href="marketing-advertisements.html?edit=${r.id}" title="${L("Edit", "تعديل")}" aria-label="${L("Edit", "تعديل")}">${ic("edit")}</a>
+          ${SA.iconBtn(+r.active ? "eyeOff" : "check", +r.active ? L("Deactivate", "إلغاء التفعيل") : L("Activate", "تفعيل"), `data-toggle="${r.id}"`)}${SA.iconBtn("trash", L("Delete", "حذف"), `data-del="${r.id}"`)}</div>` },
+    ],
+  });
+  mount.addEventListener("click", (e) => {
+    const t = e.target.closest("[data-toggle],[data-del]"); if (!t) return;
+    const r = S.ads.find((x) => String(x.id) === (t.dataset.toggle || t.dataset.del)), isDel = !!t.dataset.del, on = +r.active;
+    const el = SA.modal({ id: "adConfirm", title: isDel ? L("Delete Campaign", "حذف الحملة") : on ? L("Deactivate", "إلغاء التفعيل") : L("Activate", "تفعيل"),
+      body: `<p class="t-sm text-secondary">${isDel ? L("Are you sure you want to delete this campaign?", "هل أنت متأكد من حذف هذه الحملة؟") : on ? L("Are you sure you want to deactivate this campaign?", "هل أنت متأكد من إلغاء تفعيل هذه الحملة؟") : L("Are you sure you want to activate this campaign?", "هل أنت متأكد من تفعيل هذه الحملة؟")}${isDel ? "" : ` <b>"${esc(r.campaign_name)}"</b>`}</p>`,
+      foot: `<button class="btn btn--ghost" data-close>${L("cancel", "إلغاء")}</button><button class="btn" data-ok>${L("Confirm", "تأكيد")}</button>` });
+    el.querySelector("[data-ok]").onclick = (ev) => { ev.currentTarget.disabled = true; ev.currentTarget.textContent = L("Confirm ...", "جاري التأكيد ..."); setTimeout(() => { if (isDel) S.ads.splice(S.ads.indexOf(r), 1); else r.active = on ? 0 : 1; SA.close(el); ctl.paint(); }, 400); };
+  });
+})();
+</script>
+</body>
+</html>

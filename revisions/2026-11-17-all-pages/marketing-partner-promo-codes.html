@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Partner's Promo Codes · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/pp/pp-people.js"></script>
+<script>
+(() => {
+  /* Promo Codes (marketing/coupons) and Partner's Promo Codes (marketing/partner-coupons).
+     The dashboard copies the same coupon UI three times (here, partner coupons and
+     the partner profile); this system keeps one — PP.tabs.coupons (pp-people.js) —
+     and feeds it:
+       marketing-promo-codes.html       Super Admin coupons · "+ new" in the toolbar · create defaults to Geographic
+       marketing-partner-promo-codes.html  coupons created by partners (GET /coupons/partners) · no "new"
+     Sub-views: ?view=<id> · ?usage=<id>[&ut=] · ?new=1 (same as the profile tab). */
+  const file = location.pathname.split("/").pop().replace(/^_preview-/, "").replace(".html", "");
+  const isPartner = file === "marketing-partner-promo-codes";
+  RD.boot({ activeId: isPartner ? "mk-partner-promo-codes" : "mk-promo-codes", title: "Coupons" });
+  if (!document.getElementById("listMount")) return;
+  const { L, ic } = SA;
+  const S = HF.SA, qs = new URLSearchParams(location.search);
+  const host = S.partners[0];
+  PP.extend(host);
+
+  /* ---- data ---- */
+  if (!S._coupons) {
+    const pcs = S.partners.slice(0, 6).flatMap((p) => { PP.extend(p); return PP.couponsOf(p).map((c) => Object.assign(c, { _p: p })); });
+    const admin = ["HIGHFIVE20", "NEWUSER", "RIYADH15", "CAIRO10", "WEEKEND5", "FAMILY30", "VIP50"].map((code, i) => ({ id: 500 + i, code, description: i % 2 ? "" : "Super Admin campaign for HighFive users.", type: i === 5 ? "partners" : "geographic", discount_type: i % 2 ? "percentage" : "fixed",
+      value: i % 2 ? [10, 15, 20][i % 3] : [20, 30, 50][i % 3], max_amount: i % 2 ? 100 : null, min_amount: i % 3 ? 50 : 0, usage_limit: i % 3 ? 500 : null, usage_limit_per_user: i % 2 ? 1 : null, start_at: `2026-${String(5 + i).padStart(2, "0")}-01 00:00`, end_at: `2026-${String(8 + i).padStart(2, "0")}-30 23:59`,
+      total_discount: [4200, 1300, 880, 0, 260, 1720, 9400][i], status: i === 6 ? "expired" : i === 4 ? "inactive" : "active", country_name: i === 3 ? "Egypt" : "Saudi Arabia", _p: i === 5 ? S.partners[2] : null,
+      logs: [{ id: 1, admin: { name: "Super Admin" }, status: "active", created_at: `2026-0${1 + i}-02 10:00` }] }));
+    S._coupons = { admin, partner: pcs };
+  }
+  const data = isPartner ? S._coupons.partner : S._coupons.admin;
+
+  /* ---- routing: PP.href builds the tab's links on this page ---- */
+  PP.href = (tab, extra) => `${file}.html${extra ? "?" + new URLSearchParams(Object.entries(extra).filter(([, v]) => v != null)) : ""}`;
+  PP.go = () => (location.href = `${file}.html`);
+  const sub = qs.get("view") || qs.get("usage") || qs.get("new");
+  const title = isPartner ? ["Partner's Promo Codes", "رموز ترويج الشركاء"] : ["Coupons", "كوبونات"];
+  if (sub) document.getElementById("pageHead").hidden = true; /* sub-views render their own head + Back To Coupons */
+  else SA.head(document.getElementById("pageHead"), { title, crumbs: [["Marketing", "التسويق", file + ".html"]],
+    actions: isPartner ? "" : `<a class="btn btn--sm" href="${file}.html?new=1">${ic("plus")}<span>${L("new", "جديد")}</span></a>` });
+  const mount = document.getElementById("listMount");
+  mount.className = "stack gap-6";
+  PP.tabs.coupons(mount, { partner: host, params: qs, coupons: data, newBtn: true, global: !isPartner });
+})();
+</script>
+</body>
+</html>

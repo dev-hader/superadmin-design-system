@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>All Comments · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+  /* ---- redesign 2026-11-17: global list layer (same composition as partners.html) ---- */
+  .ops-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+  #listMount .data-table-toolbar > .grow { display: none; }
+  #listMount .data-table-toolbar > .input-wrap { flex: 1 1 320px; min-width: 0 !important; }
+  .ops-chips { padding: 0 var(--space-5) var(--space-4); }
+  .ops-id { font: inherit; font-weight: var(--weight-semibold); color: var(--color-text); padding: 0; cursor: pointer; text-align: start; }
+  .ops-id:hover { color: var(--color-primary-ink); text-decoration: underline; text-underline-offset: 3px; }
+  .ops-two { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .ops-two > b { font-weight: var(--weight-medium); }
+  .ops-check { display: inline-flex; flex-direction: column; gap: var(--space-1); align-items: flex-start; }
+  #listMount tbody tr:has([data-peek]) { cursor: pointer; }
+  #listMount > .stat-strip { grid-template-columns: repeat(auto-fit, minmax(min(100%, 128px), 1fr)) !important; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/pp/pp-ops.js"></script>
+<script src="assets/js/sa-ops.js"></script>
+<script src="assets/js/kp/kp-info.js"></script>
+<script src="assets/js/kp/kp-ops.js"></script>
+<script>
+(() => {
+  /* All Comments — mirrors pages/comments: pills (all · published · deletion
+     request · deleted), search, 9 columns. Two row kinds, as in the dashboard:
+       booking / public-event comments → Delete / Restore / View modals (pages/comments)
+       package comments → the package page's own modals (approve · decline ·
+       delete with reason · restore · view) — reused from kp-ops.js.
+     API: GET /comments; unit rows DELETE /units/{unitId}/comments/{id} and
+     PUT /units/{unitId}/comments/{id}/restore; package rows
+     POST /packages/{pkg}/comments/{review}/{approve|decline|delete|restore}.
+     Deep link: ?commentId=<id> opens the view, highlights the row and scrolls to it.
+     Demo flag: ?demo=error makes Delete / Restore fail ("Failed to delete comment" /
+     "Failed to restore comment" alert in the modal). */
+  /* Permissions (job keys): page view_user_comments (AllComments.js); Delete / Restore and
+     the package actions (approve · decline · delete · restore) delete_unit_comments
+     (CommentsTable.js canManageComments). View is not gated. */
+  RD.boot({ activeId: "comments", title: "All Comments", perm: "view_user_comments" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic, badge } = SA;
+  const D = OPS.all();
+  const TXT = ["Great court, clean and well lit. Staff were helpful and the booking flow was quick from start to end.", "Booking was easy.", "Lights went off mid-session.", "ممتاز جداً والأسعار مناسبة", "Parking was full, had to walk 10 minutes.", "Coach was late."];
+
+  /* ---------- rows ---------- */
+  const rows = [];
+  D.bookings.slice(0, 18).forEach((b, i) => {
+    const pub = i % 4 === 1, st = i % 6 === 4 ? "deleted" : i % 6 === 2 ? "pending" : "published";
+    const u = HF.SA.units.find((x) => x.name === b.unit_name);
+    rows.push({ kind: "unit", id: 7000 + i, player: { name: b.user_name }, comment: TXT[i % TXT.length], type: pub ? L("Public event", "حدث عام") : L("Booking", "حجز"), pub, ref: b.id, unit: { id: u ? u.id : null, name: b.unit_name },
+      company_name: b.company_name, rate: [5, 4, 2, 5, 1, 3][i % 6], created_at: b.created_at, deleted_at: st === "deleted" ? "2026-11-02 10:00:00" : null, deleted_reason: st !== "published" ? "Offensive language" : null,
+      /* one sample row with status 1 and no deletion data → the "Unknown" badge */
+      status: i === 7 ? 1 : st === "published" ? 2 : st === "pending" ? 1 : 0 });
+  });
+  const pk = HF.SA.packages.filter((p) => p.approval_status.value === "approved").slice(0, 4);
+  pk.forEach((p) => { KP.extend(p); KP.comments(p).slice(0, 3).forEach((c) => rows.push({ kind: "package", pkg: p, c, id: c.id, created_at: c.created_at })); });
+  rows.sort((a, b) => b.created_at.localeCompare(a.created_at));
+  /* CommentsTable status: deleted_at → Deleted · deleted_reason → Pending deletion · status 2 → Published · else Unknown */
+  const key = (r) => (r.kind === "package" ? r.c.status : r.deleted_at ? "deleted" : r.deleted_reason ? "deletion_request" : r.status === 2 ? "published" : "unknown");
+
+  /* ---------- cells ---------- */
+  const CST = { published: ["success", L("Published", "منشور")], deletion_request: ["warning", L("Pending deletion", "بانتظار الحذف")], deleted: ["danger", L("Deleted", "محذوف")], unknown: ["", L("Unknown", "غير معروف")] };
+  const open = new Set();
+  const trunc = (t, id, toggle) => { const long = t.length > 50 || t.split("\n").length > 2; if (!long) return esc(t); const o = open.has(id); return `${esc(o ? t : t.slice(0, 50) + "...")}${toggle ? ` <button type="button" class="btn btn--sm btn--ghost" style="padding:0 4px;height:auto" data-more="${id}">${o ? L("Show less", "عرض أقل") : L("Show more", "عرض المزيد")}</button>` : ""}`; };
+  const stars = (n) => (n ? `<span style="color:var(--color-warning)">${"★".repeat(n)}</span><span class="text-tertiary">${"★".repeat(5 - n)}</span>` : "—");
+  const onLink = (r) => (r.kind === "package" ? `package-detail.html?id=${r.pkg.id}&tab=comments` : r.unit.id ? `unit-profile.html?id=${r.unit.id}&tab=${r.pub ? "public-events" : "bookings"}&view=${r.ref}` : `${r.pub ? "public-events" : "bookings"}.html?view=${r.ref}`);
+
+  /* Redesign (2026-11-17) — same rows, pills, search, fields, actions and modals;
+     laid out like partners.html: head with a live summary, status tiles, one
+     search bar; the comment cell carries its rating; unit / package and company
+     share one column; row actions keep their designed tooltips. */
+  const by = (k) => rows.filter((r) => key(r) === k).length;
+  OPS.head(document.getElementById("pageHead"), { title: ["All Comments", "جميع التعليقات"],
+    sub: L(`${SA.fmt(rows.length)} comments · ${by("deletion_request")} deletion requests waiting`, `${SA.fmt(rows.length)} تعليق · ${by("deletion_request")} طلب حذف بالانتظار`) });
+  let ctl = null, hl = null; /* hl = the ?commentId= row kept highlighted */
+  ctl = SA.list({
+    after: (root) => { if (hl == null) return; const v = root.querySelector(`[data-view="${hl}"]`); if (v) v.closest("tr").style.background = "var(--color-primary-subtle)"; },
+    mount: document.getElementById("listMount"), data: rows,
+    pills: [["all", "All comments", "كل التعليقات", "chat", ""], ["published", "Published", "منشور", "check", "success"], ["deletion_request", "Deletion request", "طلب حذف", "clock", "warning"], ["deleted", "Deleted", "محذوف", "trash", "danger"]]
+      .map((p) => ({ key: p[0], label: [p[1], p[2]], icon: p[3], tone: p[4] })),
+    pillMatch: (r, k) => k === "all" || key(r) === k,
+    search: ["Search by user name, company, unit, package, or comment...", "البحث باسم المستخدم، الشركة، الوحدة، الباقة، أو التعليق..."],
+    searchMatch: (r, q) => (r.kind === "package" ? [r.c.user.name, r.pkg.partner.name, r.pkg.name, r.c.comment] : [r.player.name, r.company_name, r.unit.name, r.comment]).some((v) => String(v).toLowerCase().includes(q)),
+    empty: () => `<div class="stack gap-2" style="align-items:center"><span style="transform:scale(1.6)">${ic("chat")}</span><b class="t-title" style="margin-top:var(--space-2)">${L("No comments found", "لم يتم العثور على تعليقات")}</b></div>`,
+    columns: [
+      { head: ["User", "المستخدم"], cell: (r) => { const n = r.kind === "package" ? r.c.user.name : r.player.name; return `<div class="cell-user">${PP.avatar(n)}<div><b>${esc(n)}</b><div class="t-xs text-tertiary">${esc(r.created_at)}</div></div></div>`; } },
+      { head: ["Comment", "التعليق"], cell: (r) => { const rate = r.kind === "package" ? r.c.rate : r.rate; return `<div class="stack gap-1" style="min-width:220px;max-width:300px"><span class="t-sm" role="img" aria-label="${L(`Rating ${rate} of 5`, `التقييم ${rate} من 5`)}">${stars(rate)}</span><div style="white-space:pre-wrap" dir="auto">${trunc(r.kind === "package" ? r.c.comment : r.comment, r.id, true)}</div></div>`; } },
+      { head: ["Comment on", "تعليق على"], cell: (r) => (r.kind === "package"
+        ? `<a href="${onLink(r)}" class="ops-two" style="color:inherit"><b>${L("Package", "باقة")}</b><span class="t-xs" style="color:var(--color-text-link)">${r.c.comment_on.reference}</span></a>`
+        : `<a href="${onLink(r)}" class="ops-two" style="color:inherit"><b>${esc(r.type)}</b><span class="t-xs" style="color:var(--color-text-link)">${L("ID", "المعرف")}: #${r.ref}</span></a>`) },
+      { head: ["Unit / package · company", "الوحدة / الباقة · الشركة"], cell: (r) => OPS.two(esc(r.kind === "package" ? r.pkg.name : r.unit.name), esc(r.kind === "package" ? r.pkg.partner.name : r.company_name)) },
+      { head: ["Deletion reason", "سبب الحذف"], cell: (r) => { const t = r.kind === "package" ? r.c.deletion_reason : r.deleted_reason; return t ? `<div class="t-sm" style="max-width:200px;white-space:pre-wrap">${trunc(t, "d" + r.id, false)}</div>` : `<span class="text-tertiary">—</span>`; } },
+      { head: ["Status", "الحالة"], align: "center", cell: (r) => badge(CST[key(r)][0], CST[key(r)][1]) },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => {
+        const k = key(r), v = SA.iconBtn("eye", L("View", "عرض"), `data-view="${r.id}"`);
+        if (r.kind === "unit") return `<div class="row gap-1" style="justify-content:center">${v}${r.deleted_at ? SA.iconBtn("refresh", L("Restore", "استعادة"), `data-restore="${r.id}" data-perm="delete_unit_comments"`) : SA.iconBtn("trash", L("Delete", "حذف"), `data-del="${r.id}" data-perm="delete_unit_comments"`)}</div>`;
+        return `<div class="row gap-1" style="justify-content:center">${v}${k === "published" ? SA.iconBtn("trash", L("Delete", "حذف"), `data-pact="delete" data-id="${r.id}" data-perm="delete_unit_comments"`)
+          : k === "deletion_request" ? SA.iconBtn("check", L("Approve deletion request", "قبول طلب الحذف"), `data-pact="approve" data-id="${r.id}" data-perm="delete_unit_comments"`) + SA.iconBtn("close", L("Decline deletion request", "رفض طلب الحذف"), `data-pact="decline" data-id="${r.id}" data-perm="delete_unit_comments"`)
+          : SA.iconBtn("refresh", L("Restore", "استعادة"), `data-pact="restore" data-id="${r.id}" data-perm="delete_unit_comments"`)}</div>`;
+      } },
+    ],
+  });
+  /* package rows: bind the package page's modals for that package (same component in the dashboard) */
+  const bindPkg = (p) => { KP.pkg = p; KP.href = (tab, x) => `package-detail.html?id=${p.id}&tab=${tab}${x ? "&" + new URLSearchParams(x) : ""}`; KP.tabs.comments(document.createElement("div"), { pkg: p }); };
+
+  /* booking / event rows: inline result alert, closes after 1 s (no toast — as in the dashboard) */
+  function unitModal(r, restore) {
+    const el = SA.modal({ id: "acDel", title: restore ? L("Restore comment", "استعادة التعليق") : L("Delete comment", "حذف التعليق"),
+      body: `<div data-b class="stack gap-3"><p class="t-sm text-secondary">${restore ? L("Please confirm that you want to restore this comment", "يرجى تأكيد رغبتك في استعادة هذا التعليق") : L("Please confirm that you want to delete this item", "يرجى تأكيد رغبتك في حذف هذا العنصر")}</p>
+        <div class="row gap-3" style="padding:var(--space-3);border-radius:var(--radius-md);background:var(--color-surface-sunken);align-items:flex-start">${PP.avatar(r.player.name)}<div><b class="t-sm">${esc(r.player.name)}</b><p class="t-sm">${esc(r.comment.length > 100 ? r.comment.slice(0, 100) + "..." : r.comment)}</p></div></div></div>`,
+      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn ${restore ? "" : "btn--danger"}" data-ok>${L("Confirm", "تأكيد")}</button>` });
+    el.querySelector("[data-ok]").onclick = (e) => {
+      const b = e.currentTarget; b.disabled = true; b.textContent = L("Please wait", "يرجى الانتظار") + "...";
+      setTimeout(() => {
+        /* failure: the server's message, else COMMENTS.DELETE_ERROR / RESTORE_ERROR; the modal stays open */
+        if (new URLSearchParams(location.search).get("demo") === "error") {
+          const old = el.querySelector("[data-err]"); if (old) old.remove();
+          el.querySelector("[data-b]").insertAdjacentHTML("afterbegin", `<div class="alert alert--danger" data-err><span class="alert__icon">${ic("warn")}</span><div class="alert__body">${restore ? L("Failed to restore comment", "فشل استعادة التعليق") : L("Failed to delete comment", "فشل حذف التعليق")}</div></div>`);
+          b.disabled = false; b.textContent = L("Confirm", "تأكيد");
+          return;
+        }
+        if (restore) { r.deleted_at = null; r.deleted_reason = null; r.status = 2; } else { r.deleted_at = "2026-11-15 12:00:00"; r.status = 0; }
+        el.querySelector("[data-b]").innerHTML = `<div class="alert alert--success"><span class="alert__icon">${ic("check")}</span><div class="alert__body">${restore ? L("Comment restored successfully", "تم استعادة التعليق بنجاح") : L("Comment deleted successfully", "تم حذف التعليق بنجاح")}</div></div>`;
+        setTimeout(() => { SA.close(el); ctl.paint(); }, 1000);
+      }, 400);
+    };
+  }
+  function unitView(r) {
+    const k = key(r) === "unknown" ? "published" : key(r); /* ViewCommentModal has no Unknown — falls back to Published */
+    SA.modal({ id: "acView", wide: true, title: L("View comment", "عرض التعليق"), foot: "", body: `<div class="stack gap-4">
+        <div class="cell-user">${PP.avatar(r.player.name)}<div><b>${esc(r.player.name)}</b><div class="t-xs text-tertiary">${esc(r.created_at)}</div></div></div>
+        ${PP.kv([[L("Rating", "التقييم"), `${stars(r.rate)} (${r.rate}/5)`],
+          [L("Comment", "التعليق"), `<div style="padding:var(--space-3);border-radius:var(--radius-md);background:var(--color-surface-sunken);font-weight:var(--weight-regular);white-space:pre-wrap" dir="auto">${esc(r.comment)}</div>`],
+          [L("Comment on", "تعليق على"), `${esc(r.type)} <span class="text-tertiary">${L("ID", "المعرف")}: #${r.ref}</span> <a class="btn btn--sm btn--secondary" href="${onLink(r)}">${r.pub ? L("Open public event", "فتح الفعالية العامة") : L("Open booking", "فتح الحجز")}</a>`],
+          [L("Unit / package name", "اسم الوحدة / الباقة"), esc(r.unit.name)], [L("Company name", "اسم الشركة"), esc(r.company_name)], [L("Status", "الحالة"), badge(CST[k][0], CST[k][1])],
+          r.deleted_reason ? [L("Deletion reason", "سبب الحذف"), `<div style="padding:var(--space-3);border-radius:var(--radius-md);background:var(--color-danger-subtle)">${esc(r.deleted_reason)}</div>`] : null,
+          r.deleted_at ? [L("Deleted at", "تاريخ الحذف"), esc(r.deleted_at)] : null])}</div>` });
+  }
+
+  const mount = document.getElementById("listMount");
+  mount.addEventListener("click", (e) => {
+    const find = (id) => rows.find((x) => String(x.id) === String(id));
+    const m = e.target.closest("[data-more]"); if (m) { const id = m.dataset.more; open.has(id) ? open.delete(id) : open.add(id); return ctl.paint(); }
+    const v = e.target.closest("[data-view]");
+    if (v) { const r = find(v.dataset.view); if (r.kind === "unit") return unitView(r); bindPkg(r.pkg); return KP.commentView(r.c); }
+    const d = e.target.closest("[data-del]"); if (d) return unitModal(find(d.dataset.del), false);
+    const rs = e.target.closest("[data-restore]"); if (rs) return unitModal(find(rs.dataset.restore), true);
+    const a = e.target.closest("[data-pact]"); if (a) { const r = find(a.dataset.id); bindPkg(r.pkg); KP.commentAct(a.dataset.pact, r.c, ctl.paint); }
+  });
+  /* ?commentId= deep link — highlight, open the view, drop the param */
+  const cid = new URLSearchParams(location.search).get("commentId");
+  if (cid) {
+    const r = rows.find((x) => String(x.id) === cid);
+    if (r) {
+      /* go to the row's page, highlight it and scroll it into view (CommentsTable), then open the view */
+      hl = r.id;
+      ctl.state.page = Math.floor(rows.indexOf(r) / ctl.state.limit) + 1; ctl.paint();
+      requestAnimationFrame(() => { const v = mount.querySelector(`[data-view="${r.id}"]`); if (v) v.closest("tr").scrollIntoView({ behavior: "smooth", block: "center" }); });
+      r.kind === "unit" ? unitView(r) : (bindPkg(r.pkg), KP.commentView(r.c));
+      history.replaceState(null, "", "comments.html" + (new URLSearchParams(location.search).get("demo") ? "?demo=" + new URLSearchParams(location.search).get("demo") : ""));
+    }
+  }
+})();
+</script>
+</body>
+</html>

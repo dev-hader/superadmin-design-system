@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Unit profile · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+
+  /* ---- redesign frame (2026-11-17): record header + grouped section nav ---- */
+  .pp-head { margin-bottom: var(--space-6); }
+  .pp-head__media { display: grid; place-items: center; font-size: var(--text-h3); font-weight: var(--weight-bold); color: var(--color-primary-ink); background: var(--color-primary-subtle); }
+  .pp-head__bio { max-width: 680px; margin-top: var(--space-2); }
+  .pp-head .record-head__meta > span { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .pp-head .record-head__meta svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .pp-layout { display: grid; grid-template-columns: 264px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .pp-layout.is-solo, .pp-layout.is-tabs { grid-template-columns: minmax(0, 1fr); }
+  .pp-body { min-width: 0; }
+
+  /* shared bits: the section card, its head and the side / tabs switch */
+  .pp-nav__card { background: var(--color-surface); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-lg); box-shadow: var(--shadow-xs); }
+  .pp-nav__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border-subtle); }
+  .pp-nav__bar b { font-size: var(--text-sm); }
+  .pp-view { display: inline-flex; padding: 2px; gap: 2px; background: var(--color-surface-sunken); border-radius: var(--radius-md); }
+  .pp-view button { width: 30px; height: 28px; display: grid; place-items: center; border-radius: var(--radius-sm); color: var(--color-text-tertiary); }
+  .pp-view button svg { width: 16px; height: 16px; }
+  .pp-view button:hover { color: var(--color-text); }
+  .pp-view button[aria-pressed="true"] { background: var(--color-surface); color: var(--color-primary-ink); box-shadow: var(--shadow-xs); }
+  .pp-ic { display: inline-grid; place-items: center; width: 18px; height: 18px; flex-shrink: 0; color: var(--color-text-tertiary); }
+  .pp-ic svg { width: 16px; height: 16px; }
+
+  /* side view */
+  .pp-nav { position: sticky; top: calc(var(--topbar-height) + var(--space-4)); }
+  .pp-nav__list { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-3) var(--space-2) var(--space-4); max-height: calc(100vh - var(--topbar-height) - 7rem); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--color-border) transparent; }
+  .pp-nav__group { display: flex; flex-direction: column; gap: 1px; }
+  .pp-nav__title { display: flex; align-items: center; justify-content: space-between; font-size: var(--text-xs); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--color-text-tertiary); padding: 0 var(--space-3) var(--space-1); }
+  .pp-nav__title span:last-child { font-variant-numeric: tabular-nums; letter-spacing: 0; }
+  .pp-nav__link { position: relative; display: flex; align-items: center; gap: var(--space-3); padding: 9px var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); line-height: 1.3; color: var(--color-text-secondary); text-decoration: none; transition: background-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
+  .pp-nav__link:hover { background: var(--color-surface-hover); color: var(--color-text); }
+  .pp-nav__link:hover .pp-ic { color: var(--color-text-secondary); }
+  .pp-nav__link.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .pp-nav__link.is-active .pp-ic { color: var(--color-primary); }
+  /* the accent rail on the reading-start edge (RTL-aware) */
+  .pp-nav__link.is-active::before { content: ""; position: absolute; inset-block: 8px; inset-inline-start: 0; width: 3px; border-radius: var(--radius-full); background: var(--color-primary); }
+
+  /* tabs view: groups on top, that group's sections underneath — nothing hidden */
+  .pp-tabs { margin-bottom: var(--space-5); }
+  .pp-tabs__groups { display: flex; gap: var(--space-2); flex-wrap: wrap; flex: 1; min-width: 0; }
+  .pp-tabs__group { display: inline-flex; align-items: center; gap: var(--space-2); padding: 6px var(--space-3); border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--color-text-secondary); border: 1px solid var(--color-border-subtle); }
+  .pp-tabs__group:hover { color: var(--color-text); background: var(--color-surface-hover); }
+  .pp-tabs__group[aria-pressed="true"] { color: var(--color-primary-ink); background: var(--color-primary-subtle); border-color: transparent; }
+  .pp-tabs__count { font-size: var(--text-xs); font-variant-numeric: tabular-nums; color: var(--color-text-tertiary); }
+  .pp-tabs__scroller { position: relative; }
+  .pp-tabs__row { display: flex; gap: var(--space-1); padding: 0 var(--space-3); overflow-x: auto; scrollbar-width: none; scroll-padding-inline: 44px; }
+  .pp-tabs__row::-webkit-scrollbar { display: none; }
+  .pp-tabs__arrow { position: absolute; inset-block: 0; z-index: 1; width: 44px; display: grid; place-items: center; color: var(--color-text-secondary); background: var(--color-surface); }
+  .pp-tabs__arrow[hidden] { display: none; }
+  .pp-tabs__arrow:hover { color: var(--color-primary-ink); }
+  .pp-tabs__arrow svg { width: 18px; height: 18px; }
+  .pp-tabs__arrow[data-scroll="start"] { inset-inline-start: 0; border-end-start-radius: var(--radius-lg); box-shadow: 14px 0 12px -8px var(--color-surface); }
+  .pp-tabs__arrow[data-scroll="end"] { inset-inline-end: 0; border-end-end-radius: var(--radius-lg); box-shadow: -14px 0 12px -8px var(--color-surface); }
+  [dir="rtl"] .pp-tabs__arrow[data-scroll="start"] { box-shadow: -14px 0 12px -8px var(--color-surface); }
+  [dir="rtl"] .pp-tabs__arrow[data-scroll="end"] { box-shadow: 14px 0 12px -8px var(--color-surface); }
+  .pp-tabs__tab { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-3); font-size: var(--text-sm); color: var(--color-text-secondary); text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .pp-tabs__tab:hover { color: var(--color-text); }
+  .pp-tabs__tab.is-active { color: var(--color-primary-ink); font-weight: var(--weight-semibold); border-bottom-color: var(--color-primary); }
+  .pp-tabs__tab.is-active .pp-ic { color: var(--color-primary); }
+
+  /* phones / narrow: one grouped select, whichever view is chosen */
+  /* narrow-screen picker */
+  .pp-pick { display: none; position: relative; z-index: 50; } /* above the animated section cards that follow it, below modals */
+  .pp-pick__btn { width: 100%; display: flex; align-items: center; gap: var(--space-3); height: 44px; padding: 0 var(--space-3); margin-top: var(--space-1); background: var(--color-surface); border: 1.5px solid var(--input-border); border-radius: var(--radius-md); font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-text); text-align: start; }
+  .pp-pick__btn:hover, .pp-pick__btn[aria-expanded="true"] { border-color: var(--input-border-hover); }
+  .pp-pick__btn .pp-ic { color: var(--color-primary); }
+  .pp-pick__cur { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pp-pick__btn > svg { width: 16px; height: 16px; color: var(--color-text-tertiary); transition: transform var(--duration-fast) var(--ease-out); }
+  .pp-pick__btn[aria-expanded="true"] > svg { transform: rotate(180deg); }
+  .pp-pick__menu { inset-inline: 0; top: calc(100% + 6px); max-height: min(60vh, 460px); overflow-y: auto; padding: var(--space-2); }
+  .pp-pick__group + .pp-pick__group { margin-top: var(--space-2); padding-top: var(--space-2); border-top: 1px solid var(--color-border-subtle); }
+  .pp-pick__title { display: block; padding: var(--space-1) var(--space-3); font-size: var(--text-xs); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--color-text-tertiary); }
+  .pp-pick__item { display: flex; align-items: center; gap: var(--space-3); justify-content: flex-start; text-decoration: none; }
+  .pp-pick__item.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .pp-pick__item.is-active .pp-ic { color: var(--color-primary); }
+  .pp-pick__check { margin-inline-start: auto; display: inline-flex; color: var(--color-primary); }
+  .pp-pick__check svg { width: 16px; height: 16px; }
+  @media (prefers-reduced-motion: reduce) { .pp-pick__btn > svg { transition: none; } }
+  @media (max-width: 1100px) {
+    .pp-layout { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+    .pp-nav { position: static; }
+    .pp-nav__card { display: none; }
+    .pp-pick { display: block; }
+  }
+  @media (prefers-reduced-motion: reduce) { .pp-nav__link { transition: none; } }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+  .up-st { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .up-rate { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .up-rate > span { color: var(--color-warning); letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div class="pp-layout" id="ppLayout">
+        <nav class="pp-nav" id="ppNav" aria-label="Unit sections"></nav>
+        <div id="upBody" class="pp-body"></div>
+      </div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/sa-translation.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/pp/pp-ops.js"></script>
+<script src="assets/js/up/up-info.js"></script>
+<script src="assets/js/up/up-settings.js"></script>
+<script>
+(() => {
+  /* Unit profile — mirrors pages/units/profile (ProfilePage.js + header/
+     ProfileHeader.js): title "units profile", back, hero (image · rating ·
+     methodology/online badges · name · company · description · translation)
+     with the status block (HighFive / Partner App status + their modals) and
+     the 13-tab strip. Tabs come from assets/js/up/*.js (unit-only) and the
+     shared partner tabs in unit mode (pp-ops.js, ctx.unit).
+     Redesign (2026-11-17): the hero + "unit status" panel + tab strip became
+     the partner profile's frame — a record header (identity, both app
+     statuses as badges, action by / on, the status action, translation, back)
+     and a grouped section nav (side list or tabs, a picker on phones). Tab
+     bodies are untouched. Previous layout: revisions/2026-11-17-all-pages/unit-profile.html
+     URL: unit-profile.html?id=<unitId>&tab=<key>[&redirect_to_page=…]
+     Deep link: &tab=comments&commentId=<id> opens that comment, highlights and scrolls to its row.
+     Demo flags: &tab=policy&demo=nopolicy ("No data") · &tab=settings&sec=taxes&demo=nolocation
+     (no state / city data).
+     Permissions (job keys, as pages/units/profile): page view_unit_details (ProfilePage.js);
+     status edit update_units (header/ProfileHeader.js); section nav items (side list, tabs
+     and the narrow picker, with their groups) — gallery view_unit_images, comments
+     view_unit_comments | view_fake_unit_comments, public events view_public_events,
+     bookings view_bookings, multi-booking sessions view_multi_bookings, assigned service
+     lists view_unit_services, settings view_unit_settings, financial view_unit_financials;
+     details, location, policy, contacts, assigned employees and translation are not gated.
+     A section opened without its key shows NotHavePermissions. Actions inside the
+     sections: see assets/js/up/up-info.js, up-settings.js and pp/pp-ops.js. */
+  RD.boot({ activeId: "units", title: "Unit profile", perm: "view_unit_details" });
+  if (!document.getElementById("upBody")) return;
+  const { L, esc, ic, badge } = SA;
+  const qs = new URLSearchParams(location.search);
+  const unit = HF.SA.units.find((x) => String(x.id) === qs.get("id")) || HF.SA.units[0];
+  const partner = HF.SA.partners.find((p) => p.id === unit.partner.id);
+  PP.extend(partner);
+
+  /* ---------- per-unit sample data (shaped like GET /units/{id}) ---------- */
+  if (!unit._up) {
+    unit._up = true;
+    const i = unit.id % 9;
+    Object.assign(unit, {
+      rate: i % 4 === 3 ? null : 3.5 + (i % 3) * 0.5, description: i % 2 ? `${unit.activity.name} ${unit.type.name.toLowerCase()} with lighting and changing rooms.` : "",
+      gender: ["Both", "Male", "Female"][i % 3], services: ["Changing rooms", "Parking", "Lighting"].slice(0, 1 + (i % 3)),
+      extra_categories: i % 3 === 0 ? ["Kids"] : [], extra_activities: i % 3 === 0 ? ["Trampoline"] : [], show_in_app: i % 5 !== 4,
+      partner_allow_online: partner.settings.allow_online_attendance === 1 || unit.attendance_type === "online",
+      activated_by: unit.status.value === "waiting" ? null : { name: "Super Admin" }, active_action_at: unit.status.value === "waiting" ? null : "2026-0" + ((i % 9) + 1) + "-12 10:30:00",
+      loc: { type: i % 4 === 2 ? "part" : "main", part_from: null, conflicted_with: [], country: partner.country, state: partner.state, city: partner.city, branch: (partner.branches[i % partner.branches.length] || {}).name, address: `${partner.city.name}, ${partner.state.name}, ${partner.country.name}`, latitude: (24.71 + i / 100).toFixed(4), longitude: (46.67 + i / 100).toFixed(4) },
+      gallery: [{ id: 1, is_image: true, main_photo: 1, original: true }, { id: 2, is_image: true, main_photo: 0 }, { id: 3, is_image: false, main_photo: 0 }],
+      comments: {
+        real: ["Omar Khalid", "Sara Nabil", "Yousef Adel", "Lama Fahad", "Hassan Ali"].map((n, k) => ({ id: 600 + k, user_name: n, created_at: `2026-1${k % 2}-0${k + 1} 18:2${k}:00`, comment: ["Great court, clean and well lit.", "Booking was easy, staff were friendly.", "Lights went off mid-session.", "Perfect for kids!", "تجربة ممتازة وسأعود مرة أخرى"][k], source_type: k % 3 === 2 ? "public_event" : "booking", ref: 5001 + k, rate: [5, 4, 2, 5, 4][k], status: [2, 2, 1, 2, 0][k], deleted_reason: k === 4 ? "Offensive language" : k === 2 ? "Requested by user" : null, deleted_at: k === 4 ? "2026-10-20 09:00:00" : null }))
+          /* a fake comment as the regular list returns it (is_fake, no booking / event id) */
+          .concat([{ id: 701, is_fake: true, user_name: "Reem T.", user_count: 2, created_at: "2026-08-30 19:00:00", comment: "Friendly staff and easy parking.", source_type: "booking", ref: null, rate: 4, status: 2, deleted_reason: null, deleted_at: null }]),
+        fake: [{ id: 700, user_name: "Ahmad R.", user_count: 3, rate: 5, description: "Amazing venue for weekend games.", commented_at: "2026-09-12 20:00:00", source_type: "booking", ref: null }],
+      },
+    });
+    if (unit.loc.type === "part") { const o = HF.SA.units.find((x) => x.partner.id === unit.partner.id && x.id !== unit.id && (x.id % 9) % 4 !== 2 /* a main unit */); if (o) unit.loc.part_from = { id: o.id, name: o.name }; }
+  }
+
+  /* ---------- record header ---------- */
+  const back = `units.html${qs.get("redirect_to_page") ? "?page=" + qs.get("redirect_to_page") : ""}`;
+  const tone = (v) => (v === "waiting" || v === "pending" ? "warning" : v === "active" ? "primary" : "danger");
+  const lbl = (v) => ({ waiting: L("Pending", "معلق"), pending: L("Pending", "معلق"), active: L("Approved", "معتمد"), inactive: L("Not approved", "غير معتمد") }[v] || PP.cap(v));
+  const indie = () => partner.is_independent && partner.show_in_app;
+  function hero() {
+    const u = unit;
+    const stars = u.rate ? `<span class="up-rate" aria-label="${L(`Rating ${u.rate.toFixed(1)} of 5`, `التقييم ${u.rate.toFixed(1)} من 5`)}"><span aria-hidden="true">${"★".repeat(Math.round(u.rate))}${"☆".repeat(5 - Math.round(u.rate))}</span> <b>${u.rate.toFixed(1)}</b></span>` : `<span>${L("No rating", "لا يوجد تقييم")}</span>`;
+    document.getElementById("pageHead").innerHTML = `<header class="page-head pp-head animate-in" style="max-width:none">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="${back}">${L("Units", "الوحدات")}</a><span aria-hidden="true">›</span><span>${esc(u.name || "---")}</span></nav>
+      <div class="record-head">
+        <span class="record-head__media" aria-hidden="true">${ic("box")}</span>
+        <div class="record-head__id">
+          <h1>${esc(u.name || "---")}</h1>
+          <div class="record-head__badges">
+            <span class="up-st"><span class="t-xs text-tertiary">${L("HighFive app", "تطبيق هاي فايف")}</span>${badge(tone(u.status.value), lbl(u.status.value))}</span>
+            ${indie() ? `<span class="up-st"><span class="t-xs text-tertiary">${L("Partner app", "تطبيق الشريك")}</span>${u.ownappactive ? badge(tone(u.ownappactive.value), lbl(u.ownappactive.value)) : "---"}</span>` : ""}
+            ${badge("info", PP.cap(u.booking_methodology))}
+            ${u.attendance_type === "online" ? badge("success", `${L("Attendance", "الحضور")}: ${L("Online", "عبر الإنترنت")}`) : ""}
+          </div>
+          <div class="record-head__meta">
+            <span>${ic("hotel")} <b>${esc(u.partner.company_name || "---")}</b></span>
+            ${stars}
+          </div>
+          <div class="record-head__meta">
+            <span>${L("Action by", "تم الإجراء بواسطة")} <b>${u.activated_by ? esc(u.activated_by.name) : "---"}</b></span>
+            <span>${L("Action on", "تاريخ الإجراء")} <b>${u.active_action_at ? esc(u.active_action_at) : "---"}</b></span>
+          </div>
+          <p class="t-sm text-secondary pp-head__bio">${u.description ? esc(u.description) : "---"}</p>
+        </div>
+        <div class="record-head__actions">
+          <button type="button" class="btn btn--secondary" id="upEditStatus" data-perm="update_units">${ic("check")}<span>${L("Update status", "تحديث الحالة")}</span></button>
+          <a class="icon-btn" href="${href("translation")}" aria-label="${L("Translation", "ترجمة")}" data-tip="${L("Translation", "ترجمة")}">${ic("globe")}</a>
+          <a class="icon-btn" href="${back}" aria-label="${L("Back", "رجوع")}" data-tip="${L("Back", "رجوع")}">${ic(document.documentElement.dir === "rtl" ? "chevronRight" : "chevronLeft")}</a>
+        </div>
+      </div>
+    </header>`;
+    document.getElementById("upEditStatus").onclick = editStatus;
+  }
+  UP.refreshHero = hero;
+  function editStatus() {
+    const u = unit, opts = (v) => [["1", L("Approved", "معتمد"), v === "1"], ["0", L("Not approved", "غير معتمد"), v === "0"]];
+    const hf = u.status.value === "active" ? "1" : "0";
+    if (!indie()) {
+      /* Modal A — PUT /units/{id}/update-unit-status {active} */
+      const el = SA.modal({ id: "upSt", title: L("Update status", "تحديث الحالة"), body: SA.field(["Status", "الحالة"], SA.select(opts(hf), 'data-f="a"')),
+        foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${L("Update", "تحديث")}</button>` });
+      el.querySelector("[data-ok]").onclick = () => { u.status = { value: el.querySelector('[data-f="a"]').value === "1" ? "active" : "inactive" }; stamp(); SA.close(el); hero(); };
+      return;
+    }
+    /* Modal B — PUT /units/{id}/update-all-unit-status {active, ownappactive}: HighFive needs Partner App approved first */
+    let pa = u.ownappactive && u.ownappactive.value === "active" ? "1" : "0", h = hf;
+    const body = () => `<div class="stack gap-4">${SA.field(["Partner app status", "حالة تطبيق الشريك"], SA.select(opts(pa), 'data-f="pa"'))}${SA.field(["HighFive app status", "حالة تطبيق هاي فايف"], SA.select(opts(h), `data-f="h" ${pa === "1" ? "" : "disabled"}`))}</div>`;
+    const el = SA.modal({ id: "upStB", title: L("Update status", "تحديث الحالة"), body: body(),
+      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${L("Update", "تحديث")}</button>` });
+    const b = el.querySelector(".modal__body");
+    b.onchange = (e) => { if (e.target.dataset.f === "pa") { pa = e.target.value; if (pa === "0") h = "0"; b.innerHTML = body(); } if (e.target.dataset.f === "h") h = e.target.value; };
+    el.querySelector("[data-ok]").onclick = () => { u.ownappactive = { value: pa === "1" ? "active" : "inactive" }; u.status = { value: pa === "0" ? "inactive" : h === "1" ? "active" : "inactive" }; stamp(); SA.close(el); hero(); };
+  }
+  function stamp() { unit.activated_by = { name: "Super Admin" }; unit.active_action_at = new Date().toISOString().slice(0, 19).replace("T", " "); }
+
+  /* ---------- sections (the same 13 tab keys) ---------- */
+  const GROUPS = [
+    ["unit", L("Unit", "الوحدة"), [
+      ["details", "Details", "التفاصيل", "box"], ["location", "Location", "الموقع", "pin"], ["gallery", "Gallery", "المعرض", "camera"],
+      ["policy", "Policy", "السياسة", "shield"], ["contacts", "Contacts", "جهات الاتصال", "headset"], ["settings", "Settings", "الإعدادات", "gear"]]],
+    ["operations", L("Operations", "التشغيل"), [
+      ["bookings", "Bookings", "الحجوزات", "booking"], ["multi-bookings", "Multi-booking sessions", "جلسات الحجز المتعدد", "calendar"], ["public-events", "Public events", "الأحداث العامة", "ticket"]]],
+    ["team", L("Services & team", "الخدمات والفريق"), [
+      ["assigned-services", "Assigned service lists", "قوائم الخدمات المعينة", "list"], ["assigned-employees", "Assigned employees", "الموظفون المعينون", "users"]]],
+    ["money", L("Feedback & money", "التقييمات والماليات"), [
+      ["comments", "Comments", "التعليقات", "chat"], ["financial", "Financial", "المالية", "revenue"]]],
+  ];
+  /* section → job key (ProfileHeader.js nav-links); a group carries its items' keys when every item is gated */
+  const PERM = { gallery: "view_unit_images", comments: "view_unit_comments|view_fake_unit_comments", "public-events": "view_public_events", bookings: "view_bookings",
+    "multi-bookings": "view_multi_bookings", "assigned-services": "view_unit_services", settings: "view_unit_settings", financial: "view_unit_financials" };
+  const permAttr = (key) => (PERM[key] ? ` data-perm="${PERM[key]}"` : "");
+  const groupPerm = (items) => (items.every((t) => PERM[t[0]]) ? ` data-perm="${items.map((t) => PERM[t[0]]).join("|")}"` : "");
+  const allowed = (items) => items.filter((t) => RD.can(PERM[t[0]]));
+  function href(key, extra) {
+    const u = new URLSearchParams(location.search);
+    u.set("id", unit.id); u.set("tab", key);
+    [...u.keys()].filter((k) => !["id", "tab", "redirect_to_page"].includes(k)).forEach((k) => u.delete(k));
+    Object.entries(extra || {}).forEach(([k, v]) => u.set(k, v));
+    return "?" + u.toString();
+  }
+  UP.href = href;
+  PP.href = href; /* shared partner tabs build their links through PP.href */
+  const curTab = () => new URLSearchParams(location.search).get("tab") || "details";
+  const NAV_KEY = "rd-pp-nav"; // one choice for every profile (partner · user · unit · package)
+  /* ---------------- section navigation (partner-profile's frame) ----------------
+     A grouped side list or two-row tabs (groups, then that group's sections) —
+     a per-viewer preference kept in localStorage (NAV_KEY). Below
+     1100px both collapse to one grouped picker. Every section stays visible. */
+  const VIEW_KEY = NAV_KEY;
+  let view = "side";
+  try { if (localStorage.getItem(VIEW_KEY) === "tabs") view = "tabs"; } catch (e) {}
+  let shownGroup = null;
+  const rtl = () => document.documentElement.dir === "rtl";
+  const groupOf = (key) => (GROUPS.find((g) => g[2].some((t) => t[0] === key)) || GROUPS[0])[0];
+  const icon = (name) => `<span class="pp-ic" aria-hidden="true">${ic(name)}</span>`;
+  const viewSwitch = () => `<div class="pp-view" role="group" aria-label="${L("Section layout", "شكل الأقسام")}">
+      <button type="button" data-view="side" aria-pressed="${view === "side"}" data-tip="${L("Side list", "قائمة جانبية")}" aria-label="${L("Side list", "قائمة جانبية")}">${ic("layout")}</button>
+      <button type="button" data-view="tabs" aria-pressed="${view === "tabs"}" data-tip="${L("Tabs on top", "تبويبات بالأعلى")}" aria-label="${L("Tabs on top", "تبويبات بالأعلى")}">${ic("menu")}</button>
+    </div>`;
+  const selectNav = (active) => {
+    const cur = GROUPS.flatMap((g) => g[2]).find((t) => t[0] === active) || GROUPS[0][2][0];
+    return `<div class="pp-pick">
+      <span class="field__label" id="ppPickLbl">${L("Section", "القسم")}</span>
+      <button type="button" class="pp-pick__btn" data-pick aria-haspopup="true" aria-expanded="false" aria-labelledby="ppPickLbl ppPickCur">
+        ${icon(cur[3])}<span id="ppPickCur" class="pp-pick__cur">${esc(L(cur[1], cur[2]))}</span>${ic("chevronDown")}</button>
+      <div class="menu pp-pick__menu" role="menu">
+        ${GROUPS.map(([, title, items]) => `<div class="pp-pick__group"${groupPerm(items)}><span class="pp-pick__title">${title}</span>
+          ${items.map((t) => `<a role="menuitem" href="${href(t[0])}"${permAttr(t[0])} class="menu__item pp-pick__item${t[0] === active ? " is-active" : ""}"${t[0] === active ? ' aria-current="page"' : ""}>${icon(t[3])}<span>${esc(L(t[1], t[2]))}</span>${t[0] === active ? `<span class="pp-pick__check">${ic("check")}</span>` : ""}</a>`).join("")}</div>`).join("")}
+      </div>
+    </div>`;
+  };
+  const pickOpen = (open) => {
+    const btn = document.querySelector("[data-pick]"), menu = document.querySelector(".pp-pick__menu");
+    if (!btn) return;
+    btn.setAttribute("aria-expanded", String(open));
+    menu.classList.toggle("is-open", open);
+    if (open) { const on = menu.querySelector(".is-active"); if (on) on.scrollIntoView({ block: "nearest" }); }
+  };
+  document.addEventListener("click", (e) => { if (!e.target.closest(".pp-pick")) pickOpen(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") pickOpen(false); });
+  function arrows() {
+    const row = document.querySelector(".pp-tabs__row");
+    if (!row) return;
+    const max = row.scrollWidth - row.clientWidth, pos = Math.abs(row.scrollLeft);
+    document.querySelector('[data-scroll="start"]').hidden = pos <= 4;
+    document.querySelector('[data-scroll="end"]').hidden = max <= 4 || pos >= max - 4;
+  }
+  const scrollRow = (dir) => {
+    const row = document.querySelector(".pp-tabs__row");
+    const sign = (dir === "end" ? 1 : -1) * (rtl() ? -1 : 1);
+    row.scrollBy({ left: sign * row.clientWidth * 0.7, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    setTimeout(arrows, 450);
+  };
+  addEventListener("resize", arrows);
+  const tabLabel = (t) => `${icon(t[3])}<span>${esc(L(t[1], t[2]))}</span>${t[4] != null ? `<span class="pp-tabs__count pp-count">${t[4]}</span>` : ""}`;
+  function sideNav(active) {
+    return `<div class="pp-nav__card">
+        <div class="pp-nav__bar"><b>${L("Sections", "الأقسام")}</b>${viewSwitch()}</div>
+        <div class="pp-nav__list">
+          ${GROUPS.map(([, title, items]) => `<div class="pp-nav__group"${groupPerm(items)}>
+            <span class="pp-nav__title"><span>${title}</span><span>${allowed(items).length}</span></span>
+            ${items.map((t) => `<a href="${href(t[0])}"${permAttr(t[0])} class="pp-nav__link${t[0] === active ? " is-active" : ""}"${t[0] === active ? ' aria-current="page"' : ""}>${tabLabel(t)}</a>`).join("")}
+          </div>`).join("")}
+        </div>
+      </div>${selectNav(active)}`;
+  }
+  function tabsNav(active) {
+    const g = GROUPS.find((x) => x[0] === (shownGroup || groupOf(active)));
+    return `<div class="pp-nav__card">
+        <div class="pp-nav__bar">
+          <div class="pp-tabs__groups" role="group" aria-label="${L("Section groups", "مجموعات الأقسام")}">
+            ${GROUPS.map(([key, title, items]) => `<button type="button" class="pp-tabs__group" data-group="${key}"${groupPerm(items)} aria-pressed="${key === g[0]}">${title}<span class="pp-tabs__count">${allowed(items).length}</span></button>`).join("")}
+          </div>
+          ${viewSwitch()}
+        </div>
+        <div class="pp-tabs__scroller">
+          <button type="button" class="pp-tabs__arrow" data-scroll="start" hidden aria-label="${L("Scroll back", "تمرير للخلف")}">${ic(rtl() ? "chevronRight" : "chevronLeft")}</button>
+          <nav class="pp-tabs__row" data-group="${g[0]}" aria-label="${esc(g[1])}">
+            ${g[2].map((t) => `<a href="${href(t[0])}"${permAttr(t[0])} class="pp-tabs__tab${t[0] === active ? " is-active" : ""}"${t[0] === active ? ' aria-current="page"' : ""}>${tabLabel(t)}</a>`).join("")}
+          </nav>
+          <button type="button" class="pp-tabs__arrow" data-scroll="end" hidden aria-label="${L("Scroll forward", "تمرير للأمام")}">${ic(rtl() ? "chevronLeft" : "chevronRight")}</button>
+        </div>
+      </div>${selectNav(active)}`;
+  }
+  function nav(active) {
+    const el = document.getElementById("ppNav");
+    el.className = view === "tabs" ? "pp-tabs" : "pp-nav";
+    document.getElementById("ppLayout").classList.toggle("is-tabs", view === "tabs");
+    const old = el.querySelector(".pp-tabs__row");
+    const keep = old ? { group: old.dataset.group, left: old.scrollLeft } : null;
+    el.innerHTML = view === "tabs" ? tabsNav(active) : sideNav(active);
+    const row = el.querySelector(".pp-tabs__row");
+    if (row) {
+      if (keep && keep.group === row.dataset.group) row.scrollLeft = keep.left;
+      const on = row.querySelector(".is-active");
+      if (on) {
+        const r = row.getBoundingClientRect(), a = on.getBoundingClientRect(), pad = 44;
+        if (a.left < r.left + pad) row.scrollLeft += a.left - (r.left + pad);
+        else if (a.right > r.right - pad) row.scrollLeft += a.right - (r.right - pad);
+      }
+      row.addEventListener("scroll", arrows, { passive: true });
+      row.addEventListener("scrollend", arrows);
+      arrows();
+    }
+  }
+  document.getElementById("ppNav").addEventListener("click", (e) => {
+    const s = e.target.closest("[data-scroll]");
+    if (s) return scrollRow(s.dataset.scroll);
+    const pk = e.target.closest("[data-pick]");
+    if (pk) { e.stopPropagation(); return pickOpen(pk.getAttribute("aria-expanded") !== "true"); }
+    const v = e.target.closest("[data-view]");
+    if (v) {
+      view = v.dataset.view; shownGroup = null;
+      try { localStorage.setItem(VIEW_KEY, view); } catch (x) {}
+      return nav(curTab());
+    }
+    const g = e.target.closest("[data-group]");
+    if (g) { shownGroup = g.dataset.group; nav(curTab()); }
+  });
+  /* ---------- router ---------- */
+  const SHARED = { "public-events": "public-events", bookings: "bookings", "multi-bookings": "multi-bookings", policy: "policies", contacts: "contacts" };
+  function render() {
+    const u = new URLSearchParams(location.search), tab = curTab();
+    const solo = tab === "translation";
+    document.getElementById("pageHead").hidden = solo;
+    document.getElementById("ppNav").hidden = solo;
+    document.getElementById("ppLayout").classList.toggle("is-solo", solo);
+    if (!solo) { shownGroup = null; nav(tab); }
+    const body = document.createElement("div");
+    body.className = "stack gap-6";
+    document.getElementById("upBody").replaceChildren(body);
+    const ctx = { unit, partner, params: u, rerender: render };
+    if (!solo && PERM[tab] && !RD.can(PERM[tab])) body.innerHTML = RD.noPermission();
+    else if (solo) SATR.render(body, { key: "unit" + unit.id, itemName: unit.name, editTitle: L("Edit translations", "تعديل الترجمات"), cols: [["name", L("Name", "الاسم")], ["description", L("Description", "الوصف")]], src: { name: unit.name, description: unit.description }, backHref: href("details") });
+    else if (UP.tabs[tab]) UP.tabs[tab](body, ctx);
+    else if (SHARED[tab]) PP.tabs[SHARED[tab]](body, ctx);
+    window.scrollTo({ top: 0 });
+  }
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("a[href^='?']");
+    if (!a || e.metaKey || e.ctrlKey || e.button) return;
+    e.preventDefault();
+    history.pushState(null, "", a.getAttribute("href"));
+    render();
+  });
+  window.addEventListener("popstate", render);
+  UP.go = (key, extra) => { history.pushState(null, "", href(key, extra)); render(); };
+  hero();
+  render();
+})();
+</script>
+</body>
+</html>

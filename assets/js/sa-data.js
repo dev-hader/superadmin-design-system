@@ -128,31 +128,43 @@
     { type: "user_activation", label: "60 days from activation" },
     { type: "fixed_date_range", label: "Fixed dates", starts_on: "01/12/2026", ends_on: "28/02/2027" },
   ];
-  const SELL = [{ value: "online", label: "Online" }, { value: "walk_in", label: "Walk-in" }, { value: "both", label: "Online & walk-in" }];
+  /* the API sends labels in the request's language (Accept-Language); the page
+     direction is set before this file runs and a language switch reloads */
+  const loc = (en, ar) => (document.documentElement.dir === "rtl" ? ar : en);
+  /* selling methods = package-detail/selling/sellingApi.js SELLING_METHODS (walk_in · contacts · online) */
+  const SELL = [
+    { value: "walk_in", label: loc("Walk-in", "حضوري"), tooltip: loc("Sold at the partner's branches only.", "تُباع في فروع الشريك فقط.") },
+    { value: "contacts", label: loc("Contacts", "جهات الاتصال"), tooltip: loc("Customers reach the partner's contacts to buy.", "يتواصل العملاء مع جهات اتصال الشريك للشراء.") },
+    { value: "online", label: loc("Online", "إلكتروني"), tooltip: loc("Bought and paid for in the HighFive app.", "تُشترى وتُدفع عبر تطبيق HighFive.") },
+  ];
   HF.SA.VALID = VALID; HF.SA.SELL = SELL;
   HF.SA.packages = [];
   let pid = 700;
   HF.SA.partners.slice(0, 18).forEach((p, i) => {
     const n = 1 + (i % 3 === 0 ? 2 : i % 2);
     for (let k = 0; k < n; k++) {
-      const plans = 1 + ((i + k) % 3);
+      const ap = ["approved", "pending", "approved", "not_approved", "approved", "pending", "approved"][(i + k) % 7];
+      /* one pending sample has no plans yet → the Plans cell shows '---' */
+      const plans = ap === "pending" && i % 6 === 1 ? 0 : 1 + ((i + k) % 3);
       const cur = p.country.iso === "EG" ? "EGP" : p.country.iso === "AE" ? "AED" : "SAR";
       const from = [450, 1500, 220, 990, 300, 1200, 650][(i + k) % 7];
-      const ap = ["approved", "pending", "approved", "not_approved", "approved", "pending", "approved"][(i + k) % 7];
+      const planTip = ["Monthly", "Quarterly", "Annual"].slice(0, plans).map((n, j) => `${loc(n, { Monthly: "شهرية", Quarterly: "ربع سنوية", Annual: "سنوية" }[n])} · ${Math.round(from * [1, 2.7, 10][j]).toLocaleString("en-US")} ${cur}`).join(", ");
       const branches = ["Main Branch", "North Branch", "Corniche Branch", "Mall Branch"].slice(0, 1 + ((i + k) % 3));
       HF.SA.packages.push({
         id: pid++, name: PKG[(i * 2 + k) % PKG.length],
         categories: [CATS[(i + k) % 3].name, ACTS[CATS[(i + k) % 3].id][k % 2]],
         created_at: date(int(6, 11), int(1, 28), int(8, 22), int(0, 59)),
-        partner_status: p.active === "inactive" ? { value: "inactive", label: "Partner inactive" } : { value: "active", label: "Active" },
-        partner: { id: p.id, name: p.company_name, logo: null, disabled: p.active === "inactive", disabled_label: "Partner disabled" },
+        partner_status: p.active === "inactive" ? { value: "inactive", label: loc("Partner inactive", "الشريك غير نشط") } : { value: "active", label: loc("Active", "نشط") },
+        partner: { id: p.id, name: p.company_name, logo: null, disabled: p.active === "inactive", disabled_label: loc("Partner disabled", "الشريك معطل") },
         branches: branches.map((b) => ({ name: b })),
-        plans: { count: plans, from_price: from, currency: cur, single: plans === 1 },
+        plans: { count: plans, from_price: from, currency: cur, single: plans === 1, tooltip: planTip },
         validity: VALID[(i + k) % 3],
         usage: { label: ["Unlimited", "10 sessions", "4 sessions / month", "20 sessions"][(i + k) % 4] },
         capacity: { label: ["Unlimited", "50 subscribers", "120 subscribers"][(i + k) % 3] },
         subscribers: { active: [0, 12, 48, 133, 7, 254][(i + k) % 6], amount_due: (i + k) % 5 === 1 ? 2 : 0, amount_due_label: "2 with amount due" },
         selling_methodology: SELL[(i + k + Math.floor(i / 3)) % 3],
+        /* sample flag for the list's Commission filter (filter-options `commission`: with / without) */
+        has_commission: (i + k) % 4 !== 0,
         approval_status: { value: ap, label: { approved: "Approved", pending: "Pending", not_approved: "Not Approved" }[ap], tooltip: ap === "not_approved" ? "Cover image shows a third-party logo." : "" },
       });
     }
@@ -162,11 +174,13 @@
   /* ---- users (GET /users) ---- */
   const UNAMES = ["Omar Khalid", "Sara Nabil", "Yousef Adel", "Lama Fahad", "Hassan Ali", "Noura Saad", "Faisal Turki", "Reem Hamad", "Majed Zaid", "Huda Salem", "Ahmad Rami", "Dana Yasser", "خالد ناصر", "Mona Fawzi", "Tariq Saleh", "جنى عمر", "Ziad Kamal", "Rana Adel", "Saud Ibrahim", "Laila Hani", "Basel Fares", "Maha Sami", "Ali Hussein", "Nada Kareem", "فهد سعد", "Jude Ammar", "Salma Riad", "Adel Mansour", "Yara Khalil", "Hamza Nabil", "Ghada Omar", "Rakan Fahd", "Tala Majed", "Sami Yousef", "Abeer Salem", "Mazen Ali", "Lulwa Saad", "Kareem Hany", "Farah Zaki", "Nawaf Turki", "Hiba Adel", "Bader Saleh"];
   const CUR = { SA: "SAR", EG: "EGP", AE: "AED" };
+  /* sample profile photos (GET /users sends a photo URL or null — null shows initials) */
+  const face = (h) => "data:image/svg+xml," + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='hsl(${h},40%,80%)'/><circle cx='32' cy='25' r='12' fill='hsl(${h},30%,42%)'/><path d='M8 64c2-14 12-21 24-21s22 7 24 21z' fill='hsl(${h},30%,42%)'/></svg>`);
   HF.SA.users = UNAMES.map((name, i) => {
     const g = GEO[(i * 5) % GEO.length], loc = GEO[(i * 5 + (i % 4 === 1 ? 2 : 0)) % GEO.length];
     const y = 1980 + int(0, 26), first = name.split(" ")[0].toLowerCase().replace(/[^a-z]/g, "") || "user";
     return {
-      id: 2200 + i, photo: null, name, high_five_user_name: i % 11 === 6 ? null : `${first}${10 + i}`,
+      id: 2200 + i, photo: i % 3 === 0 ? face((i * 47) % 360) : null, name, high_five_user_name: i % 11 === 6 ? null : `${first}${10 + i}`,
       email: i % 13 === 9 ? null : `${first || "user"}${i}@mail.com`, email_verified: i % 3 !== 1,
       phone: `+${g.country.iso === "EG" ? "20" : g.country.iso === "AE" ? "971" : "966"} 5${i % 10} ${100 + i * 7} ${1000 + i * 37}`, phone_code: g.country.iso === "EG" ? "+20" : g.country.iso === "AE" ? "+971" : "+966",
       country: { iso: g.country.iso, name: g.country.name, currency: { code: CUR[g.country.iso] } },

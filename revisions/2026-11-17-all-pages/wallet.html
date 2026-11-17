@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>wallet · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/sa-translation.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/pp/pp-ops.js"></script>
+<script src="assets/js/kp/kp-info.js"></script>
+<script src="assets/js/kp/kp-ops.js"></script>
+<script src="assets/js/us/us-tabs.js"></script>
+<script src="assets/js/us/us-wallet.js"></script>
+<script>
+(() => {
+  /* Wallet — mirrors pages/wallet:
+       overview      /wallet                      wallet.html                   one card per country wallet
+       transactions  /wallet/:iso/transactions    ?iso=SA&sub=transactions
+       funds         /wallet/:iso/funds           ?iso=SA&sub=funds
+       cash out      /wallet/:iso/cashout         ?iso=SA&sub=cashout
+       exchanges     /wallet/:iso/exchanges       ?iso=SA&sub=exchanges
+       currencies    /wallet/currencies           ?sub=currencies[&translation=<id>]
+     Rows are the users' own wallets (us-wallet.js), so a fund edited here is the
+     same record the user profile shows. */
+  const qs = new URLSearchParams(location.search), iso = qs.get("iso"), sub = qs.get("sub");
+  RD.boot({ activeId: "wallet", title: "wallet" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic, badge, fmt } = SA;
+  const { kv } = PP;
+  const mount = document.getElementById("listMount");
+  const dash = (v) => (v == null || v === "" ? "---" : esc(v));
+  const CUR = { SA: "SAR", EG: "EGP", AE: "AED" };
+  const countries = [...new Map(HF.SA.GEO.map((g) => [g.country.iso, g.country])).values()];
+  const backBtn = `<a class="btn btn--sm btn--secondary" href="wallet.html">${ic(document.documentElement.dir === "rtl" ? "chevronRight" : "chevronLeft")}<span>${L("wallet", "محفظة")}</span></a>`;
+  const head = (t, extra) => SA.head(document.getElementById("pageHead"), { title: t, crumbs: [["wallet", "محفظة", "wallet.html"]], actions: (extra || "") + backBtn });
+  const userCell = (u) => `<div class="cell-user">${PP.avatar(u.name)}<div><a href="user-profile.html?id=${u.id}&tab=details" style="color:var(--color-text);font-weight:var(--weight-semibold)">${esc(u.name)}</a><div class="t-xs text-tertiary">${u.high_five_user_name ? "vie_" + (u.id % 900) : L("username", "اسم المستخدم")}</div></div></div>`;
+  const curCell = (c, country) => `${esc(c)}<div class="t-xs text-tertiary">${esc(country)}</div>`;
+  const stBadge = (s) => badge(s === "pending" ? "warning" : s === "completed" ? "primary" : "danger", s);
+
+  /* ---- country data from the users' wallets ---- */
+  const usersIn = (c) => HF.SA.users.filter((u) => u.country.iso === c);
+  const all = (c, key) => usersIn(c).flatMap((u) => US.wallet(u)[key].map((r) => Object.assign(r, { _u: u })));
+  const exchanges = (c) => usersIn(c).slice(0, 4).map((u, i) => ({ id: 400 + i, _u: u, create_at: `2026-10-${String(10 + i).padStart(2, "0")} 14:2${i}:00`, transaction: "exchange", info: { description: L("Phone number changed — balance moved", "تغيّر رقم الهاتف — تم نقل الرصيد") },
+    amount: 100 + i * 50, currency: CUR[c], country: u.country.name, exchanged_amount: +((100 + i * 50) * (c === "EG" ? 0.077 : 1.02)).toFixed(2), exchanged_currency: c === "EG" ? "SAR" : "AED", exchanged_country: c === "EG" ? "Saudi Arabia" : "United Arab Emirates",
+    status: ["completed", "pending", "completed", "rejected"][i], old_phone: `+966 50 000 00${i}0`, new_phone: u.phone }));
+  const summary = (c) => { const F = all(c, "funds").filter((r) => r.status === "pending"), C = all(c, "cashouts").filter((r) => r.status === "pending"), X = exchanges(c);
+    return { total_balance: usersIn(c).reduce((a, u) => a + (u.wallet_amount || 0), 0), funds_transactions: F.length, pending_funds: F.reduce((a, r) => a + r.amount, 0), cash_out_transactions: C.length, pending_cash_out: C.reduce((a, r) => a + r.amount, 0), exchange_transactions: X.length, exchanges: X.reduce((a, r) => a + r.amount, 0) }; };
+
+  /* ---- read-only detail modals (Fund / Cash out) ---- */
+  const fundModal = (f, title) => SA.modal({ id: "wFund", title, foot: "", body: kv([[L("id", "الرقم") + ":", f.id], [L("status", "الحالة") + ":", dash(f.status)], [L("date & time", "التاريخ والوقت") + ":", dash(f.initiated_at)], [L("country", "البلد") + ":", dash(f._u.country.name)],
+    [L("amount", "المبلغ") + ":", dash(f.amount)], [L("reason", "السبب") + ":", dash(f.fund_reason)], [L("action by", "تم بواسطة") + ":", dash(f.action_by && f.action_by.name)], [L("action date", "تاريخ الإجراء") + ":", dash(f.action_at)]]) });
+  const cashModal = (c, title) => SA.modal({ id: "wCash", title, foot: "", body: kv([[L("id", "الرقم") + ":", c.id], [L("status", "الحالة") + ":", dash(c.status)], [L("date & time", "التاريخ والوقت") + ":", dash(c.initiated_at)], [L("country", "البلد") + ":", dash(c._u.country.name)],
+    [L("bank name", "اسم البنك") + ":", dash(c.bank_name)], [L("IBAN", "رقم الآيبان") + ":", `<span dir="ltr">${dash(c.iban)}</span>`], [L("account holder name", "اسم صاحب الحساب") + ":", dash(c.account_name)],
+    [L("amount", "المبلغ") + ":", dash(c.amount)], [L("reason", "السبب") + ":", dash(c.fund_reason)], [L("action by", "تم بواسطة") + ":", dash(c.action_by && c.action_by.name)], [L("action date", "تاريخ الإجراء") + ":", dash(c.action_at)]]) });
+  /* Edit (funds and cash out share the dashboard's "add fund to user wallet" title — kept 1:1) */
+  const editModal = (row, isFund, done) => {
+    const el = SA.modal({ id: "wEdit", title: L("add fund to user wallet", "إضافة أموال لمحفظة المستخدم"), body: `<div class="stack gap-4"><div data-alert></div>
+        ${SA.field(["status", "الحالة"], SA.select([["completed", L("completed", "مكتمل"), true], ["rejected", L("rejected", "مرفوض")]], "data-s"))}
+        ${SA.field(["reason", "السبب"], `<textarea class="input" rows="3" data-r placeholder="${L("enter action reason", "أدخل سبب الإجراء")}">${esc(row.fund_reason || "")}</textarea>`)}</div>`,
+      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${L("update", "تحديث")}</button>` });
+    el.querySelector("[data-ok]").onclick = (e) => {
+      const b = e.currentTarget; b.disabled = true; b.textContent = isFund ? L("updating ...", "جاري التحديث ...") : L("update ...", "جاري التحديث...");
+      setTimeout(() => { Object.assign(row, { status: el.querySelector("[data-s]").value, action_reason: el.querySelector("[data-r]").value, action_by: { id: 1, name: "Super Admin" }, action_at: "2026-11-15 12:00:00" });
+        el.querySelector("[data-alert]").innerHTML = `<div class="alert alert--success"><span class="alert__icon">${ic("check")}</span><div class="alert__body">${L("updated successfully", "تم التحديث بنجاح")}</div></div>`;
+        setTimeout(() => { SA.close(el); done(); }, 700); }, 400);
+    };
+  };
+  const statusPills = [["all", "all", "الكل"], ["pending", "pending", "معلق"], ["completed", "completed", "مكتمل"], ["rejected", "rejected", "مرفوض"]].map((p) => ({ key: p[0], label: [p[1], p[2]] }));
+
+  /* ================= currencies ================= */
+  if (sub === "currencies") {
+    const C = (HF.SA._currencies = HF.SA._currencies || [["Saudi Riyal", "SAR", 1, 1], ["Egyptian Pound", "EGP", 0.077, 1], ["UAE Dirham", "AED", 1.02, 1], ["US Dollar", "USD", 3.75, 1], ["Euro", "EUR", 4.05, 0], ["Kuwaiti Dinar", "KWD", 12.2, 0]].map((c, i) => ({ id: 10 + i, name: c[0], code: c[1], rate: c[2], active: c[3], icon: i < 3 })));
+    const tr = qs.get("translation");
+    if (tr) { const c = C.find((x) => String(x.id) === tr) || C[0]; SATR.render(mount, { key: "currency" + c.id, itemName: c.name, editTitle: L("edit translates", "تعديل الترجمات"), cols: [["name", L("name", "الاسم")]], src: { name: c.name }, backHref: "wallet.html?sub=currencies" }); document.getElementById("pageHead").hidden = true; return; }
+    head(["currencies", "العملات"], PP.btn(L("add new", "إضافة جديد"), "plus", "data-add"));
+    let base = "SAR";
+    const ctl = SA.list({
+      mount, data: C,
+      pills: [{ key: "all", label: ["all", "الكل"] }, { key: "1", label: ["active", "نشط"] }, { key: "0", label: ["inactive", "غير نشط"] }],
+      pillMatch: (r, k) => k === "all" || String(r.active) === k,
+      search: ["search by name", "البحث بالاسم"], searchMatch: (r, q) => r.name.toLowerCase().includes(q),
+      toolbarExtra: () => `<div class="select" style="min-width:140px"><select data-base aria-label="${L("select currency", "اختر العملة")}">${C.map((c) => `<option ${c.code === base ? "selected" : ""}>${c.code}</option>`).join("")}</select><span class="select__caret">${ic("chevronDown")}</span></div>`,
+      empty: ["There is no data to display.", "لا توجد بيانات للعرض."],
+      columns: [
+        { head: ["icon", "الأيقونة"], cell: (r) => (r.icon ? `<span class="cell-thumb" style="width:30px;height:30px">${esc(r.code.slice(0, 1))}</span>` : `<span class="t-xs text-tertiary">${L("No icon", "لا توجد أيقونة")}</span>`) },
+        { head: ["name", "الاسم"], cell: (r) => `<b>${esc(r.name)}</b>` },
+        { head: ["currency", "العملة"], cell: (r) => esc(r.code) },
+        { head: ["Exchange rate", "سعر الصرف"], cell: (r) => (r.rate / C.find((c) => c.code === base).rate).toFixed(4) },
+        { head: ["status", "الحالة"], cell: (r) => (r.active ? badge("primary", L("active", "نشط")) : badge("danger", L("inactive", "غير نشط"))) },
+        { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<div class="row gap-1" style="justify-content:center">${SA.iconBtn("edit", L("edit currency", "تعديل العملة"), `data-edit="${r.id}"`)}<a class="icon-btn" href="wallet.html?sub=currencies&translation=${r.id}" aria-label="${L("translation", "ترجمة")}" title="${L("translation", "ترجمة")}">${ic("globe")}</a>${SA.iconBtn("trash", L("Delete Currency", "حذف العملة"), `data-del="${r.id}"`)}</div>` },
+      ],
+    });
+    mount.addEventListener("change", (e) => { if (e.target.matches("[data-base]")) { base = e.target.value; ctl.paint(); } });
+    const form = (c) => {
+      const isNew = !c;
+      const el = SA.modal({ id: "wCur", title: isNew ? L("create currency", "إنشاء عملة") : L("edit currency", "تعديل العملة"), body: `<div class="stack gap-4"><div data-alert></div>
+          <div class="field"><label class="field__label">${L("name", "الاسم")}</label><input class="input" data-n value="${esc(c ? c.name : "")}" placeholder="${L("enter currency name", "أدخل اسم العملة")}"><span data-e="n"></span></div>
+          <div class="field"><label class="field__label">${L("code", "الرمز")}</label><input class="input" data-c value="${esc(c ? c.code : "")}" placeholder="${L("enter currency code", "أدخل رمز العملة")}"><span data-e="c"></span></div>
+          <div class="field"><label class="field__label">${L("icon", "الأيقونة")}</label><input class="input" type="file" accept="image/*" data-i style="padding-top:8px"><span data-e="i"></span></div>
+          <div class="field"><label class="field__label">${L("status", "الحالة")}</label>${SA.select([["", L("select status", "اختر الحالة"), !c], ["1", L("active", "نشط"), c && c.active === 1], ["0", L("inactive", "غير نشط"), c && c.active === 0]], "data-s")}<span data-e="s"></span></div></div>`,
+        foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${isNew ? L("create", "إنشاء") : L("update", "تحديث")}</button>` });
+      const err = (k, m) => (el.querySelector(`[data-e="${k}"]`).innerHTML = m ? `<span class="field__error">${ic("warn")} ${m}</span>` : "");
+      el.querySelector("[data-ok]").onclick = (e) => {
+        const n = el.querySelector("[data-n]").value.trim(), code = el.querySelector("[data-c]").value.trim(), s = el.querySelector("[data-s]").value, file = el.querySelector("[data-i]").files[0];
+        const len = (v) => (!v ? L("this field is required", "هذا الحقل مطلوب") : v.length < 2 ? L("Minimum 3 symbols", "الحد الأدنى 3 رموز") : v.length > 50 ? L("Maximum 50 symbols", "الحد الأقصى 50 رمز") : "");
+        err("n", len(n)); err("c", len(code)); err("s", s === "" ? L("this field is required", "هذا الحقل مطلوب") : "");
+        err("i", file && file.size > 5 * 1024 * 1024 ? L("File size too large", "حجم الملف كبير جداً") : file && !/image\/(jpeg|png|gif)/.test(file.type) ? L("Unsupported file format", "تنسيق الملف غير مدعوم") : "");
+        if (el.querySelector(".field__error")) return;
+        const b = e.currentTarget; b.disabled = true; b.textContent = isNew ? L("creating", "جاري الإنشاء...") : L("updating", "جاري التحديث...");
+        setTimeout(() => {
+          if (isNew) C.push({ id: Math.max(...C.map((x) => x.id)) + 1, name: n, code, rate: 1, active: +s, icon: !!file }); else Object.assign(c, { name: n, code, active: +s, icon: c.icon || !!file });
+          el.querySelector("[data-alert]").innerHTML = `<div class="alert alert--success"><span class="alert__icon">${ic("check")}</span><div class="alert__body">${isNew ? L("Currency created successfully", "تم إنشاء العملة بنجاح") : L("Currency updated successfully", "تم تحديث العملة بنجاح")}</div></div>`;
+          setTimeout(() => { SA.close(el); ctl.paint(); }, 700); /* dashboard: full page reload */
+        }, 400);
+      };
+    };
+    document.addEventListener("click", (e) => {
+      if (e.target.closest("[data-add]")) return form(null);
+      const ed = e.target.closest("[data-edit]"); if (ed) return form(C.find((x) => String(x.id) === ed.dataset.edit));
+      const dl = e.target.closest("[data-del]");
+      if (dl) {
+        const c = C.find((x) => String(x.id) === dl.dataset.del);
+        const el = SA.modal({ id: "wCurDel", title: L("Delete Currency", "حذف العملة"), body: `<div data-alert></div><p class="t-sm text-secondary">${L("Please confirm that you want to delete this currency", "يرجى تأكيد أنك تريد حذف هذه العملة")}</p>`,
+          foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn btn--danger" data-ok>${L("Confirm", "تأكيد")}</button>` });
+        el.querySelector("[data-ok]").onclick = (ev) => { ev.currentTarget.disabled = true; ev.currentTarget.textContent = L("Deleting...", "جاري الحذف..."); setTimeout(() => { C.splice(C.indexOf(c), 1); RD.toast("success", L("Currency deleted successfully", "تم حذف العملة بنجاح")); SA.close(el); ctl.paint(); }, 400); };
+      }
+    });
+    return;
+  }
+
+  /* ================= country sub-pages ================= */
+  if (iso) {
+    const c = countries.find((x) => x.iso === iso) || countries[0], cur = CUR[c.iso];
+    if (sub === "funds" || sub === "cashout") {
+      const isFund = sub === "funds", rows = all(c.iso, isFund ? "funds" : "cashouts");
+      head(isFund ? ["funds", "أموال"] : ["cash out", "نقود"]);
+      const ctl = SA.list({
+        mount, data: rows, pills: statusPills, pillMatch: (r, k) => k === "all" || r.status === k,
+        search: ["search by name", "البحث بالاسم"], searchMatch: (r, q) => r._u.name.toLowerCase().includes(q),
+        empty: ["There is no data to display.", "لا توجد بيانات للعرض."],
+        columns: [
+          { head: ["id", "الرقم"], cell: (r) => r.id },
+          { head: ["user", "المستخدم"], cell: (r) => userCell(r._u) },
+          { hidden: isFund, head: ["country", "البلد"], cell: (r) => esc(r._u.country.name) },
+          { hidden: isFund, head: ["date & time", "التاريخ والوقت"], cell: (r) => dash(r.initiated_at) },
+          { head: ["amount", "المبلغ"], cell: (r) => r.amount || 0 },
+          { head: ["currency", "العملة"], cell: (r) => curCell(cur, r._u.country.name) },
+          { head: ["status", "الحالة"], cell: (r) => stBadge(r.status) },
+          { hidden: !isFund, head: ["initiated by", "بدأ بواسطة"], cell: (r) => (r.initiated_by ? esc(r.initiated_by.name) : "---") },
+          { hidden: !isFund, head: ["initiated on", "بدأ في"], cell: (r) => dash(r.initiated_at) },
+          { head: ["action by", "تم بواسطة"], cell: (r) => (r.action_by ? `<b>${esc(r.action_by.name)}</b>` : "---") },
+          { head: ["action on", "الإجراء في"], cell: (r) => dash(r.action_at) },
+          { head: ["action", "الإجراء"], align: "center", cell: (r) => `<div class="row gap-1" style="justify-content:center">${r.status === "pending" ? SA.iconBtn("edit", L("edit", "تعديل"), `data-edit="${r._u.id}:${r.id}"`) : ""}${SA.iconBtn("eye", L("View", "عرض"), `data-view="${r._u.id}:${r.id}"`)}</div>` },
+        ],
+      });
+      mount.addEventListener("click", (e) => {
+        const t = e.target.closest("[data-edit],[data-view]"); if (!t) return;
+        const [uid, id] = (t.dataset.edit || t.dataset.view).split(":"), r = rows.find((x) => String(x._u.id) === uid && String(x.id) === id);
+        /* the dashboard's FUND_ID / CASH_OUT_ID titles drop the id here (missing {id} placeholder) — kept 1:1 */
+        if (t.dataset.view) return isFund ? fundModal(r, L("fund id", "رقم الصندوق")) : cashModal(r, L("cash out id", "رقم السحب النقدي"));
+        editModal(r, isFund, ctl.paint);
+      });
+      return;
+    }
+    if (sub === "exchanges") {
+      const rows = exchanges(c.iso);
+      head(["exchanges", "التبادلات"]);
+      SA.list({
+        mount, data: rows, pills: statusPills, pillMatch: (r, k) => k === "all" || r.status === k,
+        search: ["search by name", "البحث بالاسم"], searchMatch: (r, q) => r._u.name.toLowerCase().includes(q),
+        empty: ["There is no data to display.", "لا توجد بيانات للعرض."],
+        columns: [
+          { head: ["id", "الرقم"], cell: (r) => r.id },
+          { head: ["user", "المستخدم"], cell: (r) => userCell(r._u) },
+          { head: ["date & time", "التاريخ والوقت"], cell: (r) => esc(r.create_at) },
+          { head: ["transaction", "معاملة"], cell: (r) => `${esc(r.transaction)}<div class="t-xs text-tertiary">${esc(r.info.description)}</div>` },
+          { head: ["giving amount", "المبلغ المعطى"], cell: (r) => r.amount },
+          { head: ["currency", "العملة"], cell: (r) => curCell(r.currency, r.country) },
+          { head: ["exchanged amount", "المبلغ المتبادل"], cell: (r) => r.exchanged_amount },
+          { head: ["exchanged currency", "العملة المتبادلة"], cell: (r) => curCell(r.exchanged_currency, r.exchanged_country) },
+          { head: ["action", "الإجراء"], align: "center", cell: (r) => SA.iconBtn("eye", L("View", "عرض"), `data-view="${r.id}"`) },
+        ],
+      });
+      mount.addEventListener("click", (e) => {
+        const t = e.target.closest("[data-view]"); if (!t) return;
+        const r = rows.find((x) => String(x.id) === t.dataset.view);
+        /* the dashboard titles this modal "fund id" — kept 1:1 */
+        SA.modal({ id: "wEx", title: `${L("fund id", "رقم الصندوق")}: ${r.id}`, foot: "", body: kv([[L("id", "الرقم") + ":", r.id], [L("date & time", "التاريخ والوقت") + ":", r.create_at], [L("transaction", "معاملة") + ":", esc(r.transaction)], [L("giving amount", "المبلغ المعطى") + ":", r.amount],
+          [L("currency", "العملة") + ":", r.currency], [L("exchanged amount", "المبلغ المتبادل") + ":", r.exchanged_amount], [L("exchanged currency", "العملة المتبادلة") + ":", r.exchanged_currency],
+          [L("old phone number", "رقم الهاتف القديم") + ":", `<span dir="ltr">${esc(r.old_phone)}</span>`], [L("new phone number", "رقم الهاتف الجديد") + ":", `<span dir="ltr">${esc(r.new_phone)}</span>`]]) });
+      });
+      return;
+    }
+    /* transactions */
+    const rows = all(c.iso, "rows"), PKG = ["package_subscription", "package_payment_refund"];
+    head(["transactions", "المعاملات"]);
+    const eye = (r) => {
+      const t = r.info.type, u = r._u;
+      if (PKG.includes(t)) return r.info.id != null ? `<a class="icon-btn" href="user-profile.html?id=${u.id}&tab=packages&ref=${r.info.reference || r.info.id}" aria-label="${L("View", "عرض")}">${ic("eye")}</a>` : "";
+      if (t === "cash_out" || t === "wallet_fund") return SA.iconBtn("eye", L("View", "عرض"), `data-w="${t}:${u.id}:${r.info.id}"`);
+      const href = t === "public_event" ? `public-events.html?view=${r.info.id}` : t === "booking" ? `bookings.html?view=${r.info.id}` : `multi-booking.html?details=${r.info.id}`;
+      return `<a class="icon-btn" href="${href}" aria-label="${L("View", "عرض")}">${ic("eye")}</a>`;
+    };
+    SA.list({
+      mount, data: rows,
+      pills: [{ key: "all", label: ["all", "الكل"] }, { key: "in", label: ["in", "داخل"] }, { key: "out", label: ["out", "خارج"] }],
+      pillMatch: (r, k) => k === "all" || (k === "in" ? r.in != null : r.out != null),
+      search: ["search by transaction id", "البحث برقم المعاملة"], searchMatch: (r, q) => String(PKG.includes(r.info.type) ? r.info.reference || r.id : r.id).toLowerCase().includes(q),
+      empty: ["There is no data to display.", "لا توجد بيانات للعرض."],
+      columns: [
+        { head: ["id", "الرقم"], cell: (r) => esc(PKG.includes(r.info.type) ? r.info.reference || r.id : r.id) },
+        { head: ["user", "المستخدم"], cell: (r) => userCell(r._u) },
+        { head: ["date & time", "التاريخ والوقت"], cell: (r) => esc(r.created_at) },
+        { head: ["transaction", "معاملة"], cell: (r) => `${esc(r.transaction || (r.info.type === "package_subscription" ? L("Package Payment", "دفع باقة") : L("Package Refund", "استرداد باقة")))}${r.info.package || r.info.description ? `<div class="t-xs text-tertiary">${esc(r.info.package ? r.info.package.name : r.info.description)}</div>` : ""}` },
+        { head: ["in", "داخل"], cell: (r) => `<span style="color:var(--color-success)">${dash(r.in)}</span>` },
+        { head: ["out", "خارج"], cell: (r) => `<span style="color:var(--color-danger)">${dash(r.out)}</span>` },
+        { head: ["balance", "الرصيد"], cell: (r) => r.balance },
+        { head: ["currency", "العملة"], cell: (r) => curCell(cur, r.country) },
+        { head: ["action", "الإجراء"], align: "center", cell: eye },
+      ],
+    });
+    mount.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-w]"); if (!b) return;
+      const [t, uid, id] = b.dataset.w.split(":"), u = HF.SA.users.find((x) => String(x.id) === uid), W = US.wallet(u);
+      if (t === "wallet_fund") { const f = Object.assign(W.funds.find((x) => String(x.id) === id) || W.funds[0], { _u: u }); fundModal(f, `${L("fund id", "رقم الصندوق")}: ${f.id}`); }
+      else { const co = Object.assign(W.cashouts.find((x) => String(x.id) === id) || W.cashouts[0], { _u: u }); cashModal(co, `${L("cash out id", "رقم السحب النقدي")}: ${co.id}`); }
+    });
+    return;
+  }
+
+  /* ================= overview ================= */
+  SA.head(document.getElementById("pageHead"), { title: ["wallet", "محفظة"], actions: `<a class="btn btn--sm" href="wallet.html?sub=currencies">${L("currency management", "إدارة العملات")}</a>` });
+  mount.innerHTML = `<div class="sa-stats" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">${countries.map((c) => {
+    const s = summary(c.iso), code = CUR[c.iso];
+    const row = (t, n, v, sub2) => `<tr><td><a href="wallet.html?iso=${c.iso}&sub=${sub2}" style="color:var(--color-text);font-weight:var(--weight-semibold)">${t}</a><div class="t-xs text-tertiary">${n} ${L("transactions", "المعاملات")}</div></td><td style="text-align:end"><b>${fmt(v)}</b> <span class="t-xs text-tertiary">${code}</span></td></tr>`;
+    return `<section class="card card--pad animate-in stack gap-3" style="align-items:center;text-align:center">
+      <div class="row gap-2" style="align-items:center"><span class="badge">${c.iso}</span><h3 class="t-title">${esc(c.name)}</h3></div>
+      <span class="t-sm text-tertiary">${L("total balance", "الرصيد الإجمالي")}</span><b style="font-size:26px">${fmt(s.total_balance || 0)}</b><span class="t-sm text-tertiary">${code}</span>
+      <table class="data-table" style="width:100%"><tbody>${row(L("pending funds", "الأموال المعلقة"), s.funds_transactions, s.pending_funds, "funds")}${row(L("pending cash out", "السحب النقدي المعلق"), s.cash_out_transactions, s.pending_cash_out, "cashout")}${row(L("exchanges", "التبادلات"), s.exchange_transactions, s.exchanges, "exchanges")}</tbody></table>
+      <a class="btn" href="wallet.html?iso=${c.iso}&sub=transactions">${L("show transactions", "عرض المعاملات")}</a></section>`;
+  }).join("")}</div>`;
+})();
+</script>
+</body>
+</html>

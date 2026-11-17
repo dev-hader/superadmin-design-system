@@ -274,6 +274,7 @@ html[dir="rtl"] .app::after {
   border: 1px solid transparent; transition: background var(--duration-fast), color var(--duration-fast), border-color var(--duration-fast);
 }
 .icon-btn:hover { background: var(--color-surface-hover); color: var(--color-text); border-color: var(--color-border); }
+.icon-btn:disabled { opacity: var(--opacity-disabled); pointer-events: none; }
 .icon-btn svg { width: 20px; height: 20px; }
 
 .topbar__mobile { display: none; }

@@ -25,7 +25,7 @@
         bookings.push(b);
       });
       o.multi.forEach((m, i) => {
-        Object.assign(m, { _partner: p.id, app_type: p.is_independent && i % 2 ? ["highFive", "partner"] : ["highFive"], max_tickets_per_user: 4, session_type: "normal", overnight: false,
+        Object.assign(m, { _partner: p.id, app_type: p.is_independent && i % 2 ? ["highFive", "partner"] : ["highFive"], max_tickets_per_user: 4, session_type: "normal", overnight: false, is_edited: i % 3 === 1 /* session edited after booking → "Edited" badge */,
           check_in_summary: m.status !== "ended" ? { checked_in: 0, total: m.booked_tickets } : { checked_in: Math.max(0, m.booked_tickets - 2), total: m.booked_tickets } });
         multi.push(m);
       });
@@ -79,12 +79,100 @@
 
   /* shared session Filter Options (dashboard FilterDropdown.js — one per list, same fields) */
   OPS.catFields = () => [
-    { key: "category", label: ["category :", "الفئة :"], placeholder: ["select category", "اختر الفئة"], options: () => HF.SA.CATS.map((c) => [c.name, c.name]) },
-    { key: "activity", label: ["Activity :", "النشاط :"], placeholder: ["select activity", "اختر النشاط"], options: (d) => (d.category ? HF.SA.ACTS[(HF.SA.CATS.find((c) => c.name === d.category) || {}).id] || [] : []).map((a) => [a, a]) },
+    { key: "category", label: ["Category", "الفئة"], placeholder: ["Select category", "اختر الفئة"], options: () => HF.SA.CATS.map((c) => [c.name, c.name]) },
+    { key: "activity", label: ["Activity", "النشاط"], placeholder: ["Select activity", "اختر النشاط"], options: (d) => (d.category ? HF.SA.ACTS[(HF.SA.CATS.find((c) => c.name === d.category) || {}).id] || [] : []).map((a) => [a, a]) },
   ];
-  OPS.genderField = () => ({ key: "gender", label: ["session gender :", "جنس الجلسة :"], placeholder: ["select session Gender", "اختر جنس الجلسة"], options: () => [["male", SA.L("male", "ذكر")], ["female", SA.L("female", "أنثى")], ["both", SA.L("both", "كلاهما")]] });
-  OPS.ageField = () => ({ key: "age", label: ["age group :", "الفئة العمرية :"], placeholder: ["select age group", "اختر الفئة العمرية"], options: () => ["Kids", "Teens", "Adults"].map((a) => [a, a]) });
-  OPS.sessionBadge = (s) => SA.badge(s === "coming" ? "success" : s === "ended" ? "primary" : "danger", s);
+  OPS.genderField = () => ({ key: "gender", label: ["Session gender", "جنس الجلسة"], placeholder: ["Select session gender", "اختر جنس الجلسة"], options: () => [["male", SA.L("Male", "ذكر")], ["female", SA.L("Female", "أنثى")], ["both", SA.L("Both", "كلاهما")]] });
+  OPS.ageField = () => ({ key: "age", label: ["Age group", "الفئة العمرية"], placeholder: ["Select age group", "اختر الفئة العمرية"], options: () => ["Kids", "Teens", "Adults"].map((a) => [a, a]) });
+  OPS.sessionBadge = (s) => SA.badge(s === "coming" ? "success" : s === "ended" ? "primary" : "danger", PP.cap(s));
+
+  /* ======================================================================
+     Global page layer (redesign 2026-11-17) — the all-partners lists share
+     partners.html's composition: a head with a live summary line, status
+     stat tiles, one search + Filter bar, removable chips for the applied
+     filters, and a read-only summary drawer on row click. Data, filters,
+     columns' fields, actions and routes are unchanged.
+     ====================================================================== */
+  const esc = (s) => SA.esc(s);
+  /* Head: title · breadcrumb · summary · actions (partners.html .pt-head) */
+  OPS.head = function (mount, o) {
+    const T = SA.T, title = SA.up1(T(o.title));
+    const crumbs = [["Dashboard", "لوحة القيادة", "index.html"]].concat(o.crumbs || []);
+    mount.innerHTML = `<div class="ops-head animate-in">
+        <div style="min-width:0">
+          <h1 class="t-h3">${esc(title)}</h1>
+          <nav class="t-sm text-tertiary" aria-label="Breadcrumb" style="margin-top:var(--space-1)">${crumbs.map((c) => `<a href="${c[2]}" style="color:inherit">${esc(SA.L(c[0], c[1]))}</a>`).join(" › ")} › <span>${esc(title)}</span></nav>
+          ${o.sub ? `<p class="t-sm text-secondary" style="margin-top:var(--space-1)">${o.sub}</p>` : ""}
+        </div>
+        ${o.actions ? `<div class="row gap-2" style="flex-wrap:wrap">${o.actions}</div>` : ""}
+      </div>`;
+  };
+
+  /* Applied-filter chips + Filter button count for an SA.list.
+     defs: [{ keys:[filter keys], label:[en,ar], value:(f)=>text, also:[keys cleared with it] }]
+     Use: const fx = OPS.filters(defs); SA.list({ toolbarExtra: fx.toolbarExtra, after: fx.after, … }); fx.bind(mount, ctl). */
+  OPS.range = (a, b) => `${a ? String(a).replace("T", " ") : "…"} → ${b ? String(b).replace("T", " ") : "…"}`;
+  OPS.filters = function (defs) {
+    let st = null;
+    const on = (f) => defs.filter((d) => d.keys.some((k) => f[k] != null && String(f[k]) !== ""));
+    return {
+      toolbarExtra: (s) => { st = s; return PP.filterBtn(on(s.extra).length); },
+      after: (root, extraAfter) => {
+        if (st) {
+          const list = on(st.extra);
+          if (list.length) {
+            const bars = root.querySelectorAll(".data-table-toolbar");
+            bars[bars.length - 1].insertAdjacentHTML("afterend", `<div class="filterbar ops-chips">${list.map((d) => {
+              const lab = SA.TS(d.label);
+              return `<span class="filter-chip"><span class="filter-chip__key">${esc(lab)}</span><span class="filter-chip__op">${SA.L("is", "=")}</span><span class="filter-chip__val">${esc(d.value(st.extra))}</span><button type="button" class="filter-chip__x" data-unchip="${d.keys.concat(d.also || []).join(",")}" aria-label="${esc(SA.L("Remove", "إزالة") + " " + lab)}">${SA.ic("close")}</button></span>`;
+            }).join("")}<button type="button" class="filterbar__clear" data-unchip="*">${SA.L("Clear all", "مسح الكل")}</button></div>`);
+          }
+        }
+        if (extraAfter) extraAfter(root);
+      },
+      bind: (mount, ctl) => mount.addEventListener("click", (e) => {
+        const un = e.target.closest("[data-unchip]");
+        if (!un) return;
+        if (un.dataset.unchip === "*") ctl.state.extra = {};
+        else { const f = Object.assign({}, ctl.state.extra); un.dataset.unchip.split(",").forEach((k) => delete f[k]); ctl.state.extra = f; }
+        ctl.state.page = 1; ctl.paint();
+      }),
+    };
+  };
+  /* chip value helpers */
+  OPS.opt = (opts, v) => { const o = (typeof opts === "function" ? opts({}) : opts).find((x) => String(x[0]) === String(v)); return o ? o[1] : v; };
+
+  /* Row → read-only summary drawer (partners.html peek). The row's first cell carries
+     a [data-peek] button; clicking the row (not a link/button) or that button opens it.
+     build(r) → { title, rows, href, open, perm } — perm = the job key the open link needs
+     (the same key as the row's eye, e.g. view_booking_details); it hides with ?perm=none. */
+  OPS.peek = function (mount, find, build) {
+    mount.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-peek]");
+      let id = b ? b.dataset.peek : null;
+      if (!id) {
+        const tr = e.target.closest("tbody tr");
+        if (!tr || e.target.closest("a, button, input, select, label")) return;
+        const p = tr.querySelector("[data-peek]");
+        if (!p) return;
+        id = p.dataset.peek;
+      }
+      const r = find(id);
+      if (!r) return;
+      const d = build(r);
+      RD.openDrawer(d.title, d.rows, `<button class="btn btn--ghost" data-drawer-close>${SA.L("Close", "إغلاق")}</button>${d.href ? `<a class="btn" href="${d.href}"${d.perm ? ` data-perm="${esc(d.perm)}"` : ""}>${SA.ic("eye")}<span>${esc(d.open || SA.L("Open details", "فتح التفاصيل"))}</span></a>` : ""}`);
+    });
+  };
+  OPS.peekId = (id, label) => `<button type="button" class="ops-id" data-peek="${esc(id)}">${esc(label)}</button>`;
+
+  /* small cell helpers shared by the lists */
+  OPS.two = (a, b) => `<div class="ops-two"><b>${a}</b>${b ? `<span class="t-xs text-tertiary">${b}</span>` : ""}</div>`;
+  OPS.when = (date, s, e) => OPS.two(esc(date), `<span dir="ltr">${esc(s)}${e ? " – " + esc(e) : ""}</span>`);
+  /* words = the check-in count wording (CheckInCount: "{a}/{b} checked in") */
+  OPS.check = (a, b, words) => `<div class="ops-check"><span class="t-sm" style="font-weight:var(--weight-semibold);white-space:nowrap;font-variant-numeric:tabular-nums">${words ? SA.L(`${a}/${b} checked in`, `${a}/${b} سجّلوا الحضور`) : `${a}/${b}`}</span><span class="progress" style="width:72px;height:4px"><span class="progress__bar" style="width:${b ? Math.round((a / b) * 100) : 0}%"></span></span></div>`;
+  OPS.appType = (arr) => arr.map((t) => `<span class="chip">${t === "highFive" ? SA.L("HighFive app", "تطبيق هاي فايف") : SA.L("Partner app", "تطبيق الشريك")}</span>`).join(" ");
+  OPS.dash = (v) => (v == null || v === "" ? "---" : esc(PP.cap(v)));
+  OPS.count = (n, en, ar) => SA.L(`${SA.fmt(n)} ${en}`, `${SA.fmt(n)} ${ar}`);
   /* date filters compare the day part only (inputs are YYYY-MM-DD) */
   OPS.inRange = (v, a, b) => { const d = String(v || "").slice(0, 10); return (!a || d >= a.slice(0, 10)) && (!b || d <= b.slice(0, 10)); };
 })();

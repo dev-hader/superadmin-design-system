@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
 <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
@@ -14,6 +15,32 @@
 <link rel="stylesheet" href="assets/css/app.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
+<style>
+  /* page layout only — every control is a registry component */
+  .pt-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+  .pt-head__sub { margin-top: var(--space-1); }
+  .pt-tiles { margin-bottom: var(--space-5); grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  @media (max-width: 900px) { .pt-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .pt-tiles .stat-tile__val { font-variant-numeric: tabular-nums; }
+  /* each tile's icon speaks its status in the same tones the status badges use */
+  .pt-tiles .stat-tile .kpi-ic { background: var(--color-surface-sunken); color: var(--color-text-secondary); box-shadow: none; }
+  .pt-tiles [data-status="waiting"] .kpi-ic { background: var(--color-warning-subtle); color: var(--color-warning); }
+  .pt-tiles [data-status="active"] .kpi-ic { background: var(--color-primary-subtle); color: var(--color-primary-ink); }
+  .pt-tiles [data-status="inactive"] .kpi-ic { background: var(--color-danger-subtle); color: var(--color-danger); }
+  .pt-bar { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+  .pt-bar .input-wrap { flex: 1 1 320px; min-width: 0; }
+  .pt-chips { padding: 0 var(--space-5) var(--space-4); }
+  .pt-name { font: inherit; font-weight: var(--weight-semibold); color: var(--color-text); text-align: start; padding: 0; cursor: pointer; }
+  .pt-name:hover { color: var(--color-primary-ink); text-decoration: underline; text-underline-offset: 3px; }
+  .pt-row { cursor: pointer; }
+  .pt-loc b { display: block; font-weight: var(--weight-medium); }
+  @media (max-width: 640px) {
+    .pt-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pt-tiles .stat-tile { padding: var(--space-3); }
+  }
+</style>
 </head>
 <body>
 <div class="app" id="app">
@@ -25,6 +52,7 @@
 
     <main class="content"><div class="content__inner" style="max-width:none">
       <div id="pageHead"></div>
+      <div class="stat-strip pt-tiles" id="tiles" role="group"></div>
       <div id="listMount"></div>
     </div></main>
   </div>
@@ -39,64 +67,187 @@
 <script>
 (() => {
   /* Partners — mirrors HighFive-SuperAdmin-Front pages/partners (list):
-     status pills with counts, search, Filter (created by · country · state ·
-     city), 9-column table, eye → partner profile. API: GET /partners. */
-  RD.boot({ activeId: "partners", title: "Partners" });
+     status filter with counts, search, Filter (created by · country · state ·
+     city), the same fields, eye → partner profile. API: GET /partners.
+     Permissions (job keys, as the dashboard — data-perm, demo ?perm=limited | ?perm=none):
+     page view_partners (PartnersTableWrapper) · Add new partner add_partners
+     (PartnersPageToolbarWrapper) · eye / Open profile view_partner_details (PartnersTable). */
+  RD.boot({ activeId: "partners", title: "Partners", perm: "view_partners" });
   if (!document.getElementById("listMount")) return;
-  const { L, esc, ic, badge, iconBtn } = SA;
+  const { L, T, esc, ic, badge, fmt } = SA;
   const data = HF.SA.partners;
 
-  SA.head(document.getElementById("pageHead"), {
-    title: ["Partners", "الشركاء"],
-    actions: `<a class="btn btn--sm" href="partners-add.html">${ic("plus")}<span>${L("Add New Partner", "إضافة شريك جديد")}</span></a>`,
-  });
+  /* Redesign (2026-11-17): same data, filters, actions and routes as the
+     dashboard list — re-composed. Status pills → clickable stat tiles; search
+     + Filter in one bar with removable chips for applied filters; country ·
+     state · city merged into one Location column; created at/by into one
+     Created column; row (or name) opens a summary drawer with the profile link.
+     The previous layout: revisions/partners-2026-11-17-before-redesign.html */
 
+  const isActive = (r) => r.active === "active" || r.active === 1;
+  const isWaiting = (r) => r.active === "waiting";
+  const STATUSES = [
+    { key: "all", label: ["All partners", "كل الشركاء"], icon: "hotel", match: () => true },
+    { key: "waiting", label: ["Pending", "معلق"], icon: "clock", match: isWaiting, alert: true },
+    { key: "active", label: ["Active", "نشط"], icon: "check", match: isActive },
+    { key: "inactive", label: ["Inactive", "غير نشط"], icon: "close", match: (r) => !isWaiting(r) && !isActive(r) },
+  ];
   const STATUS = (v) =>
     v === "waiting" ? badge("warning", L("Pending", "معلق"))
-      : v === 1 || v === "active" ? badge("primary", L("active", "نشط"))
-        : badge("danger", L("inactive", "غير نشط"));
+      : v === 1 || v === "active" ? badge("primary", L("Active", "نشط"))
+        : badge("danger", L("Inactive", "غير نشط"));
   const initials = (s) => (s || "?").trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
   const dash = (v) => (v == null || v === "" ? "---" : esc(v));
+  const createdBy = (r) => (r.created_by === "Admin" ? L("Admin", "ادمن") : L("Partner", "شريك"));
+  const profileHref = (r) => `partner-profile.html?id=${r.id}&tab=owner&redirect_to_page=${st.page}`;
+  const countOf = (k) => data.filter(STATUSES.find((s) => s.key === k).match).length;
 
-  let ctl = null;
-  ctl = SA.list({
-    mount: document.getElementById("listMount"),
-    data,
-    pills: [
-      { key: "all", label: ["all", "الكل"] },
-      { key: "waiting", label: ["Pending", "معلق"] },
-      { key: "active", label: ["active", "نشط"] },
-      { key: "inactive", label: ["inactive", "غير نشط"] },
-    ],
-    pillMatch: (r, k) => k === "all" || (k === "active" ? r.active === "active" || r.active === 1 : k === "waiting" ? r.active === "waiting" : r.active !== "waiting" && r.active !== "active" && r.active !== 1),
-    search: ["search by company name, owner name, email, phone", "البحث بالاسم التجاري، اسم المالك، البريد الإلكتروني، رقم الهاتف"],
-    searchMatch: (r, q) => [r.company_name, r.owner_name, r.email, r.partner_phone].some((v) => v && String(v).toLowerCase().includes(q)),
-    toolbarExtra: `<button type="button" class="btn btn--sm btn--secondary" data-filter aria-haspopup="dialog">${ic("sliders")}<span>${L("Filter", "تصفية")}</span></button>`,
-    extraMatch: (r, f) =>
-      (!f.created_by || r.created_by.toLowerCase() === f.created_by) &&
-      (!f.country || r.country.iso === f.country) &&
-      (!f.state || String(r.state.id) === f.state) &&
-      (!f.city || String(r.city.id) === f.city),
-    empty: ["there is no data to display", "لا توجد بيانات لعرضها"],
-    columns: [
-      { head: ["name", "الاسم"], cell: (r) => `<div class="cell-user"><span class="avatar avatar--sm">${esc(initials(r.company_name))}</span>
-          <div><b>${esc(r.company_name)}</b><div class="t-xs text-tertiary">#${r.id}</div><div class="t-xs text-tertiary">${esc(r.created_at)}</div></div></div>` },
-      { head: ["owner", "المالك"], cell: (r) => `<div class="cell-user"><span class="avatar avatar--sm">${esc(initials(r.owner_name || "-"))}</span>
-          <div><b>${dash(r.owner_name)}</b><div class="t-xs text-tertiary" dir="ltr">${esc(r.partner_phone)}</div><div class="t-xs text-tertiary">${esc(r.email)}</div></div></div>` },
-      { head: ["country", "البلد"], align: "center", cell: (r) => dash(r.country && r.country.name) },
-      { head: ["state", "الولاية"], align: "center", cell: (r) => dash(r.state && r.state.name) },
-      { head: ["city", "المدينة"], align: "center", cell: (r) => dash(r.city && r.city.name) },
-      { head: ["units", "وحدات"], align: "center", cell: (r) => `<b>${r.units_count}</b>` },
-      { head: ["Status", "الحالة"], align: "center", cell: (r) => STATUS(r.active) },
-      { head: ["Created By", "المنشئ"], align: "center", cell: (r) => (r.created_by === "Admin" ? L("Admin", "ادمن") : L("Partner", "شريك")) },
-      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<a class="icon-btn" href="partner-profile.html?id=${r.id}&tab=owner&redirect_to_page=${ctl ? ctl.state.page : 1}" aria-label="${L("View", "عرض")} ${esc(r.company_name)}" title="${L("View", "عرض")}">${ic("eye")}</a>` },
-    ],
+  /* ---- head: title + live summary + the one primary action ---- */
+  document.getElementById("pageHead").innerHTML = `<div class="pt-head animate-in">
+      <div>
+        <h1 class="t-h3">${L("Partners", "الشركاء")}</h1>
+        <nav class="t-sm text-tertiary" aria-label="Breadcrumb" style="margin-top:var(--space-1)"><a href="index.html">${L("Dashboard", "لوحة القيادة")}</a> › ${L("Partners", "الشركاء")}</nav>
+        <p class="t-sm text-secondary pt-head__sub">${L(`${fmt(data.length)} partners · ${fmt(countOf("waiting"))} waiting for approval`, `${fmt(data.length)} شريك · ${fmt(countOf("waiting"))} في انتظار الموافقة`)}</p>
+      </div>
+      <a class="btn" href="partners-add.html" data-perm="add_partners">${ic("plus")}<span>${L("Add new partner", "إضافة شريك جديد")}</span></a>
+    </div>`;
+
+  /* ---- state (same filters as the dashboard list) ---- */
+  /* ?page=N is read on load and kept in the URL (Pagination changeURL) — the
+     profile Back button returns to partners.html?page=N */
+  const st = { status: "all", q: "", extra: {}, page: Math.max(1, parseInt(new URLSearchParams(location.search).get("page"), 10) || 1), limit: 15 };
+  const syncUrl = () => { try { const u = new URL(location.href); u.searchParams.set("page", st.page); history.replaceState(null, "", u); } catch (e) { /* file:// preview */ } };
+  const GEO = HF.SA.GEO;
+  const nameOf = {
+    country: (v) => (GEO.find((g) => g.country.iso === v) || {}).country,
+    state: (v) => (GEO.find((g) => String(g.state.id) === v) || {}).state,
+    city: (v) => (GEO.find((g) => String(g.city.id) === v) || {}).city,
+  };
+  function rows() {
+    const s = STATUSES.find((x) => x.key === st.status);
+    const q = st.q.toLowerCase(), f = st.extra;
+    return data.filter((r) => s.match(r)
+      && (!q || [r.company_name, r.owner_name, r.email, r.partner_phone].some((v) => v && String(v).toLowerCase().includes(q)))
+      && (!f.created_by || r.created_by.toLowerCase() === f.created_by)
+      && (!f.country || r.country.iso === f.country)
+      && (!f.state || String(r.state.id) === f.state)
+      && (!f.city || String(r.city.id) === f.city));
+  }
+
+  /* ---- stat tiles: the four status pills, as filters with their counts ---- */
+  function paintTiles() {
+    document.getElementById("tiles").innerHTML = STATUSES.map((s) => {
+      const on = st.status === s.key;
+      return `<button type="button" class="stat-tile${on ? " is-active" : ""}${s.alert ? " stat-tile--alert" : ""}" aria-pressed="${on}" data-status="${s.key}">
+        <span class="kpi-ic">${ic(s.icon)}</span>
+        <span class="stat-tile__txt"><span class="stat-tile__val">${fmt(countOf(s.key))}</span><span class="stat-tile__label">${esc(T(s.label))}</span></span>
+      </button>`;
+    }).join("");
+  }
+  document.getElementById("tiles").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-status]");
+    if (!b) return;
+    /* clicking the active tile clears it (stat-tile contract) */
+    st.status = b.dataset.status === st.status && st.status !== "all" ? "all" : b.dataset.status;
+    st.page = 1;
+    paintTiles(); paint();
   });
 
+  /* ---- applied-filter chips ---- */
+  const CHIP_KEYS = [["created_by", ["Created by", "المنشئ"]], ["country", ["Country", "البلد"]], ["state", ["State", "الولاية"]], ["city", ["City", "المدينة"]]];
+  function chips() {
+    const f = st.extra;
+    const list = CHIP_KEYS.filter(([k]) => f[k]).map(([k, label]) => {
+      const v = k === "created_by" ? (f[k] === "admin" ? L("Admin", "ادمن") : L("Partner", "شريك")) : ((nameOf[k](f[k]) || {}).name || f[k]);
+      return `<span class="filter-chip"><span class="filter-chip__key">${esc(T(label))}</span><span class="filter-chip__op">${L("is", "=")}</span><span class="filter-chip__val">${esc(v)}</span><button type="button" class="filter-chip__x" data-unchip="${k}" aria-label="${L("Remove", "إزالة")} ${esc(T(label))}">${ic("close")}</button></span>`;
+    });
+    return list.length ? `<div class="filterbar pt-chips">${list.join("")}<button type="button" class="filterbar__clear" data-unchip="*">${L("Clear all", "مسح الكل")}</button></div>` : "";
+  }
+
+  /* ---- table ---- */
+  const COLUMNS = [
+    { head: ["Partner", "الشريك"], cell: (r) => `<div class="cell-user"><span class="avatar avatar--sm">${esc(initials(r.company_name))}</span>
+        <div><button type="button" class="pt-name" data-peek="${r.id}">${esc(r.company_name)}</button><div class="t-xs text-tertiary">#${r.id}</div></div></div>` },
+    { head: ["Owner", "المالك"], cell: (r) => `<div class="cell-user"><span class="avatar avatar--sm">${esc(initials(r.owner_name || "-"))}</span>
+        <div><b>${dash(r.owner_name)}</b><div class="t-xs text-tertiary" dir="ltr">${esc(r.partner_phone)}</div><div class="t-xs text-tertiary">${esc(r.email)}</div></div></div>` },
+    { head: ["Location", "الموقع"], cell: (r) => `<div class="pt-loc"><b>${dash(r.city && r.city.name)}</b><span class="t-xs text-tertiary">${dash(r.state && r.state.name)} · ${dash(r.country && r.country.name)}</span></div>` },
+    { head: ["Units", "وحدات"], align: "center", cell: (r) => `<b>${r.units_count}</b>` },
+    { head: ["Status", "الحالة"], align: "center", cell: (r) => STATUS(r.active) },
+    { head: ["Created", "تاريخ الإنشاء"], cell: (r) => `<div>${esc(r.created_at)}</div><span class="t-xs text-tertiary">${L("By", "بواسطة")} ${createdBy(r)}</span>` },
+    { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<a class="icon-btn" data-perm="view_partner_details" href="${profileHref(r)}" aria-label="${L("View", "عرض")} ${esc(r.company_name)}" title="${L("View", "عرض")}">${ic("eye")}</a>` },
+  ];
+  const mount = document.getElementById("listMount");
+  let slice = [];
+  function paint() {
+    const all = rows();
+    const pages = Math.max(1, Math.ceil(all.length / st.limit));
+    if (st.page > pages) st.page = pages;
+    slice = all.slice((st.page - 1) * st.limit, st.page * st.limit);
+    const hadFocus = document.activeElement && document.activeElement.matches("[data-search]");
+    mount.innerHTML = `<section class="data-table-wrap${st.painted ? "" : " animate-in"}">
+        <div class="data-table-toolbar pt-bar">
+          ${SA.search(["Search by company name, owner name, email, phone", "البحث بالاسم التجاري، اسم المالك، البريد الإلكتروني، رقم الهاتف"], st.q)}
+          <button type="button" class="btn btn--sm btn--secondary" data-filter aria-haspopup="dialog">${ic("sliders")}<span>${L("Filter", "تصفية")}</span></button>
+        </div>
+        ${chips()}
+        ${SA.table({ columns: COLUMNS, rows: slice, empty: ["There is no data to display", "لا توجد بيانات لعرضها"] })}
+        ${SA.pager({ page: st.page, limit: st.limit, total: all.length })}
+      </section>`;
+    st.painted = true;
+    syncUrl();
+    mount.querySelectorAll("tbody tr").forEach((tr, i) => { if (slice[i]) { tr.classList.add("pt-row"); tr.dataset.row = slice[i].id; } });
+    if (hadFocus) { const inp = mount.querySelector("[data-search]"); inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+  }
+
+  /* ---- summary drawer (row / name) — read-only, links to the real profile ---- */
+  function peek(id) {
+    const r = data.find((x) => String(x.id) === String(id));
+    if (!r) return;
+    RD.openDrawer(esc(r.company_name), [
+      [L("ID", "المعرف"), `#${r.id}`],
+      [L("Status", "الحالة"), STATUS(r.active)],
+      [L("Owner", "المالك"), dash(r.owner_name)],
+      [L("Phone", "الهاتف"), `<span dir="ltr">${esc(r.partner_phone)}</span>`],
+      [L("Email", "البريد الإلكتروني"), esc(r.email)],
+      [L("Country", "البلد"), dash(r.country && r.country.name)],
+      [L("State", "الولاية"), dash(r.state && r.state.name)],
+      [L("City", "المدينة"), dash(r.city && r.city.name)],
+      [L("Units", "وحدات"), `<b>${r.units_count}</b>`],
+      [L("Created", "تاريخ الإنشاء"), esc(r.created_at)],
+      [L("Created by", "المنشئ"), createdBy(r)],
+    ], `<button class="btn btn--ghost" data-drawer-close>${L("Close", "إغلاق")}</button><a class="btn" data-perm="view_partner_details" href="${profileHref(r)}">${ic("eye")}<span>${L("Open profile", "فتح الملف")}</span></a>`);
+  }
+
+  mount.addEventListener("click", (e) => {
+    const un = e.target.closest("[data-unchip]");
+    if (un) {
+      const k = un.dataset.unchip;
+      if (k === "*") st.extra = {};
+      else { delete st.extra[k]; if (k === "country") { delete st.extra.state; delete st.extra.city; } if (k === "state") delete st.extra.city; }
+      st.page = 1; return paint();
+    }
+    const g = e.target.closest("[data-page]");
+    if (g && !g.disabled) { st.page = +g.dataset.page; return paint(); }
+    const pk = e.target.closest("[data-peek]");
+    if (pk) return peek(pk.dataset.peek);
+    const tr = e.target.closest("tr[data-row]");
+    if (tr && !e.target.closest("a, button, input, select")) peek(tr.dataset.row);
+  });
+  mount.addEventListener("input", (e) => {
+    if (e.target.matches("[data-search]")) { st.q = e.target.value; st.page = 1; paint(); }
+  });
+  mount.addEventListener("change", (e) => {
+    if (e.target.matches("[data-limit]")) { st.limit = +e.target.value; st.page = 1; paint(); }
+  });
+
+  /* the Filter popover below talks to the same { state, paint } shape as before */
+  const ctl = { state: st, paint };
+  paintTiles();
+  paint();
+
   /* ---------------- Filter Options popover ---------------- */
-  const GEO = HF.SA.GEO;
   const uniq = (arr, key) => arr.filter((x, i) => arr.findIndex((y) => key(y) === key(x)) === i);
-  const ALL = L("all", "الكل");
+  const ALL = L("All", "الكل");
   const pop = document.createElement("div");
   pop.className = "popover";
   pop.setAttribute("role", "dialog");
@@ -108,12 +259,12 @@
     const states = draft.country ? uniq(GEO.filter((g) => g.country.iso === draft.country).map((g) => g.state), (s) => s.id) : [];
     const cities = draft.state ? uniq(GEO.filter((g) => String(g.state.id) === draft.state).map((g) => g.city), (c) => c.id) : [];
     const opt = (v, label, cur) => [v, label, String(cur || "") === String(v)];
-    pop.innerHTML = `<div class="popover__title">${L("Filter Options", "خيارات التصفية")}</div>
+    pop.innerHTML = `<div class="popover__title">${L("Filter options", "خيارات التصفية")}</div>
       <div class="popover__body stack gap-3">
         ${SA.field([`Created by:`, `المنشئ:`], SA.select([opt("", ALL, draft.created_by), opt("partner", L("Partner", "شريك"), draft.created_by), opt("admin", L("Admin", "ادمن"), draft.created_by)], 'data-f="created_by"'))}
-        ${SA.field(["country:", "البلد:"], SA.select([opt("", ALL, draft.country)].concat(countries.map((c) => opt(c.iso, c.name, draft.country))), 'data-f="country"'))}
-        ${SA.field(["state:", "الولاية:"], SA.select([opt("", ALL, draft.state)].concat(states.map((s) => opt(s.id, s.name, draft.state))), 'data-f="state"'))}
-        ${SA.field(["city:", "المدينة:"], SA.select([opt("", ALL, draft.city)].concat(cities.map((c) => opt(c.id, c.name, draft.city))), 'data-f="city"'))}
+        ${SA.field(["Country:", "البلد:"], SA.select([opt("", ALL, draft.country)].concat(countries.map((c) => opt(c.iso, c.name, draft.country))), 'data-f="country"'))}
+        ${SA.field(["State:", "الولاية:"], SA.select([opt("", ALL, draft.state)].concat(states.map((s) => opt(s.id, s.name, draft.state))), 'data-f="state"'))}
+        ${SA.field(["City:", "المدينة:"], SA.select([opt("", ALL, draft.city)].concat(cities.map((c) => opt(c.id, c.name, draft.city))), 'data-f="city"'))}
       </div>
       <div class="popover__foot">
         <button type="button" class="btn btn--sm btn--secondary" data-reset>${L("Reset", "إعادة تعيين")}</button>

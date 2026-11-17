@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Activities Contacts · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+  /* redesign 2026-11-17 — settings as a grouped card (label above value) */
+  .sa-set { max-width: 820px; padding: 0; overflow: hidden; }
+  .sa-set__head { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-5); border-bottom: var(--border-thin) solid var(--color-border-subtle); }
+  .sa-set__row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: var(--space-4) var(--space-6); align-items: center; padding: var(--space-5); }
+  .sa-set__row + .sa-set__row { border-top: var(--border-thin) solid var(--color-border-subtle); }
+  .sa-set__f { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+  .sa-set__f .field__label { margin: 0; }
+  @media (max-width: 560px) { .sa-set__row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .sa-set__act { grid-column: 1 / -1; } .sa-set__act .btn { width: 100%; justify-content: center; } }
+  /* activities contacts — contact cell */
+  .sa-one-tile .stat-strip { grid-template-columns: minmax(0, 280px) !important; }
+  .sa-contact { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/sa-translation.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/sa-crud.js"></script>
+<script>
+(() => {
+  /* settings.html — pages/settings: one setting (app version), edit modal (required; English-only
+     messages in the dashboard), success reloads the page.
+     activities-contacts.html — pages/activities-contacts: read-only list, search (debounced) by
+     name / email / phone, 6 columns, no row actions.
+     Permissions (dashboard job permissions; demo ?perm=limited | ?perm=none):
+       settings             page view_settings · Update version update_settings
+       activities contacts  page partner_activities_contact_us_view (the dashboard's key — it does not
+                            start with view_, so the ?perm=limited demo treats it as not granted) */
+  const file = location.pathname.split("/").pop().replace(/^_preview-/, "").replace(".html", "");
+  const isSet = file === "settings";
+  RD.boot({ activeId: isSet ? "settings" : "activities-contacts", title: isSet ? "Settings" : "Activities Contacts", perm: isSet ? "view_settings" : "partner_activities_contact_us_view" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic, badge } = SA;
+  const S = HF.SA;
+
+  if (isSet) {
+    S._settings = S._settings || [{ id: 1, key: "app_version", value: "1.0.0" }];
+    /* the dashboard labels every row "App Version" whatever the key — kept 1:1.
+       Redesign 2026-11-17: the one-row table becomes a settings card — each setting is a
+       row of label-over-value fields (Property · Version) with its Update button; the
+       Update modal (CRUD.form), its validation and the success alert are unchanged. */
+    SA.head(document.getElementById("pageHead"), { title: ["Settings", "الإعدادات"] });
+    const mount = document.getElementById("listMount");
+    const cfg = { data: S._settings,
+      form: { editTitle: ["Update version", "تحديث الإصدار"], updatingText: ["Updating…", "جاري التحديث…"], feedback: "alert", delay: 800,
+        fields: [{ key: "value", label: ["Version", "الإصدار"], placeholder: ["Enter new version", "أدخل الإصدار الجديد"], rules: [(v) => (!v ? "This field is required" : "")] }] } };
+    const paint = () => {
+      mount.innerHTML = `<section class="card animate-in sa-set">
+        <header class="sa-set__head"><span class="kpi-ic" style="background:var(--color-primary-subtle);color:var(--color-primary-ink);box-shadow:none">${ic("mobile")}</span>
+          <h2 class="t-title" style="margin:0">${L("Application", "التطبيق")}</h2></header>
+        ${S._settings.length ? S._settings.map((r) => `<div class="sa-set__row">
+          <div class="sa-set__f"><span class="field__label">${L("Property", "الخاصية")}</span><b>${L("App version", "إصدار التطبيق")}</b></div>
+          <div class="sa-set__f"><span class="field__label">${L("Version", "الإصدار")}</span><span><span class="badge badge--primary" dir="ltr" style="font-family:var(--font-mono, monospace)">${esc(r.value)}</span></span></div>
+          <div class="sa-set__act">${PP.btn(L("Update version", "تحديث الإصدار"), "edit", `data-set-edit="${r.id}" data-perm="update_settings"`, "secondary")}</div></div>`).join("")
+        : `<p class="text-tertiary" style="padding:var(--space-8) var(--space-5);text-align:center;margin:0">${L("There is no data to display", "لا توجد بيانات للعرض")}</p>`}
+      </section>`;
+    };
+    mount.addEventListener("click", (e) => { const b = e.target.closest("[data-set-edit]"); if (b) CRUD.form(cfg, S._settings.find((x) => String(x.id) === b.dataset.setEdit), paint); });
+    paint();
+    return;
+  }
+
+  /* ---- Activities Contacts (GET /partner-activities/contact-us) ---- */
+  const TYPES = ["football", "padel", "break_rooms", ""];
+  const rows = ["Ahmed Kamal", "Sara Youssef", "", "Khaled Omar", "Nour Hassan", "Fahad Ali", "Lina Saeed", "Omar Nabil"].map((n, i) => ({ id: 120 + i, name: n, email: n ? `${n.split(" ")[0].toLowerCase()}@mail.com` : "", phone: i % 4 === 3 ? "" : `+966 5${i} 234 56${i}${i}`, type: TYPES[i % 4], created_at: new Date(2026, 10, 16 - i, 9 + i, 30).toLocaleString() }));
+  SA.head(document.getElementById("pageHead"), { title: ["Activities Contacts", "جهات اتصال الأنشطة"] });
+  const dash = (v) => (v ? esc(v) : "—");
+  document.getElementById("listMount").classList.add("sa-one-tile");
+  SA.list({
+    mount: document.getElementById("listMount"), data: rows,
+    pills: [{ key: "all", label: ["All", "الكل"] }], pillMatch: () => true,
+    search: ["Search by name, email, or phone…", "البحث بالاسم أو البريد الإلكتروني أو الهاتف…"], searchMatch: (r, q) => [r.name, r.email, r.phone].some((v) => v.toLowerCase().includes(q)),
+    empty: () => `<div class="empty-state stack gap-2" style="align-items:center"><span class="kpi-ic" style="background:var(--color-surface-sunken);color:var(--color-text-tertiary);box-shadow:none">${ic("mail")}</span><b class="t-title" style="margin-top:var(--space-2)">${L("No contacts found", "لا توجد جهات اتصال")}</b></div>`,
+    /* redesign 2026-11-17: same 6 columns; name gets an avatar. Email is plain text and the type is the raw
+       API word in a badge (e.g. break_rooms), as in the dashboard (PP.cap would humanize it — lead's call). */
+    columns: [
+      { head: ["ID", "المعرف"], cell: (r) => `<span class="text-tertiary" style="font-variant-numeric:tabular-nums">#${r.id}</span>` },
+      { head: ["Name", "الاسم"], cell: (r) => `<div class="sa-contact">${r.name ? PP.avatar(r.name) : `<span class="avatar avatar--sm">${ic("users")}</span>`}<b>${dash(r.name)}</b></div>` },
+      { head: ["Email", "البريد الإلكتروني"], cell: (r) => `<span class="text-secondary">${dash(r.email)}</span>` },
+      { head: ["Phone", "الهاتف"], cell: (r) => `<span dir="ltr" style="font-variant-numeric:tabular-nums">${dash(r.phone)}</span>` },
+      { head: ["Type", "النوع"], cell: (r) => (r.type ? badge("info", esc(r.type)) : `<span class="text-tertiary">—</span>`) },
+      { head: ["Created at", "تاريخ الإنشاء"], cell: (r) => `<span class="text-secondary t-sm">${dash(r.created_at)}</span>` },
+    ],
+  });
+})();
+</script>
+</body>
+</html>

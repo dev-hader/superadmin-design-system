@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Edit package · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+
+  /* ---- redesign (2026-11-17): record header · section index · form-section cards · two-column fields · formbar ---- */
+  .pe-head { margin-bottom: var(--space-6); }
+  .pe-head .record-head__id h1 { margin-block: 2px var(--space-2); }
+  .pe-layout { display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .pe-main { min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); }
+  .pe-main > .form-section + .form-section { margin: 0; }
+  .pe-main .form-section { scroll-margin-top: calc(var(--topbar-height) + var(--space-4)); }
+  .pe-main .form-section__title { font-size: var(--text-body, var(--text-sm)); }
+  .pe-body { padding-top: var(--space-4); }
+  .pe-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4) var(--space-5); }
+  .pe-grid > .field { margin: 0; min-width: 0; }
+  .pe-index { position: sticky; top: calc(var(--topbar-height) + var(--space-4)); }
+  .pe-index__card { display: flex; flex-direction: column; gap: 1px; padding: var(--space-3) var(--space-2); background: var(--color-surface); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-lg); box-shadow: var(--shadow-xs); }
+  .pe-index__title { padding: var(--space-1) var(--space-3) var(--space-2); font-size: var(--text-xs); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--color-text-tertiary); }
+  .pe-index__link { display: flex; align-items: center; gap: var(--space-3); padding: 8px var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); text-decoration: none; }
+  .pe-index__link:hover { background: var(--color-surface-hover); color: var(--color-text); }
+  .pe-index__link.is-invalid, .pe-index__link.is-invalid .pp-ic { color: var(--color-danger); font-weight: var(--weight-semibold); }
+  .pp-ic { display: inline-grid; place-items: center; width: 18px; height: 18px; flex-shrink: 0; color: var(--color-text-tertiary); }
+  .pp-ic svg { width: 16px; height: 16px; }
+  .pe-bar { border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin-inline: 0; }
+  .pe-body .row { flex-wrap: wrap; }
+  @media (max-width: 1000px) { .pe-layout { grid-template-columns: minmax(0, 1fr); } .pe-index { display: none; } }
+  @media (max-width: 640px) { .pe-grid { grid-template-columns: minmax(0, 1fr); } .pe-bar { margin-inline: 0; border-radius: 0; } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="keBody"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/kp/kp-info.js"></script>
+<script src="assets/js/kp/kp-ops.js"></script>
+<script>
+(() => {
+  /* Edit package — mirrors pages/packages/package-edit (EditPackagePage + 9
+     sections): status (read-only) · basic info · branches · media ·
+     availability · validity & plans · access schedule · capacity · usage
+     rules, sticky save bar, "fix the highlighted fields" jump list, discard
+     changes guard. URL: package-edit.html?id=<pkgId>[&section=plans]
+     Redesign (2026-11-17): same 9 sections, fields, validation and guard —
+     re-composed like partners-add: a record header for the package, a sticky
+     section index (errors flagged), registry form-section cards with fields in
+     two columns, and the registry formbar. Previous layout:
+     revisions/2026-11-17-all-pages/package-edit.html
+     Save: POST /packages/{id} (multipart, _method=PUT) with the form + version.
+     422 → errors under the fields (+ the "fix the highlighted fields" list);
+     409 → toast + reload the form; 403 → back to the package; 404 → the list.
+     Demo flags (samples, off by default): ?demo=readonly (read-only package —
+     fields disabled, Save hidden), ?demo=locks (GET /edit per-plan locks with the
+     server's texts), ?demo=banner (a GET /edit server banner).
+     Permissions (job keys): the route sits under PackagesPage, gated by PERMISSIONS.PARTNERS.VIEW_PARTNER_PACKAGES is an empty string in the dashboard
+     (constants/permissions.js, TODO 'view_partner_packages') — hasPermission() lets
+     everyone in, so the page carries no perm key (?perm=none keeps it open, as the dashboard).
+     Read-only / locks come from the GET /edit API flags (edit.visible …), not job keys. */
+  RD.boot({ activeId: "packages", title: "Edit package" });
+  if (!document.getElementById("keBody")) return;
+  const { L, esc, ic, badge } = SA;
+  const qs = new URLSearchParams(location.search);
+  const demo = qs.get("demo");
+  const readOnly = demo === "readonly"; /* data.readOnly || !data.canManage */
+  const lockDemo = demo === "locks";
+  const pkg = KP.extend(HF.SA.packages.find((x) => String(x.id) === qs.get("id")) || HF.SA.packages[0]);
+  KP.pkg = pkg;
+  const detail = `package-detail.html?id=${pkg.id}&tab=details`;
+  const isRTL = () => document.documentElement.dir === "rtl";
+  const apBadge = (v) => (v === "not_approved" ? badge("danger", L("Not approved", "غير مقبولة")) : KP.approvalBadge(v));
+  const subs = pkg.approval_status.value === "approved" ? pkg.subscribers.active : 0;
+  const DAYS = [["Sat", "Saturday", "السبت"], ["Sun", "Sunday", "الأحد"], ["Mon", "Monday", "الاثنين"], ["Tue", "Tuesday", "الثلاثاء"], ["Wed", "Wednesday", "الأربعاء"], ["Thu", "Thursday", "الخميس"], ["Fri", "Friday", "الجمعة"]];
+
+  /* ---------- form state (GET /packages/{id}/edit → form) ---------- */
+  const cat = HF.SA.CATS.find((c) => c.name === pkg.categories[0]) || HF.SA.CATS[0];
+  const init = {
+    name: pkg.name, description: pkg.description, categories: [String(cat.id)], activities: [pkg.categories[1]].filter(Boolean),
+    all_age_groups: pkg.all_age_groups, age_groups: pkg.age_groups.map((a) => a.name), gender: pkg.gender,
+    branches: pkg.branchList.map((b) => String(b.id)), cover: true, remove_cover: false, cover_file: null, gallery: pkg.galleryList.map((g) => ({ id: g.id, removed: false })),
+    availability_type: pkg.availability.display_starts_at ? "specific_period" : "always", display_starts_at: pkg.availability.display_starts_at || "", display_ends_at: pkg.availability.display_ends_at || "",
+    validity: pkg.validity.type,
+    plans: pkg.planList.map((p) => ({ id: p.id, name: p.name, price: p.price, active: p.active, starts_on: p.starts_on ? p.starts_on.split("/").reverse().join("-") : "", ends_on: p.ends_on ? p.ends_on.split("/").reverse().join("-") : "", duration_value: p.duration_value, duration_unit: p.duration_unit, activation_window_value: p.activation_window_value || 14, activation_window_unit: "day", allow_renewal: p.renewal, renewal_window_days: 7, subscribers: p.subscribers.active })),
+    access_type: pkg.access_schedule.days ? "scheduled" : "full_access",
+    /* stored slots are `original` — with can_restrict:false they can't be deleted or narrowed */
+    schedule: DAYS.map((d) => { const on = pkg.access_schedule.days ? ["Sun", "Tue"].includes(d[0]) : false; return { day: d[0], on, slots: on ? [{ from: "08:00", to: "22:00", original: true }] : [] }; }),
+    capacity_type: pkg.capacityD.type, capacity_value: pkg.capacityD.limit || "",
+    usage_type: pkg.usage_rules.type, usage_limit: pkg.usage_rules.limit || "", usage_reset: pkg.usage_rules.reset_period || "",
+    notify: true,
+  };
+  let f = JSON.parse(JSON.stringify(init)), errs = {}, tried = false;
+  const dirty = () => JSON.stringify(f) !== JSON.stringify(init);
+  const resubmit = pkg.approval_status.value === "not_approved";
+  /* GET /edit locks: access_schedule.can_restrict (false while it has subscribers), capacity.min_total /
+     min_active, usage.min_limit and subscribers {total, active, highest_usage} */
+  const restricted = subs > 0;
+  const subsTotal = subs ? subs + 4 : 0, highestUsage = subs && pkg.usage_rules.type === "limited" ? 3 : 0;
+  const minTotal = subsTotal, minActive = subs, minUsage = highestUsage;
+  const capFloor = (type) => (type === "total" ? minTotal : type === "active" ? minActive : 0);
+  const isWhole = (v) => /^\d+$/.test(String(v == null ? "" : v).trim()) && +v > 0;
+  const DAYS_PER = { day: 1, week: 7, month: 30, year: 365 }; /* the renewal window's ceiling = the plan's duration in days */
+  const durDays = (p) => (isWhole(p.duration_value) && DAYS_PER[p.duration_unit] ? +p.duration_value * DAYS_PER[p.duration_unit] : null);
+  const subsWord = (n) => L(`${n} subscriber${n === 1 ? "" : "s"}`, n === 1 ? "مشترك واحد" : n === 2 ? "مشتركان" : n % 100 >= 3 && n % 100 <= 10 ? `${n} مشتركين` : `${n} مشتركاً`); /* PACKAGES.PLAN_SUBSCRIBERS */
+  /* per-plan locks (locks.plans[] — the server's own texts); sample via ?demo=locks */
+  const planLock = (p) => (!lockDemo || !p.id ? null : {
+    duration: L(`This plan has ${subsWord(p.subscribers || 1)}, so its duration can't change.`, `لدى هذه الخطة ${subsWord(p.subscribers || 1)}، لذلك لا يمكن تغيير مدتها.`),
+    starts_on: L("Subscribers have already started on this date.", "بدأ المشتركون بالفعل في هذا التاريخ."),
+    ends_on: { message: p.subscribers ? "" : L("The end date is managed by HighFive support.", "يدير دعم HighFive تاريخ الانتهاء.") },
+    can_delete: false, delete_message: L(`This plan has ${subsWord(p.subscribers || 1)} and can't be deleted.`, `لدى هذه الخطة ${subsWord(p.subscribers || 1)} ولا يمكن حذفها.`) });
+  const nameLocked = lockDemo, canAddPlan = !lockDemo;
+  let rejected = []; /* gallery files refused on pick */
+  /* locks.plans[].ends_on {min}: with subscribers the end date can only move later than the stored one */
+  const endMin = (p) => { const o = p.id && init.plans.find((x) => x.id === p.id); return o && o.subscribers && o.ends_on ? o.ends_on : null; };
+
+  /* ---------- head: a record header for the package being edited ---------- */
+  document.getElementById("pageHead").innerHTML = `<header class="page-head pe-head animate-in" style="max-width:none">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="packages.html">${L("Packages", "الباقات")}</a><span aria-hidden="true">›</span><a href="${detail}" data-leave>${esc(pkg.name)}</a><span aria-hidden="true">›</span><span>${L("Edit", "تعديل")}</span></nav>
+      <div class="record-head">
+        <span class="record-head__media" aria-hidden="true">${ic("package")}</span>
+        <div class="record-head__id">
+          <span class="t-sm text-tertiary">${L("Edit package", "تعديل الباقة")}</span>
+          <h1>${esc(pkg.name)}</h1>
+          <div class="record-head__badges">${apBadge(pkg.approval_status.value)}${KP.statusBadge(pkg.package_status)}<span class="badge">#${pkg.id}</span></div>
+          <div class="record-head__meta"><span>${esc(pkg.partner.name)}</span><span>${pkg.categories.map(esc).join(" · ")}</span></div>
+        </div>
+        <div class="record-head__actions">
+          <a class="btn btn--secondary" href="${detail}" data-leave>${ic(isRTL() ? "chevronRight" : "chevronLeft")}<span>${L("Back", "رجوع")}</span></a>
+        </div>
+      </div>
+    </header>`;
+
+  /* ---------- bits ---------- */
+  const err = (k) => (errs[k] ? `<span class="field__error">${ic("warn")} ${errs[k]}</span>` : "");
+  const fld = (label, control, k, o) => `<div class="field ${errs[k] ? "is-invalid" : ""}"><label class="field__label">${label}${o && o.req ? ' <span class="req">*</span>' : ""}</label>${control}${o && o.lock ? lockLine(o.lock) : ""}${errs[k] ? err(k) : o && o.hint ? `<span class="field__hint">${o.hint}</span>` : ""}</div>`;
+  const radio = (name, val, label, cur) => `<label class="check check--radio"><input type="radio" name="${name}" value="${val}" data-k="${name}" ${cur === val ? "checked" : ""}><span class="check__box"><span class="check__dot"></span></span>${label}</label>`;
+  const sw = (k, on, label, attrs) => `<label class="row gap-2" style="align-items:center"><span class="switch"><input type="checkbox" data-k="${k}" ${on ? "checked" : ""} ${attrs || ""} aria-label="${esc(label)}"><span class="switch__track"></span></span><span class="t-sm">${label}</span></label>`;
+  const checks = (k, opts, cur) => `<div class="row gap-3" style="flex-wrap:wrap">${opts.map((o) => `<label class="check"><input type="checkbox" data-m="${k}" value="${esc(o[0])}" ${cur.includes(String(o[0])) ? "checked" : ""} ${o[2] ? "disabled" : ""}><span class="check__box">${ic("check")}</span>${esc(o[1])}</label>`).join("")}</div>`;
+  const input = (k, v, attrs) => `<input class="input" data-k="${k}" value="${esc(v)}" ${attrs || ""}>`;
+  const unitSel = (k, v, locked) => SA.select([["day", L("Day(s)", "يوم"), v === "day"], ["week", L("Week(s)", "أسبوع"), v === "week"], ["month", L("Month(s)", "شهر"), v === "month"], ["year", L("Year(s)", "سنة"), v === "year"]], `data-k="${k}" ${locked ? "disabled" : ""}`);
+  /* registry form-section (static flavour): icon · title · subtitle, flagged when a field inside failed */
+  const SICON = { status: "shield", basic: "info", branches: "hotel", media: "camera", availability: "eye", plans: "list", schedule: "clock", capacity: "users", usage: "refresh" };
+  const secErr = (id) => Object.keys(errs).some((k) => k.split(".")[0] === id);
+  const section = (id, title, desc, body) => `<section class="form-section form-section--static${secErr(id) ? " is-invalid" : ""}" id="section-${id}" aria-labelledby="sec-t-${id}">
+      <div class="form-section__head"><span class="form-section__ic">${ic(SICON[id])}</span><span class="form-section__txt"><h2 class="form-section__title" id="sec-t-${id}">${title}</h2>${desc ? `<span class="form-section__sub">${desc}</span>` : ""}</span></div>
+      <div class="form-section__body"><div class="stack gap-4 pe-body">${body}</div></div></section>`;
+  /* a locked field's note: the server's text, or the generic PACKAGES.FIELD_LOCKED when locked without one */
+  const lockLine = (text) => `<span class="t-xs text-tertiary row gap-1" style="align-items:center">${ic("lock")} ${text === true ? L("Can't be changed on this package.", "لا يمكن تغيير هذا في هذه الباقة.") : esc(text)}</span>`;
+  const lockNote = lockLine(true);
+
+  function paint() {
+    const acts = f.categories.flatMap((c) => HF.SA.ACTS[c] || []);
+    const SECTIONS = [
+      ["status", L("Package status", "حالة الباقة")], ["basic", L("Basic information", "المعلومات الأساسية")], ["branches", L("Branch assignment", "تعيين الفروع")], ["media", L("Package media", "وسائط الباقة")],
+      ["availability", L("Availability", "الإتاحة")], ["plans", L("Subscription validity & plans", "صلاحية الاشتراك والخطط")], ["schedule", L("Access schedule", "جدول الدخول")], ["capacity", L("Subscriber capacity", "سعة المشتركين")], ["usage", L("Usage rules", "قواعد الاستخدام")]];
+    const errSecs = SECTIONS.filter((s) => Object.keys(errs).some((k) => k.split(".")[0] === s[0]));
+    const gal = f.gallery.filter((g) => !g.removed).length;
+    document.getElementById("keBody").innerHTML = `<div class="pe-layout">
+      <nav class="pe-index" aria-label="${L("Package sections", "أقسام الباقة")}"><div class="pe-index__card">
+        <b class="pe-index__title">${L("Sections", "الأقسام")}</b>
+        ${SECTIONS.map((s) => `<a href="#section-${s[0]}" class="pe-index__link${secErr(s[0]) ? " is-invalid" : ""}"><span class="pp-ic" aria-hidden="true">${ic(secErr(s[0]) ? "warn" : SICON[s[0]])}</span><span>${s[1]}</span></a>`).join("")}
+      </div></nav>
+      <div class="pe-main">
+      ${demo === "banner" ? KP.notice("warning", "warn", L(`This package has ${subsWord(Math.max(subs, 3))}, so some plan fields are locked.`, `لدى هذه الباقة ${subsWord(Math.max(subs, 3))}، لذلك بعض حقول الخطط مقفلة.`)) /* GET /edit banners[] {type, message} */ : ""}
+      ${readOnly ? KP.notice("info", "info", L("This package is read-only - it can be viewed but not changed.", "هذه الباقة للعرض فقط - يمكن عرضها دون تعديلها.")) : ""}
+      ${tried && errSecs.length ? `<div class="alert alert--danger"><span class="alert__icon">${ic("warn")}</span><div class="alert__body">${L("Please fix the highlighted fields in:", "يرجى تصحيح الحقول المحددة في:")}<div class="row gap-2" style="flex-wrap:wrap;margin-top:var(--space-2)">${errSecs.map((s) => `<a class="btn btn--sm btn--secondary" href="#section-${s[0]}" style="color:var(--color-danger)">${s[1]}</a>`).join("")}</div></div></div>` : ""}
+
+      ${section("status", SECTIONS[0][1], L("Read-only here. Approve or reject from the package page, and activate or deactivate from its status control.", "للعرض فقط هنا. يتم القبول أو الرفض من صفحة الباقة، والتفعيل أو الإيقاف من أداة الحالة فيها."),
+        `<div class="row gap-2">${apBadge(pkg.approval_status.value)}${KP.statusBadge(pkg.package_status)}</div>`)}
+
+      ${section("basic", SECTIONS[1][1], "", `
+        ${fld(L("Package name", "اسم الباقة"), input("name", f.name, 'maxlength="255"'), "basic.name", { req: 1 })}
+        ${fld(L("Description", "الوصف"), `<textarea class="input" rows="4" data-k="description">${esc(f.description)}</textarea>`, "basic.description")}
+        <div class="pe-grid">${fld(L("Categories", "التصنيفات"), checks("categories", HF.SA.CATS.map((c) => [String(c.id), c.name]), f.categories), "basic.categories", { req: 1 })}
+          ${fld(L("Activities", "الأنشطة"), acts.length ? checks("activities", acts.map((a) => [a, a]), f.activities) : `<span class="t-sm text-tertiary">${L("Select...", "اختر...")}</span>`, "basic.activities")}</div>
+        ${fld(L("Age groups", "الفئات العمرية"), sw("all_age_groups", f.all_age_groups, L("All age groups", "جميع الفئات العمرية")) + (f.all_age_groups ? "" : checks("age_groups", [["Kids", "Kids"], ["Teens", "Teens"], ["Adults", "Adults"], ["Seniors", "Seniors", !f.age_groups.includes("Seniors")]], f.age_groups)), "basic.age_groups")}
+        ${fld(L("Gender", "الجنس"), `<div class="row gap-4">${radio("gender", "male", L("Male", "ذكور"), f.gender)}${radio("gender", "female", L("Female", "إناث"), f.gender)}${radio("gender", "both", L("Both", "الكل"), f.gender)}</div>`, "basic.gender", { req: 1 })}`)}
+
+      ${section("branches", SECTIONS[2][1], L("The partner's branches where this package is sold.", "فروع الشريك التي تُباع فيها هذه الباقة."),
+        fld(L("Branches", "الفروع"), checks("branches", pkg.branchList.map((b) => [String(b.id), b.active ? b.name : `${b.name} ${L("(inactive)", "(غير نشط)")}`, !b.active && !f.branches.includes(String(b.id))]), f.branches), "branches.branches", { req: 1 }))}
+
+      ${section("media", SECTIONS[3][1], L("Nothing is uploaded until you save.", "لا يتم رفع أي شيء قبل الحفظ."), `
+        <div class="stack gap-2"><span class="field__label">${L("Cover image", "صورة الغلاف")}</span>
+          <div class="row gap-3" style="align-items:center;flex-wrap:wrap"><div class="cell-thumb" style="width:224px;height:126px;border-radius:var(--radius-md);overflow:hidden;opacity:${f.remove_cover && !f.cover_file ? 0.3 : 1}${f.cover_file ? `;background:url('${f.cover_file}') center/cover` : ""}">${f.cover_file ? "" : ic("camera")}</div>
+          <div class="stack gap-2">${readOnly ? "" : `<button type="button" class="btn btn--sm btn--secondary" data-pickcover>${ic("upload")}<span>${f.cover_file || (f.cover && !f.remove_cover) ? L("Replace cover", "استبدال الغلاف") : L("Upload cover", "رفع الغلاف")}</span></button>`}
+          ${f.cover_file ? `<button type="button" class="btn btn--sm btn--ghost" style="color:var(--color-danger)" data-rmnewcover>${ic("trash")}<span>${L("Remove photo", "إزالة الصورة")}</span></button>`
+            : f.remove_cover ? `<span class="t-sm" style="color:var(--color-danger)">${L("The cover will be removed when you save.", "ستتم إزالة الغلاف عند الحفظ.")}</span><button type="button" class="btn btn--sm btn--secondary" data-undo>${L("Undo", "تراجع")}</button>`
+            : `<button type="button" class="btn btn--sm btn--secondary" style="color:var(--color-danger)" data-rmcover>${ic("trash")}<span>${L("Remove cover", "إزالة الغلاف")}</span></button>`}</div></div>
+          <input type="file" accept=".png,.jpg,.jpeg" hidden data-coverfile>
+          ${errs["media.cover"] ? err("media.cover") : `<span class="field__hint">${L("Maximum size 10 MB.", "الحجم الأقصى 10 ميجابايت.")} ${L("Cropped to 16:9.", "تُقص بنسبة 16:9.")}</span>`}</div>
+        <div class="stack gap-2" style="border-top:var(--border-thin) dashed var(--color-border);padding-top:var(--space-4)">
+          <div class="row between"><span class="field__label">${L("Gallery", "المعرض")}</span><span class="t-sm text-tertiary">${gal} / 10</span></div>
+          <span class="field__hint">${L("Up to 10 images (PNG, JPG or WEBP), 10 MB each.", "حتى 10 صور (PNG أو JPG أو WEBP)، 10 ميجابايت لكل صورة.")}</span>
+          ${rejected.length ? `<div class="alert alert--warning"><span class="alert__icon">${ic("warn")}</span><div class="alert__body">${rejected.map((m) => `<div>${esc(m)}</div>`).join("")}</div></div>` : ""}
+          <input type="file" accept=".png,.jpg,.jpeg,.webp" multiple hidden data-galfile>
+          <div class="row gap-3" style="flex-wrap:wrap">${f.gallery.map((g, j) => `<div style="position:relative;width:125px;height:125px;opacity:${g.removed ? 0.25 : 1}"><div class="cell-thumb" style="width:100%;height:100%;border-radius:var(--radius-md)${g.url ? `;background:url('${g.url}') center/cover` : ""}">${g.url ? "" : ic("camera")}</div>
+              ${g.new ? `<span class="badge badge--primary" style="position:absolute;top:6px;inset-inline-start:6px">${L("New", "جديدة")}</span>` : ""}
+              <button type="button" class="icon-btn" data-gal="${j}" style="position:absolute;top:-8px;inset-inline-end:-8px;width:28px;height:28px;border-radius:50%;background:var(--color-surface);box-shadow:var(--shadow-sm)" title="${g.removed ? L("Keep this image", "الإبقاء على الصورة") : L("Remove", "إزالة")}" aria-label="${g.removed ? L("Keep this image", "الإبقاء على الصورة") : L("Remove", "إزالة")}">${ic(g.removed ? "refresh" : "close")}</button></div>`).join("")}
+            ${gal < 10 && !readOnly ? `<button type="button" data-addimg style="width:125px;height:125px;border:2px dashed var(--color-border);border-radius:var(--radius-md);display:grid;place-content:center;justify-items:center;gap:4px;color:var(--color-text-tertiary);background:none;cursor:pointer">${ic("plus")}<span class="t-xs">${L("Add images", "إضافة صور")}</span></button>` : ""}</div></div>`)}
+
+      ${section("availability", SECTIONS[4][1], L("When the package is shown to customers.", "متى تظهر الباقة للعملاء."), `
+        <div class="row gap-4">${radio("availability_type", "always", L("Always display", "العرض دائماً"), f.availability_type)}${radio("availability_type", "specific_period", L("Specific period", "فترة محددة"), f.availability_type)}</div>
+        ${f.availability_type === "specific_period" ? `<div class="pe-grid">${fld(L("Display from", "العرض من"), input("display_starts_at", f.display_starts_at, 'type="date"'), "availability.start", { req: 1, hint: L("Today or an earlier date is fine.", "يمكن أن يكون اليوم أو تاريخاً سابقاً.") })}
+          ${fld(L("Display until", "العرض حتى"), input("display_ends_at", f.display_ends_at, 'type="date"'), "availability.end", { req: 1 })}</div>` : ""}`)}
+
+      ${section("plans", SECTIONS[5][1], L("How long a subscription lasts, and the plans the package is sold in.", "مدة الاشتراك، والخطط التي تُباع بها الباقة."), `
+        ${fld(L("Subscription validity", "صلاحية الاشتراك"), SA.select([["from_purchase", L("Start from purchase", "تبدأ من الشراء"), f.validity === "from_purchase"], ["user_activation", L("Start on user activation", "تبدأ عند تفعيل المستخدم"), f.validity === "user_activation"], ["fixed_date_range", L("Fixed date range", "فترة تواريخ محددة"), f.validity === "fixed_date_range"]], `data-k="validity" ${subs ? "disabled" : ""}`) + (subs ? lockNote : ""), "plans.validity")}
+        ${f.plans.map((p, j) => { const lk = planLock(p), max = durDays(p), canDel = lk ? lk.can_delete : !p.subscribers; return `<div class="stack gap-3" style="padding:var(--space-4);border:var(--border-thin) solid var(--color-border);border-radius:var(--radius-lg)">
+          <div class="row between gap-3" style="align-items:center;flex-wrap:wrap"><div class="row gap-2" style="align-items:center"><b>${L(`Plan ${j + 1}`, `الخطة ${j + 1}`)}</b>${p.id ? "" : badge("primary", L("New", "جديدة"))}${p.subscribers ? badge("warning", L(`${p.subscribers} subscriber${p.subscribers === 1 ? "" : "s"}`, p.subscribers === 1 ? "مشترك واحد" : p.subscribers === 2 ? "مشتركان" : p.subscribers % 100 >= 3 && p.subscribers % 100 <= 10 ? `${p.subscribers} مشتركين` : `${p.subscribers} مشتركاً` /* PACKAGES.PLAN_SUBSCRIBERS plural rules (dev 2026-11-16) */)) : ""}</div>
+            <div class="row gap-3" style="align-items:center">${sw(`plans.${j}.active`, p.active, L("Active", "نشطة"))}<span tabindex="${canDel ? -1 : 0}" style="display:inline-flex" data-tip="${canDel ? L("Delete plan", "حذف الخطة") : esc(lk ? lk.delete_message : L("This plan can't be deleted.", "لا يمكن حذف هذه الخطة."))}"><button type="button" class="icon-btn" data-delplan="${j}" ${canDel ? "" : 'disabled style="pointer-events:none"'} style="color:var(--color-danger)" aria-label="${L("Delete plan", "حذف الخطة")}">${ic("trash")}</button></span></div></div>
+          <div class="pe-grid">${fld(L("Plan name", "اسم الخطة"), input(`plans.${j}.name`, p.name, `maxlength="255" ${nameLocked && p.id ? "disabled" : ""}`), `plans.${j}.name`, { req: 1, lock: nameLocked && p.id ? true : null })}
+            ${fld(L("Price", "السعر"), `<div class="input-affix"><input class="input" type="number" step="0.01" data-k="plans.${j}.price" value="${p.price}"><span class="affix">${esc(pkg.currency)}</span></div>`, `plans.${j}.price`, { req: 1, hint: L("On an approved package, a new price applies as soon as you save.", "في الباقة المقبولة، يُطبَّق السعر الجديد فور الحفظ.") })}</div>
+          ${f.validity === "fixed_date_range" ? `<div class="pe-grid">${fld(L("Starts on", "تاريخ البدء"), input(`plans.${j}.starts_on`, p.starts_on, `type="date" ${lk && lk.starts_on ? "disabled" : ""}`), `plans.${j}.starts_on`, { req: 1, lock: lk && lk.starts_on })}${fld(L("Ends on", "تاريخ الانتهاء"), input(`plans.${j}.ends_on`, p.ends_on, `type="date" ${lk && lk.ends_on.message ? "disabled" : ""} ${endMin(p) ? `min="${endMin(p)}"` : p.starts_on ? `min="${p.starts_on}"` : ""}`), `plans.${j}.ends_on`, { req: 1, lock: lk && lk.ends_on.message, hint: !(lk && lk.ends_on.message) && endMin(p) ? L(`With subscribers, the end date can only move later (not before ${endMin(p)}).`, `مع وجود مشتركين، يمكن تأخير تاريخ الانتهاء فقط (ليس قبل ${endMin(p)}).`) : "" })}</div>`
+            : `<div class="pe-grid">${fld(L("Duration", "المدة"), `<div class="row gap-2"><input class="input" type="number" min="1" step="1" style="width:100px" data-k="plans.${j}.duration_value" value="${p.duration_value}" ${lk && lk.duration ? "disabled" : ""}>${unitSel(`plans.${j}.duration_unit`, p.duration_unit, lk && lk.duration)}</div>`, `plans.${j}.duration`, { req: 1, lock: lk && lk.duration })}
+              ${f.validity === "user_activation" ? fld(L("Activate within", "التفعيل خلال"), `<div class="row gap-2"><input class="input" type="number" min="1" step="1" style="width:100px" data-k="plans.${j}.activation_window_value" value="${p.activation_window_value}">${unitSel(`plans.${j}.activation_window_unit`, p.activation_window_unit)}</div>`, `plans.${j}.activation`, { req: 1, hint: L("How long after purchase the subscriber has to activate it.", "المدة المتاحة للمشترك لتفعيل الاشتراك بعد الشراء.") }) : ""}</div>
+            <div class="stack gap-3" style="padding:var(--space-3);border-radius:var(--radius-md);background:var(--color-surface-sunken)">${sw(`plans.${j}.allow_renewal`, p.allow_renewal, L("Allow renewal", "السماح بالتجديد"))}
+              ${p.allow_renewal ? fld(L("Show the Renew button this many days before the end date", "إظهار زر التجديد قبل تاريخ الانتهاء بهذا العدد من الأيام"), `<div class="input-affix" style="max-width:200px"><input class="input" type="number" min="1" step="1" ${max ? `max="${max}"` : ""} data-k="plans.${j}.renewal_window_days" value="${p.renewal_window_days}"><span class="affix">${L("days", "أيام")}</span></div>`, `plans.${j}.renewal`, { hint: max ? L(`From 1 to ${max} days.`, `من 1 إلى ${max} يوماً.`) : "" }) : ""}</div>`}
+        </div>`; }).join("")}
+        ${errs["plans.none"] ? `<div class="alert alert--danger"><span class="alert__icon">${ic("warn")}</span><div class="alert__body">${errs["plans.none"]}</div></div>` : ""}
+        ${canAddPlan && !readOnly ? `<div><button type="button" class="btn btn--sm btn--secondary" data-addplan>${ic("plus")}<span>${L("Add plan", "إضافة خطة")}</span></button></div>` : ""}`)}
+
+      ${section("schedule", SECTIONS[6][1], L("When subscribers can use the package.", "الأوقات التي يمكن للمشتركين فيها استخدام الباقة."), `
+        ${restricted ? KP.notice("warning", "lock", L("This package has subscribers, so access can only be extended: no day or hours can be taken away.", "لهذه الباقة مشتركون، لذا يمكن توسيع الدخول فقط: لا يمكن حذف أي يوم أو ساعات.")) : ""}
+        <div class="row gap-4">${radio("access_type", "full_access", L("Full access", "دخول كامل"), f.access_type)}${radio("access_type", "scheduled", L("Scheduled", "حسب جدول"), f.access_type).replace("<input", restricted && init.access_type === "full_access" ? "<input disabled" : "<input")}</div>
+        ${f.access_type === "scheduled" ? `${errs["schedule._"] ? `<div class="alert alert--danger"><span class="alert__icon">${ic("warn")}</span><div class="alert__body">${errs["schedule._"]}</div></div>` : ""}<div class="stack">${f.schedule.map((d, j) => { const stored = restricted && init.schedule[j].on; return `<div class="row gap-4" style="padding-block:var(--space-3);border-bottom:var(--border-thin) dashed var(--color-border);align-items:flex-start;flex-wrap:wrap">
+            <div style="width:170px">${sw(`schedule.${j}.on`, d.on, L(DAYS[j][1], DAYS[j][2]), stored && d.on ? "disabled" : "")}</div>
+            <div class="stack gap-2" style="flex:1">${d.on ? d.slots.map((s, x) => `<div class="row gap-2" style="align-items:center"><input class="input" type="time" style="width:130px" data-k="schedule.${j}.slots.${x}.from" value="${s.from}" aria-label="${L("From", "من")}"> – <input class="input" type="time" style="width:130px" data-k="schedule.${j}.slots.${x}.to" value="${s.to}" aria-label="${L("To", "إلى")}">
+                ${d.slots.length > 1 && !(restricted && s.original) && !readOnly ? SA.iconBtn("trash", L("Remove time slot", "حذف الفترة الزمنية"), `data-rmslot="${j}.${x}"`) : ""}</div>`).join("") + (readOnly ? "" : `<button type="button" class="btn btn--sm btn--ghost" data-addslot="${j}" style="align-self:flex-start">+ ${L("Add time slot", "إضافة فترة زمنية")}</button>`) : `<span class="t-sm text-tertiary">${L("Closed", "مغلق")}</span>`}
+              ${err(`schedule.${d.day}`)}</div></div>`; }).join("")}</div>` : ""}
+        ${subs && JSON.stringify([f.access_type, f.schedule]) !== JSON.stringify([init.access_type, init.schedule]) ? `<label class="check"><input type="checkbox" data-k="notify" ${f.notify ? "checked" : ""}><span class="check__box">${ic("check")}</span>${L("Notify current subscribers about this schedule change", "إشعار المشتركين الحاليين بتغيير الجدول")}</label>` : ""}`)}
+
+      ${section("capacity", SECTIONS[7][1], L(`Current: ${subsTotal} total · ${subs} active`, `الحالي: ${subsTotal} إجمالي · ${subs} نشط`), `
+        <div class="row gap-4" style="flex-wrap:wrap">${radio("capacity_type", "unlimited", L("Unlimited", "غير محدودة"), f.capacity_type)}${radio("capacity_type", "total", L("Total subscribers", "إجمالي المشتركين"), f.capacity_type)}${radio("capacity_type", "active", L("Active subscribers", "المشتركون النشطون"), f.capacity_type)}</div>
+        ${init.capacity_type !== "unlimited" && f.capacity_type !== "unlimited" && f.capacity_type !== init.capacity_type ? KP.notice("warning", "warn", L("Total and Active count subscribers differently - check the limit before saving.", "الإجمالي والنشط يحسبان المشتركين بشكل مختلف - راجع الحد قبل الحفظ.")) : ""}
+        ${f.capacity_type !== "unlimited" ? fld(L("Maximum subscribers", "الحد الأقصى للمشتركين"), input("capacity_value", f.capacity_value, 'type="number" min="1" step="1" style="max-width:200px"'), "capacity.value", { req: 1, hint: capFloor(f.capacity_type) ? L(`At least ${capFloor(f.capacity_type)} - the subscribers it already counts.`, `${capFloor(f.capacity_type)} على الأقل - عدد المشتركين الحاليين.`) : "" }) : ""}`)}
+
+      ${section("usage", SECTIONS[8][1], L(`Highest current usage: ${highestUsage} visits`, `أعلى استخدام حالي: ${highestUsage} زيارات`) /* always shown, 0 included */, `
+        <div class="row gap-4">${radio("usage_type", "unlimited", L("Unlimited", "غير محدود"), f.usage_type)}${radio("usage_type", "limited", L("Limited", "محدود"), f.usage_type)}</div>
+        ${f.usage_type === "limited" ? `<div class="pe-grid">${fld(L("Visits", "عدد الزيارات"), input("usage_limit", f.usage_limit, 'type="number" min="1" step="1"'), "usage.limit", { req: 1, hint: minUsage ? L(`At least ${minUsage} - the highest current usage.`, `${minUsage} على الأقل - أعلى استخدام حالي.`) : "" })}
+          ${fld(L("Reset every", "إعادة الضبط كل"), SA.select([["", L("Select...", "اختر...")], ["day", L("Day", "يوم"), f.usage_reset === "day"], ["week", L("Week", "أسبوع"), f.usage_reset === "week"], ["month", L("Month", "شهر"), f.usage_reset === "month"]], 'data-k="usage_reset"'), "usage.reset", { req: 1 })}</div>` : ""}`)}
+      </div>
+    </div>
+    <div class="formbar pe-bar">
+      <a class="btn btn--ghost" href="${detail}" data-leave>${L("Cancel", "إلغاء")}</a>
+      <span class="formbar__spacer"></span>
+      ${readOnly ? "" : `<button type="button" class="btn" data-save ${dirty() ? "" : "disabled"}>${resubmit ? L("Save and resubmit", "حفظ وإعادة الإرسال") : L("Save changes", "حفظ التغييرات")}</button>`}</div>`;
+    /* read-only: every control disabled (the index links and Cancel stay) */
+    if (readOnly) document.querySelectorAll("#keBody section input, #keBody section select, #keBody section textarea, #keBody section button").forEach((x) => (x.disabled = true));
+  }
+
+  /* ---------- validation (packageEditForm.js / planForm.js / limitsForm.js) ---------- */
+  function validate() {
+    const e = {}, REQ = L("This field is required.", "هذا الحقل مطلوب."), ONE = L("Pick at least one.", "اختر عنصراً واحداً على الأقل."), today = new Date().toISOString().slice(0, 10);
+    if (!f.name.trim()) e["basic.name"] = REQ;
+    if (!f.categories.length) e["basic.categories"] = ONE;
+    if (!f.all_age_groups && !f.age_groups.length) e["basic.age_groups"] = ONE;
+    if (!f.branches.length) e["branches.branches"] = ONE;
+    if (f.availability_type === "specific_period") {
+      if (!f.display_starts_at) e["availability.start"] = REQ;
+      if (!f.display_ends_at) e["availability.end"] = REQ;
+      else if (f.display_starts_at && f.display_ends_at <= f.display_starts_at) e["availability.end"] = L("The end date must be after the start date.", "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء.");
+      else if (f.display_ends_at !== init.display_ends_at && f.display_ends_at <= today) e["availability.end"] = L("The end date must be in the future.", "يجب أن يكون تاريخ الانتهاء في المستقبل.");
+    }
+    if (!f.plans.length) e["plans.none"] = L("Add at least one plan.", "أضف خطة واحدة على الأقل.");
+    const WHOLE = L("Enter a whole number of 1 or more.", "أدخل عدداً صحيحاً يساوي 1 أو أكثر.");
+    f.plans.forEach((p, j) => {
+      const lk = planLock(p);
+      if (!String(p.name).trim()) e[`plans.${j}.name`] = REQ;
+      if (p.price === "" || +p.price < 0) e[`plans.${j}.price`] = L("Enter a price of 0 or more.", "أدخل سعراً يساوي 0 أو أكثر.");
+      if (f.validity === "fixed_date_range") {
+        if (!p.starts_on) e[`plans.${j}.starts_on`] = REQ;
+        if (!p.ends_on) e[`plans.${j}.ends_on`] = REQ;
+        else if (p.starts_on && p.ends_on < p.starts_on) e[`plans.${j}.ends_on`] = L("The end date must be on or after the start date.", "يجب أن يكون تاريخ الانتهاء في يوم البدء أو بعده.");
+        else if (endMin(p) && p.ends_on < endMin(p)) e[`plans.${j}.ends_on`] = L(`With subscribers, the end date can't be before ${endMin(p)}.`, `مع وجود مشتركين، لا يمكن أن يكون تاريخ الانتهاء قبل ${endMin(p)}.`);
+      } else {
+        /* not checked while locked — the server keeps the stored value */
+        if (!(lk && lk.duration) && !isWhole(p.duration_value)) e[`plans.${j}.duration`] = WHOLE;
+        if (f.validity === "user_activation" && !isWhole(p.activation_window_value)) e[`plans.${j}.activation`] = WHOLE;
+        if (p.allow_renewal) { const max = durDays(p);
+          if (!isWhole(p.renewal_window_days)) e[`plans.${j}.renewal`] = WHOLE;
+          else if (max && +p.renewal_window_days > max) e[`plans.${j}.renewal`] = L(`At most ${max} days - the plan's duration.`, `${max} يوماً كحد أقصى - مدة الخطة.`); }
+      }
+    });
+    /* schedule errors sit under their day (schedule.{Day}); schedule._ for the whole schedule */
+    if (f.access_type === "scheduled") {
+      if (!f.schedule.some((d) => d.on)) e["schedule._"] = L("Switch on at least one day.", "فعّل يوماً واحداً على الأقل.");
+      f.schedule.forEach((d, j) => { if (!d.on) return; const day = L(DAYS[j][1], DAYS[j][2]), key = `schedule.${d.day}`;
+        if (!d.slots.length || d.slots.some((s) => !s.from || !s.to)) e[key] = L(`${day}: fill in the start and end of every time slot.`, `${day}: أدخل بداية ونهاية كل فترة زمنية.`);
+        else if (d.slots.some((s) => s.to <= s.from)) e[key] = L(`${day}: each time slot must end after it starts.`, `${day}: يجب أن تنتهي كل فترة بعد بدايتها.`);
+        else { const s = d.slots.slice().sort((a, b) => a.from.localeCompare(b.from)); if (s.some((x, i) => i && x.from < s[i - 1].to)) e[key] = L(`${day}: time slots overlap.`, `${day}: الفترات الزمنية متداخلة.`); } });
+      /* can_restrict:false — every stored hour must still be open (a wider slot is fine) */
+      if (restricted && init.access_type === "scheduled") f.schedule.forEach((d, j) => {
+        const before = init.schedule[j], key = `schedule.${d.day}`;
+        if (!before.on || e[key]) return;
+        const lost = !d.on || before.slots.some((o) => !d.slots.some((c) => c.from <= o.from && c.to >= o.to));
+        if (lost) e[key] = L(`${L(DAYS[j][1], DAYS[j][2])}: the existing hours must stay open - they can only be extended.`, `${DAYS[j][2]}: يجب أن تبقى الساعات الحالية متاحة - يمكن تمديدها فقط.`);
+      });
+    }
+    if (f.capacity_type !== "unlimited") { const floor = capFloor(f.capacity_type); if (!isWhole(f.capacity_value)) e["capacity.value"] = WHOLE; else if (floor && +f.capacity_value < floor) e["capacity.value"] = L(`Can't be less than ${floor} - the current subscribers.`, `لا يمكن أن يقل عن ${floor} - عدد المشتركين الحاليين.`); }
+    if (f.usage_type === "limited") {
+      if (!isWhole(f.usage_limit)) e["usage.limit"] = WHOLE; else if (minUsage && +f.usage_limit < minUsage) e["usage.limit"] = L(`Can't be less than ${minUsage} - a subscriber has already used that many.`, `لا يمكن أن يقل عن ${minUsage} - استخدم أحد المشتركين هذا العدد بالفعل.`);
+      if (!f.usage_reset) e["usage.reset"] = REQ;
+    }
+    return e;
+  }
+
+  /* ---------- events ---------- */
+  const setPath = (path, v) => { const ks = path.split("."); let o = f; ks.slice(0, -1).forEach((k) => (o = o[k])); o[ks[ks.length - 1]] = v; };
+  const body = document.getElementById("keBody");
+  const repaint = () => { const y = scrollY; paint(); scrollTo(0, y); };
+  body.addEventListener("input", (e) => { const k = e.target.dataset.k; if (k && e.target.type !== "radio" && e.target.type !== "checkbox") { setPath(k, e.target.value); const b = body.querySelector("[data-save]"); if (b) b.disabled = !dirty(); } });
+  /* cover: 16:9 crop (UploadCropImage), PNG / JPG, 10 MB · gallery: PNG / JPG / WEBP, 10 MB each, up to 10, no crop */
+  const MAX_MB = 10, MAX_GALLERY = 10, GAL_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+  body.addEventListener("change", async (e) => {
+    if (e.target.matches("[data-coverfile]")) {
+      const file = e.target.files[0]; e.target.value = "";
+      if (!file) return;
+      delete errs["media.cover"];
+      if (file.size > MAX_MB * 1048576) { errs["media.cover"] = L(`Maximum size ${MAX_MB} MB.`, `الحجم الأقصى ${MAX_MB} ميجابايت.`); return repaint(); }
+      const url = await SA.crop(file, { ratio: 16 / 9, title: L("Cover image", "صورة الغلاف") });
+      if (url) { f.cover_file = url; f.remove_cover = false; }
+      return repaint();
+    }
+    if (e.target.matches("[data-galfile]")) {
+      const picked = [...e.target.files]; e.target.value = "";
+      const room = MAX_GALLERY - f.gallery.filter((g) => !g.removed).length, ok = [];
+      rejected = [];
+      picked.forEach((file) => {
+        if (!GAL_TYPES.includes(file.type)) rejected.push(L(`${file.name}: only PNG, JPG or WEBP images.`, `${file.name}: صور PNG أو JPG أو WEBP فقط.`));
+        else if (file.size > MAX_MB * 1048576) rejected.push(L(`${file.name}: larger than ${MAX_MB} MB.`, `${file.name}: أكبر من ${MAX_MB} ميجابايت.`));
+        else ok.push(file);
+      });
+      if (ok.length > room) rejected.push(L(`The gallery holds up to ${MAX_GALLERY} images - the extra ones were not added.`, `يتسع المعرض لـ ${MAX_GALLERY} صور كحد أقصى - لم تتم إضافة الصور الزائدة.`));
+      ok.slice(0, Math.max(0, room)).forEach((file) => f.gallery.push({ id: null, new: true, removed: false, url: URL.createObjectURL(file) }));
+      return repaint();
+    }
+    const k = e.target.dataset.k, m = e.target.dataset.m;
+    if (m) { const s = new Set(f[m]); e.target.checked ? s.add(e.target.value) : s.delete(e.target.value); f[m] = [...s]; if (m === "categories") f.activities = f.activities.filter((a) => f.categories.some((c) => (HF.SA.ACTS[c] || []).includes(a))); }
+    else if (k) {
+      setPath(k, e.target.type === "checkbox" ? e.target.checked : e.target.value);
+      /* switching a day on with no slots starts it with one empty slot */
+      const dm = k.match(/^schedule\.(\d+)\.on$/);
+      if (dm && e.target.checked && !f.schedule[+dm[1]].slots.length) f.schedule[+dm[1]].slots.push({ from: "", to: "", original: false });
+    }
+    if (tried) errs = validate();
+    repaint();
+  });
+  body.addEventListener("click", (e) => {
+    const t = (s) => e.target.closest(s);
+    if (t("[data-pickcover]")) return body.querySelector("[data-coverfile]").click();
+    if (t("[data-rmnewcover]")) { f.cover_file = null; return repaint(); }
+    if (t("[data-rmcover]")) { f.remove_cover = true; return repaint(); }
+    if (t("[data-undo]")) { f.remove_cover = false; return repaint(); }
+    if (t("[data-gal]")) { const g = f.gallery[+t("[data-gal]").dataset.gal]; g.new ? f.gallery.splice(f.gallery.indexOf(g), 1) : (g.removed = !g.removed); return repaint(); }
+    if (t("[data-addimg]")) return body.querySelector("[data-galfile]").click();
+    if (t("[data-addplan]")) { f.plans.push({ id: null, name: "", price: "", active: true, starts_on: "", ends_on: "", duration_value: 1, duration_unit: "month", activation_window_value: 14, activation_window_unit: "day", allow_renewal: false, renewal_window_days: 7, subscribers: 0 }); return repaint(); }
+    if (t("[data-delplan]")) { f.plans.splice(+t("[data-delplan]").dataset.delplan, 1); return repaint(); }
+    if (t("[data-addslot]")) { f.schedule[+t("[data-addslot]").dataset.addslot].slots.push({ from: "", to: "", original: false }); return repaint(); }
+    if (t("[data-rmslot]")) { const [d, x] = t("[data-rmslot]").dataset.rmslot.split("."); f.schedule[d].slots.splice(+x, 1); return repaint(); }
+    if (t("[data-save]")) {
+      tried = true; errs = validate();
+      if (Object.keys(errs).length) { paint(); const first = body.querySelector(".field__error, .alert--danger"); const sec = first && first.closest("section[id^='section-']"); (sec || body).scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+      RD.toast("success", L("Package updated", "تم تحديث الباقة"));
+      Object.assign(pkg, { name: f.name, description: f.description });
+      leaving = true; location.href = detail; return;
+    }
+  });
+  /* unsaved-changes guard (useUnsavedChangesGuard.js) */
+  let leaving = false;
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("[data-leave], .sidebar a, .content a[href]:not([href^='#'])");
+    if (!a || leaving || !dirty() || a.closest("#keBody section")) return;
+    e.preventDefault();
+    const el = SA.modal({ id: "keDiscard", title: L("Discard changes?", "تجاهل التغييرات؟"), body: `<p class="t-sm text-secondary">${L("You have unsaved changes to this package. If you leave now, they will be lost.", "لديك تغييرات غير محفوظة على هذه الباقة. إذا غادرت الآن فستفقدها.")}</p>`,
+      foot: `<button class="btn btn--ghost" data-close>${L("Keep editing", "متابعة التعديل")}</button><button class="btn btn--danger" data-ok>${L("Discard changes", "تجاهل التغييرات")}</button>` });
+    el.querySelector("[data-ok]").onclick = () => { leaving = true; location.href = a.getAttribute("href"); };
+  }, true);
+  window.addEventListener("beforeunload", (e) => { if (dirty() && !leaving) { e.preventDefault(); e.returnValue = ""; } });
+
+  paint();
+  const s = qs.get("section");
+  if (s) { const el = document.getElementById("section-" + s); if (el) setTimeout(() => el.scrollIntoView({ block: "start" }), 50); }
+})();
+</script>
+</body>
+</html>

@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
 <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
-<title>wallet · HighFive Super Admin</title>
+<title>Wallet · HighFive Super Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -14,33 +15,48 @@
 <link rel="stylesheet" href="assets/css/app.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
 <style>
-  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
-  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
-  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
-  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
-  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
-  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
-  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
-  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
-  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
-  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
-  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
-  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
-  .sa-tile.is-main { border-color: var(--color-warning); }
-  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
-  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
-  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
-  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
-  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
-  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
-  .sa-side__nav a:hover { background: var(--color-surface-hover); }
-  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
-  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
-  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
-  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
-  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
-  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+  /* ---- redesign (2026-11-17): page head · one card per country wallet · country sub-nav ---- */
+  .wl-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-5); }
+  .wl-head__sub { margin-top: var(--space-1); }
+  .wl-head__actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .wl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: var(--space-4); }
+  .wl-card { display: flex; flex-direction: column; gap: var(--space-4); }
+  .wl-card__head { display: flex; align-items: center; gap: var(--space-3); }
+  .wl-card__head h2 { font-size: var(--text-lg); font-weight: var(--weight-semibold); line-height: 1.2; }
+  .wl-iso { width: 40px; height: 40px; flex: none; border-radius: var(--radius-md); display: grid; place-items: center; background: var(--color-primary-subtle); color: var(--color-primary-ink); font-size: var(--text-sm); font-weight: var(--weight-bold); }
+  .wl-balance { padding: var(--space-4); border-radius: var(--radius-md); background: var(--color-surface-sunken); }
+  .wl-balance__label { display: block; font-size: var(--text-xs); color: var(--color-text-tertiary); }
+  .wl-balance__val { display: flex; align-items: baseline; gap: var(--space-2); margin-top: 2px; font-size: var(--text-h3); font-weight: var(--weight-semibold); color: var(--color-text); font-variant-numeric: tabular-nums; }
+  .wl-balance__val small { font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--color-text-tertiary); }
+  .wl-rows { display: flex; flex-direction: column; }
+  .wl-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-2); margin-inline: calc(var(--space-2) * -1); border-radius: var(--radius-md); color: var(--color-text); text-decoration: none; }
+  .wl-row + .wl-row { border-top: 1px solid var(--color-border-subtle); }
+  .wl-row:hover { background: var(--color-surface-hover); }
+  .wl-row--static:hover { background: none; } /* plain text without view_funds / view_cashout / view_exchanges */
+  .wl-row .kpi-ic { width: 34px; height: 34px; flex: none; box-shadow: none; }
+  .wl-row .kpi-ic svg { width: 16px; height: 16px; }
+  .wl-row__txt { flex: 1; min-width: 0; }
+  .wl-row__txt b { display: block; font-size: var(--text-sm); font-weight: var(--weight-semibold); }
+  .wl-row__amt { text-align: end; font-size: var(--text-sm); font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .wl-row__amt small { font-size: var(--text-xs); font-weight: var(--weight-regular); color: var(--color-text-tertiary); }
+  .wl-row__go { display: inline-flex; color: var(--color-text-tertiary); }
+  .wl-row__go svg { width: 16px; height: 16px; }
+  .wl-card__foot { margin-top: auto; display: flex; justify-content: flex-end; }
+  .wl-sub { margin-bottom: var(--space-5); overflow-x: auto; scrollbar-width: none; }
+  .wl-sub::-webkit-scrollbar { display: none; }
+  .wl-sub .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .wl-sub .tabs > a { display: inline-flex; align-items: center; gap: var(--space-2); }
+  .wl-sub .tabs svg { width: 16px; height: 16px; }
+  .wl-amt { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .wl-in { color: var(--color-success); font-weight: var(--weight-medium); }
+  .wl-out { color: var(--color-danger); font-weight: var(--weight-medium); }
+  @media (max-width: 640px) { .wl-head__actions { width: 100%; } .wl-head__actions .btn { flex: 1 1 auto; } }
+  .wl-g2 > .field { margin: 0; min-width: 0; }
+  @media (max-width: 560px) { .wl-g2 { grid-template-columns: minmax(0, 1fr); } }
+  #listMount .data-table-footer .pagination { flex-wrap: wrap; max-width: 100%; }
 </style>
 </head>
 <body>
@@ -67,6 +83,7 @@
 <script src="assets/js/sa-translation.js"></script>
 <script src="assets/js/pp/pp-core.js"></script>
 <script src="assets/js/pp/pp-ops.js"></script>
+<script src="assets/js/sa-ops.js"></script>
 <script src="assets/js/kp/kp-info.js"></script>
 <script src="assets/js/kp/kp-ops.js"></script>
 <script src="assets/js/us/us-tabs.js"></script>
@@ -81,21 +98,73 @@
        exchanges     /wallet/:iso/exchanges       ?iso=SA&sub=exchanges
        currencies    /wallet/currencies           ?sub=currencies[&translation=<id>]
      Rows are the users' own wallets (us-wallet.js), so a fund edited here is the
-     same record the user profile shows. */
-  const qs = new URLSearchParams(location.search), iso = qs.get("iso"), sub = qs.get("sub");
-  RD.boot({ activeId: "wallet", title: "wallet" });
+     same record the user profile shows.
+     Redesign (2026-11-17): same data, routes, modals and validation — re-composed.
+     Country cards lead with the total balance and link each pending group to its
+     list; a country's four lists share one sub-nav (the same routes); status pills
+     are stat tiles. Previous layout: revisions/2026-11-17-all-pages/wallet.html
+     Transaction views inside the wallet (dashboard routes
+       /wallet/:iso/transactions/public-event/:id  → ?iso=SA&sub=transactions&event=<id>&redirect_to_page=<n>
+       /wallet/:iso/transactions/booking/:id       → ?iso=SA&sub=transactions&booking=<id>&redirect_to_page=<n>)
+     show the shared view with only "Back to transactions" (→ ?iso=..&sub=transactions&page=<n>).
+     Sample states (off by default):
+       ?demo=empty       overview with no wallets ("There is no data to display.")
+       ?demo=error       saving fails: fund / cash-out edit, currency create / update / delete show the API message
+       ?demo=fetcherror  currency edit: GET /currencies/{id} fails ("Error fetching currency")
+       ?demo=loading     currency edit stays on "Loading"
+     Permissions (dashboard job keys — data-perm / RD.can, demo ?perm=limited | ?perm=none):
+       page: overview view_wallets · transactions view_transactions (event view
+             view_public_event_details, booking view view_booking_details) · funds view_funds ·
+             cash out view_cashout · exchanges view_exchanges · currencies view_currencies
+       overview: pending funds / cash out / exchanges rows link only with view_funds /
+             view_cashout / view_exchanges (else plain text) · Show transactions view_transactions ·
+             Currency management view_currencies
+       sub-pages: back to Wallet view_wallets · funds edit update_funds · cash out edit
+             update_cashout · eyes on funds / cash out / exchanges view_user_wallet
+       transactions eyes: fund / cash out view_user_wallet · public event view_public_event_details ·
+             booking view_booking_details · multi booking view_multi_booking_details · package
+             PERMISSIONS.USERS.VIEW_USER_PACKAGES (empty key in the dashboard = open to all, no tag)
+       currencies: Add add_currencies · edit update_currencies · delete delete_currencies ·
+             translation link ungated (as in the dashboard)
+       The country sub-nav is this design's own; each tab carries its page key. */
+  const qs = new URLSearchParams(location.search), iso = qs.get("iso"), sub = qs.get("sub"), demo = qs.get("demo");
+  const PAGE_PERM = sub === "currencies" ? (qs.get("translation") ? undefined : "view_currencies") /* translation route: ungated in the dashboard */
+    : !iso ? "view_wallets"
+    : sub === "funds" ? "view_funds" : sub === "cashout" ? "view_cashout" : sub === "exchanges" ? "view_exchanges"
+    : qs.get("event") ? "view_public_event_details" : qs.get("booking") ? "view_booking_details" : "view_transactions";
+  RD.boot({ activeId: "wallet", title: "Wallet", perm: PAGE_PERM });
   if (!document.getElementById("listMount")) return;
   const { L, esc, ic, badge, fmt } = SA;
   const { kv } = PP;
   const mount = document.getElementById("listMount");
+  const rtl = () => document.documentElement.dir === "rtl";
   const dash = (v) => (v == null || v === "" ? "---" : esc(v));
   const CUR = { SA: "SAR", EG: "EGP", AE: "AED" };
   const countries = [...new Map(HF.SA.GEO.map((g) => [g.country.iso, g.country])).values()];
-  const backBtn = `<a class="btn btn--sm btn--secondary" href="wallet.html">${ic(document.documentElement.dir === "rtl" ? "chevronRight" : "chevronLeft")}<span>${L("wallet", "محفظة")}</span></a>`;
-  const head = (t, extra) => SA.head(document.getElementById("pageHead"), { title: t, crumbs: [["wallet", "محفظة", "wallet.html"]], actions: (extra || "") + backBtn });
-  const userCell = (u) => `<div class="cell-user">${PP.avatar(u.name)}<div><a href="user-profile.html?id=${u.id}&tab=details" style="color:var(--color-text);font-weight:var(--weight-semibold)">${esc(u.name)}</a><div class="t-xs text-tertiary">${u.high_five_user_name ? "vie_" + (u.id % 900) : L("username", "اسم المستخدم")}</div></div></div>`;
-  const curCell = (c, country) => `${esc(c)}<div class="t-xs text-tertiary">${esc(country)}</div>`;
-  const stBadge = (s) => badge(s === "pending" ? "warning" : s === "completed" ? "primary" : "danger", s);
+  const backBtn = `<a class="btn btn--sm btn--secondary" href="wallet.html" data-perm="view_wallets">${ic(rtl() ? "chevronRight" : "chevronLeft")}<span>${L("Wallet", "المحفظة")}</span></a>`;
+  /* page head: title · breadcrumb (Dashboard › Wallet › …) · optional line · actions */
+  const head = (t, o) => {
+    o = o || {};
+    const title = L(t[0], t[1]);
+    document.getElementById("pageHead").innerHTML = `<div class="wl-head animate-in">
+      <div>
+        <h1 class="t-h3">${esc(title)}</h1>
+        <nav class="t-sm text-tertiary" aria-label="Breadcrumb" style="margin-top:var(--space-1)"><a href="index.html" style="color:inherit">${L("Dashboard", "لوحة القيادة")}</a> › ${o.root ? "" : `<a href="wallet.html" style="color:inherit">${L("Wallet", "المحفظة")}</a> › `}<span>${esc(title)}</span></nav>
+        ${o.sub ? `<p class="t-sm text-secondary wl-head__sub">${o.sub}</p>` : ""}
+      </div>
+      <div class="wl-head__actions">${(o.actions || "") + (o.root || o.noBack ? "" : backBtn)}</div>
+    </div>`;
+  };
+  const alertHtml = (tone, msg) => `<div class="alert alert--${tone}"><span class="alert__icon">${ic(tone === "success" ? "check" : "warn")}</span><div class="alert__body">${esc(msg)}</div></div>`;
+  const API_MSG = ["The selected item is invalid.", "العنصر المحدد غير صالح."]; /* placeholder for the backend's own message */
+  const byLink = (p) => (p ? `<a href="user-profile.html?id=${p.id}&tab=details" style="color:var(--color-text);font-weight:var(--weight-semibold)">${esc(p.name)}</a>` : "---");
+  const userCell = (u) => `<div class="cell-user">${PP.avatar(u.name)}<div><a href="user-profile.html?id=${u.id}&tab=details" style="color:var(--color-text);font-weight:var(--weight-semibold)">${esc(u.name)}</a><div class="t-xs text-tertiary">${u.high_five_user_name ? "vie_" + (u.id % 900) : L("Username", "اسم المستخدم")}</div></div></div>`;
+  const curCell = (c, country) => `<b>${esc(c)}</b><div class="t-xs text-tertiary">${esc(country)}</div>`;
+  const ST = { pending: ["Pending", "معلق"], completed: ["Completed", "مكتمل"], rejected: ["Rejected", "مرفوض"] };
+  const stLabel = (s) => (ST[s] ? L(ST[s][0], ST[s][1]) : PP.cap(s));
+  const stBadge = (s) => badge(s === "pending" ? "warning" : s === "completed" ? "primary" : "danger", stLabel(s));
+  const amt = (v) => `<span class="wl-amt">${v}</span>`;
+  const EMPTY = ["There is no data to display.", "لا توجد بيانات للعرض."];
 
   /* ---- country data from the users' wallets ---- */
   const usersIn = (c) => HF.SA.users.filter((u) => u.country.iso === c);
@@ -107,69 +176,115 @@
     return { total_balance: usersIn(c).reduce((a, u) => a + (u.wallet_amount || 0), 0), funds_transactions: F.length, pending_funds: F.reduce((a, r) => a + r.amount, 0), cash_out_transactions: C.length, pending_cash_out: C.reduce((a, r) => a + r.amount, 0), exchange_transactions: X.length, exchanges: X.reduce((a, r) => a + r.amount, 0) }; };
 
   /* ---- read-only detail modals (Fund / Cash out) ---- */
-  const fundModal = (f, title) => SA.modal({ id: "wFund", title, foot: "", body: kv([[L("id", "الرقم") + ":", f.id], [L("status", "الحالة") + ":", dash(f.status)], [L("date & time", "التاريخ والوقت") + ":", dash(f.initiated_at)], [L("country", "البلد") + ":", dash(f._u.country.name)],
-    [L("amount", "المبلغ") + ":", dash(f.amount)], [L("reason", "السبب") + ":", dash(f.fund_reason)], [L("action by", "تم بواسطة") + ":", dash(f.action_by && f.action_by.name)], [L("action date", "تاريخ الإجراء") + ":", dash(f.action_at)]]) });
-  const cashModal = (c, title) => SA.modal({ id: "wCash", title, foot: "", body: kv([[L("id", "الرقم") + ":", c.id], [L("status", "الحالة") + ":", dash(c.status)], [L("date & time", "التاريخ والوقت") + ":", dash(c.initiated_at)], [L("country", "البلد") + ":", dash(c._u.country.name)],
-    [L("bank name", "اسم البنك") + ":", dash(c.bank_name)], [L("IBAN", "رقم الآيبان") + ":", `<span dir="ltr">${dash(c.iban)}</span>`], [L("account holder name", "اسم صاحب الحساب") + ":", dash(c.account_name)],
-    [L("amount", "المبلغ") + ":", dash(c.amount)], [L("reason", "السبب") + ":", dash(c.fund_reason)], [L("action by", "تم بواسطة") + ":", dash(c.action_by && c.action_by.name)], [L("action date", "تاريخ الإجراء") + ":", dash(c.action_at)]]) });
+  const fundModal = (f, title) => SA.modal({ id: "wFund", title, foot: `<button class="btn btn--ghost" data-close>${L("Close", "إغلاق")}</button>`, body: kv([[L("ID", "الرقم"), f.id], [L("Status", "الحالة"), f.status ? stBadge(f.status) : "---"], [L("Date & time", "التاريخ والوقت"), dash(f.initiated_at)], [L("Country", "البلد"), dash(f._u.country.name)],
+    [L("Amount", "المبلغ"), dash(f.amount)], [L("Reason", "السبب"), dash(f.fund_reason)], [L("Action by", "تم بواسطة"), dash(f.action_by && f.action_by.name)], [L("Action date", "تاريخ الإجراء"), dash(f.action_at)]]) });
+  const cashModal = (c, title) => SA.modal({ id: "wCash", title, foot: `<button class="btn btn--ghost" data-close>${L("Close", "إغلاق")}</button>`, body: kv([[L("ID", "الرقم"), c.id], [L("Status", "الحالة"), c.status ? stBadge(c.status) : "---"], [L("Date & time", "التاريخ والوقت"), dash(c.initiated_at)], [L("Country", "البلد"), dash(c._u.country.name)],
+    [L("Bank name", "اسم البنك"), dash(c.bank_name)], [L("IBAN", "رقم الآيبان"), `<span dir="ltr">${dash(c.iban)}</span>`], [L("Account holder name", "اسم صاحب الحساب"), dash(c.account_name)],
+    [L("Amount", "المبلغ"), dash(c.amount)], [L("Reason", "السبب"), dash(c.fund_reason)], [L("Action by", "تم بواسطة"), dash(c.action_by && c.action_by.name)], [L("Action date", "تاريخ الإجراء"), dash(c.action_at)]]) });
   /* Edit (funds and cash out share the dashboard's "add fund to user wallet" title — kept 1:1) */
+  /* Reason starts from the row's refund_reason (not in the list response, so it is
+     empty — kept 1:1). PUT /wallet-fund/{user}/{id} or /cash-out/{user}/{id} {status, action_reason}.
+     backdrop='static' keyboard={false}. The cash-out button reads "Update ..." while
+     saving (the dashboard uses UPDATE there), funds read "Updating ...". */
   const editModal = (row, isFund, done) => {
-    const el = SA.modal({ id: "wEdit", title: L("add fund to user wallet", "إضافة أموال لمحفظة المستخدم"), body: `<div class="stack gap-4"><div data-alert></div>
-        ${SA.field(["status", "الحالة"], SA.select([["completed", L("completed", "مكتمل"), true], ["rejected", L("rejected", "مرفوض")]], "data-s"))}
-        ${SA.field(["reason", "السبب"], `<textarea class="input" rows="3" data-r placeholder="${L("enter action reason", "أدخل سبب الإجراء")}">${esc(row.fund_reason || "")}</textarea>`)}</div>`,
-      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${L("update", "تحديث")}</button>` });
+    const el = SA.modal({ id: "wEdit", static: true, title: L("Add fund to user wallet", "إضافة أموال لمحفظة المستخدم"), body: `<div class="stack gap-4"><div data-alert></div>
+        ${SA.field(["Status", "الحالة"], SA.select([["completed", L("Completed", "مكتمل"), true], ["rejected", L("Rejected", "مرفوض")]], "data-s"))}
+        ${SA.field(["Reason", "السبب"], `<textarea class="input" rows="3" data-r placeholder="${L("Enter action reason", "أدخل سبب الإجراء")}">${esc(row.refund_reason || "")}</textarea>`)}</div>`,
+      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${L("Update", "تحديث")}</button>` });
     el.querySelector("[data-ok]").onclick = (e) => {
-      const b = e.currentTarget; b.disabled = true; b.textContent = isFund ? L("updating ...", "جاري التحديث ...") : L("update ...", "جاري التحديث...");
-      setTimeout(() => { Object.assign(row, { status: el.querySelector("[data-s]").value, action_reason: el.querySelector("[data-r]").value, action_by: { id: 1, name: "Super Admin" }, action_at: "2026-11-15 12:00:00" });
-        el.querySelector("[data-alert]").innerHTML = `<div class="alert alert--success"><span class="alert__icon">${ic("check")}</span><div class="alert__body">${L("updated successfully", "تم التحديث بنجاح")}</div></div>`;
+      const b = e.currentTarget; b.disabled = true; b.textContent = isFund ? L("Updating ...", "جاري التحديث ...") : L("Update ...", "تحديث ...");
+      setTimeout(() => {
+        if (demo === "error") { b.disabled = false; b.textContent = L("Update", "تحديث"); el.querySelector("[data-alert]").innerHTML = alertHtml("danger", L(API_MSG[0], API_MSG[1])); return; }
+        Object.assign(row, { status: el.querySelector("[data-s]").value, action_reason: el.querySelector("[data-r]").value, action_by: { id: 1, name: "Super Admin" }, action_at: "2026-11-15 12:00:00" });
+        el.querySelector("[data-alert]").innerHTML = alertHtml("success", L("Updated successfully", "تم التحديث بنجاح"));
         setTimeout(() => { SA.close(el); done(); }, 700); }, 400);
     };
   };
-  const statusPills = [["all", "all", "الكل"], ["pending", "pending", "معلق"], ["completed", "completed", "مكتمل"], ["rejected", "rejected", "مرفوض"]].map((p) => ({ key: p[0], label: [p[1], p[2]] }));
+  const statusPills = [["all", "All", "الكل"], ["pending", "Pending", "معلق"], ["completed", "Completed", "مكتمل"], ["rejected", "Rejected", "مرفوض"]].map((p) => ({ key: p[0], label: [p[1], p[2]] }));
 
   /* ================= currencies ================= */
+  /* API: GET /currencies?active=&search=&currency=<code>&page=&limit= (rows carry exchange_rate
+     already relative to the chosen currency — shown as sent), GET /general/currencies (the
+     currency select: codes, default SAR), POST /currencies multipart {name, code, active, icon},
+     POST /currencies/{id} _method=put (icon: new file, or '' when the preview was cleared),
+     GET /currencies/{id}, DELETE /currencies/{id}. Translation: /wallet/currencies/:id/translation. */
   if (sub === "currencies") {
-    const C = (HF.SA._currencies = HF.SA._currencies || [["Saudi Riyal", "SAR", 1, 1], ["Egyptian Pound", "EGP", 0.077, 1], ["UAE Dirham", "AED", 1.02, 1], ["US Dollar", "USD", 3.75, 1], ["Euro", "EUR", 4.05, 0], ["Kuwaiti Dinar", "KWD", 12.2, 0]].map((c, i) => ({ id: 10 + i, name: c[0], code: c[1], rate: c[2], active: c[3], icon: i < 3 })));
+    const C = (HF.SA._currencies = HF.SA._currencies || [["Saudi Riyal", "SAR", 1, 1], ["Egyptian Pound", "EGP", 0.077, 1], ["UAE Dirham", "AED", 1.02, 1], ["US Dollar", "USD", 3.75, 1], ["Euro", "EUR", 4.05, 0], ["Kuwaiti Dinar", "KWD", 12.2, 0]].map((c, i) => ({ id: 10 + i, name: c[0], code: c[1], rate: c[2], active: c[3], icon: i < 3 ? "sample" : "" })));
     const tr = qs.get("translation");
-    if (tr) { const c = C.find((x) => String(x.id) === tr) || C[0]; SATR.render(mount, { key: "currency" + c.id, itemName: c.name, editTitle: L("edit translates", "تعديل الترجمات"), cols: [["name", L("name", "الاسم")]], src: { name: c.name }, backHref: "wallet.html?sub=currencies" }); document.getElementById("pageHead").hidden = true; return; }
-    head(["currencies", "العملات"], PP.btn(L("add new", "إضافة جديد"), "plus", "data-add"));
+    if (tr) { const c = C.find((x) => String(x.id) === tr) || C[0]; SATR.render(mount, { key: "currency" + c.id, itemName: c.name, cols: [["name", L("Name", "الاسم")]], src: { name: c.name }, backHref: "wallet.html?sub=currencies" }); document.getElementById("pageHead").hidden = true; return; }
+    head(["Currencies", "العملات"], { sub: L("Currencies, their exchange rates and status", "العملات وأسعار صرفها وحالتها"), actions: `<button type="button" class="btn btn--sm" data-add data-perm="add_currencies">${ic("plus")}<span>${L("Add new", "إضافة جديد")}</span></button>` });
     let base = "SAR";
+    /* stand-in for the server: exchange_rate of each row against the chosen currency */
+    const fetchRates = () => { const ref = (C.find((c) => c.code === base) || { rate: 1 }).rate; C.forEach((r) => (r.exchange_rate = +(r.rate / ref).toFixed(4))); };
+    fetchRates();
+    const iconThumb = (r, size) => (r.icon ? (r.icon === "sample" ? `<span class="cell-thumb" style="width:${size}px;height:${size}px;font-weight:var(--weight-bold)">${esc(r.code.slice(0, 1))}</span>` : `<span class="cell-thumb" style="width:${size}px;height:${size}px"><img src="${r.icon}" alt="${esc(r.name)}" style="object-fit:contain"></span>`)
+      : `<span class="cell-thumb" style="width:${size}px;height:${size}px" data-tip="${L("No icon", "لا توجد أيقونة")}" aria-label="${L("No icon", "لا توجد أيقونة")}">${ic("camera")}</span>`);
     const ctl = SA.list({
       mount, data: C,
-      pills: [{ key: "all", label: ["all", "الكل"] }, { key: "1", label: ["active", "نشط"] }, { key: "0", label: ["inactive", "غير نشط"] }],
+      pills: [{ key: "all", label: ["All", "الكل"], icon: "globe", tone: "primary" }, { key: "1", label: ["Active", "نشط"] }, { key: "0", label: ["Inactive", "غير نشط"] }],
       pillMatch: (r, k) => k === "all" || String(r.active) === k,
-      search: ["search by name", "البحث بالاسم"], searchMatch: (r, q) => r.name.toLowerCase().includes(q),
-      toolbarExtra: () => `<div class="select" style="min-width:140px"><select data-base aria-label="${L("select currency", "اختر العملة")}">${C.map((c) => `<option ${c.code === base ? "selected" : ""}>${c.code}</option>`).join("")}</select><span class="select__caret">${ic("chevronDown")}</span></div>`,
-      empty: ["There is no data to display.", "لا توجد بيانات للعرض."],
+      search: ["Search by name", "البحث بالاسم"], searchMatch: (r, q) => r.name.toLowerCase().includes(q),
+      toolbarExtra: () => `<span class="select" style="min-width:140px"><select data-base aria-label="${L("Select currency", "اختر العملة")}"><option value="" disabled>${L("Select currency", "اختر العملة")}</option>${C.map((c) => `<option ${c.code === base ? "selected" : ""}>${c.code}</option>`).join("")}</select><span class="select__caret">${ic("chevronDown")}</span></span>`,
+      empty: EMPTY,
       columns: [
-        { head: ["icon", "الأيقونة"], cell: (r) => (r.icon ? `<span class="cell-thumb" style="width:30px;height:30px">${esc(r.code.slice(0, 1))}</span>` : `<span class="t-xs text-tertiary">${L("No icon", "لا توجد أيقونة")}</span>`) },
-        { head: ["name", "الاسم"], cell: (r) => `<b>${esc(r.name)}</b>` },
-        { head: ["currency", "العملة"], cell: (r) => esc(r.code) },
-        { head: ["Exchange rate", "سعر الصرف"], cell: (r) => (r.rate / C.find((c) => c.code === base).rate).toFixed(4) },
-        { head: ["status", "الحالة"], cell: (r) => (r.active ? badge("primary", L("active", "نشط")) : badge("danger", L("inactive", "غير نشط"))) },
-        { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<div class="row gap-1" style="justify-content:center">${SA.iconBtn("edit", L("edit currency", "تعديل العملة"), `data-edit="${r.id}"`)}<a class="icon-btn" href="wallet.html?sub=currencies&translation=${r.id}" aria-label="${L("translation", "ترجمة")}" title="${L("translation", "ترجمة")}">${ic("globe")}</a>${SA.iconBtn("trash", L("Delete Currency", "حذف العملة"), `data-del="${r.id}"`)}</div>` },
+        { head: ["Currency", "العملة"], cell: (r) => `<div class="cell-user">${iconThumb(r, 32)}<div><b>${esc(r.name)}</b><div class="t-xs text-tertiary">${esc(r.code)}</div></div></div>` },
+        { head: ["Exchange rate", "سعر الصرف"], cell: (r) => `<span class="wl-amt">${esc(r.exchange_rate)}</span>` },
+        { head: ["Status", "الحالة"], align: "center", cell: (r) => (r.active ? badge("primary", L("Active", "نشط")) : badge("danger", L("Inactive", "غير نشط"))) },
+        { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<div class="row gap-1" style="justify-content:center">${SA.iconBtn("edit", L("Edit currency", "تعديل العملة"), `data-edit="${r.id}" data-perm="update_currencies"`)}<a class="icon-btn" href="wallet.html?sub=currencies&translation=${r.id}" aria-label="${L("Translation", "ترجمة")}" data-tip="${L("Translation", "ترجمة")}">${ic("globe")}</a>${SA.iconBtn("trash", L("Delete currency", "حذف العملة"), `data-del="${r.id}" data-perm="delete_currencies"`)}</div>` },
       ],
     });
-    mount.addEventListener("change", (e) => { if (e.target.matches("[data-base]")) { base = e.target.value; ctl.paint(); } });
+    mount.addEventListener("change", (e) => { if (e.target.matches("[data-base]")) { base = e.target.value; fetchRates(); ctl.paint(); } });
     const form = (c) => {
       const isNew = !c;
-      const el = SA.modal({ id: "wCur", title: isNew ? L("create currency", "إنشاء عملة") : L("edit currency", "تعديل العملة"), body: `<div class="stack gap-4"><div data-alert></div>
-          <div class="field"><label class="field__label">${L("name", "الاسم")}</label><input class="input" data-n value="${esc(c ? c.name : "")}" placeholder="${L("enter currency name", "أدخل اسم العملة")}"><span data-e="n"></span></div>
-          <div class="field"><label class="field__label">${L("code", "الرمز")}</label><input class="input" data-c value="${esc(c ? c.code : "")}" placeholder="${L("enter currency code", "أدخل رمز العملة")}"><span data-e="c"></span></div>
-          <div class="field"><label class="field__label">${L("icon", "الأيقونة")}</label><input class="input" type="file" accept="image/*" data-i style="padding-top:8px"><span data-e="i"></span></div>
-          <div class="field"><label class="field__label">${L("status", "الحالة")}</label>${SA.select([["", L("select status", "اختر الحالة"), !c], ["1", L("active", "نشط"), c && c.active === 1], ["0", L("inactive", "غير نشط"), c && c.active === 0]], "data-s")}<span data-e="s"></span></div></div>`,
-        foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${isNew ? L("create", "إنشاء") : L("update", "تحديث")}</button>` });
+      const title = isNew ? L("Create currency", "إنشاء عملة") : L("Edit currency", "تعديل العملة");
+      /* edit: GET /currencies/{id} first — ?demo=loading keeps "Loading", ?demo=fetcherror shows the error */
+      if (!isNew && (demo === "loading" || demo === "fetcherror")) {
+        SA.modal({ id: "wCur", title, body: demo === "loading" ? `<p class="t-sm text-secondary" style="margin:0">${L("Loading", "جاري التحميل")}</p>` : alertHtml("danger", L("Error fetching currency", "خطأ في جلب العملة")),
+          foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button>` });
+        return;
+      }
+      let icon = c ? c.icon : "", file = null; /* icon: current URL ("sample" = sample icon) · "" = none / cleared */
+      const el = SA.modal({ id: "wCur", title, body: `<div class="stack gap-4"><div data-alert></div>
+          <div class="grid grid-2 wl-g2" style="gap:var(--space-4)">
+            <div class="field"><label class="field__label" for="wCurN">${L("Name", "الاسم")}</label><input class="input" id="wCurN" data-n value="${esc(c ? c.name : "")}" placeholder="${L("Enter currency name", "أدخل اسم العملة")}"><span data-e="n"></span></div>
+            <div class="field"><label class="field__label" for="wCurC">${L("Code", "الرمز")}</label><input class="input" id="wCurC" data-c value="${esc(c ? c.code : "")}" placeholder="${L("Enter currency code", "أدخل رمز العملة")}"><span data-e="c"></span></div>
+          </div>
+          <div class="field"><label class="field__label">${L("Icon", "الأيقونة")}</label>
+            <div class="row gap-4" style="align-items:center;padding:var(--space-3);border:var(--border-thin) dashed var(--color-border);border-radius:var(--radius-lg);background:var(--color-surface-sunken)">
+              <span data-prev style="flex:none"></span>
+              <div class="stack gap-1" style="min-width:0"><label class="btn btn--sm btn--secondary" style="align-self:flex-start;cursor:pointer;position:relative">${ic("upload")}<span>${L("Choose image", "اختر صورة")}</span><input type="file" accept="image/*" data-i style="position:absolute;inline-size:1px;block-size:1px;opacity:0;pointer-events:none"></label>
+                <span class="t-xs text-secondary" data-fname style="overflow-wrap:anywhere">${L("No file chosen", "لم يتم اختيار ملف")}</span></div></div><span data-e="i"></span></div>
+          <div class="field"><label class="field__label">${L("Status", "الحالة")}</label>${SA.select([["", L("Select status", "اختر الحالة"), !c], ["1", L("Active", "نشط"), c && c.active === 1], ["0", L("Inactive", "غير نشط"), c && c.active === 0]], "data-s")}<span data-e="s"></span></div></div>`,
+        foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${isNew ? L("Create", "إنشاء") : L("Update", "تحديث")}</button>` });
       const err = (k, m) => (el.querySelector(`[data-e="${k}"]`).innerHTML = m ? `<span class="field__error">${ic("warn")} ${m}</span>` : "");
+      /* preview with × (alt "Preview"); × clears it — on update that sends icon='' */
+      const paintPrev = () => {
+        const box = el.querySelector("[data-prev]");
+        const img = !icon ? "" : icon === "sample" ? `<span class="cell-thumb" role="img" aria-label="${L("Preview", "معاينة")}" style="width:56px;height:56px;border-radius:var(--radius-md);background:var(--color-surface);font-weight:var(--weight-bold)">${esc(c.code.slice(0, 1))}</span>`
+          : `<span class="cell-thumb" style="width:56px;height:56px;border-radius:var(--radius-md);background:var(--color-surface)"><img src="${icon}" alt="${L("Preview", "معاينة")}" style="object-fit:contain"></span>`;
+        box.innerHTML = icon ? `<span style="position:relative;display:inline-flex">${img}<button type="button" class="icon-btn" data-clear aria-label="${L("Remove", "إزالة")}" data-tip="${L("Remove", "إزالة")}" style="position:absolute;top:-8px;inset-inline-end:-8px;width:22px;height:22px;border-radius:50%;background:var(--color-danger);color:var(--color-on-primary);font-size:14px;line-height:1">×</button></span>`
+          : `<span class="cell-thumb" style="width:56px;height:56px;border-radius:var(--radius-md);background:var(--color-surface)">${ic("camera")}</span>`;
+        const x = box.querySelector("[data-clear]");
+        if (x) x.onclick = () => { icon = ""; file = null; el.querySelector("[data-i]").value = ""; el.querySelector("[data-fname]").textContent = L("No file chosen", "لم يتم اختيار ملف"); paintPrev(); };
+      };
+      paintPrev();
+      el.querySelector("[data-i]").onchange = (e) => {
+        const f0 = e.target.files[0]; if (!f0) return;
+        file = f0; icon = URL.createObjectURL(f0);
+        el.querySelector("[data-fname]").textContent = f0.name; paintPrev();
+      };
       el.querySelector("[data-ok]").onclick = (e) => {
-        const n = el.querySelector("[data-n]").value.trim(), code = el.querySelector("[data-c]").value.trim(), s = el.querySelector("[data-s]").value, file = el.querySelector("[data-i]").files[0];
-        const len = (v) => (!v ? L("this field is required", "هذا الحقل مطلوب") : v.length < 2 ? L("Minimum 3 symbols", "الحد الأدنى 3 رموز") : v.length > 50 ? L("Maximum 50 symbols", "الحد الأقصى 50 رمز") : "");
-        err("n", len(n)); err("c", len(code)); err("s", s === "" ? L("this field is required", "هذا الحقل مطلوب") : "");
+        const n = el.querySelector("[data-n]").value.trim(), code = el.querySelector("[data-c]").value.trim(), s = el.querySelector("[data-s]").value;
+        const len = (v) => (!v ? L("This field is required", "هذا الحقل مطلوب") : v.length < 2 ? L("Minimum 3 symbols", "الحد الأدنى 3 رموز") : v.length > 50 ? L("Maximum 50 symbols", "الحد الأقصى 50 رمز") : "");
+        err("n", len(n)); err("c", len(code)); err("s", s === "" ? L("This field is required", "هذا الحقل مطلوب") : "");
         err("i", file && file.size > 5 * 1024 * 1024 ? L("File size too large", "حجم الملف كبير جداً") : file && !/image\/(jpeg|png|gif)/.test(file.type) ? L("Unsupported file format", "تنسيق الملف غير مدعوم") : "");
         if (el.querySelector(".field__error")) return;
-        const b = e.currentTarget; b.disabled = true; b.textContent = isNew ? L("creating", "جاري الإنشاء...") : L("updating", "جاري التحديث...");
+        const b = e.currentTarget; b.disabled = true; b.textContent = isNew ? L("Creating...", "جاري الإنشاء...") : L("Updating...", "جاري التحديث...");
         setTimeout(() => {
-          if (isNew) C.push({ id: Math.max(...C.map((x) => x.id)) + 1, name: n, code, rate: 1, active: +s, icon: !!file }); else Object.assign(c, { name: n, code, active: +s, icon: c.icon || !!file });
-          el.querySelector("[data-alert]").innerHTML = `<div class="alert alert--success"><span class="alert__icon">${ic("check")}</span><div class="alert__body">${isNew ? L("Currency created successfully", "تم إنشاء العملة بنجاح") : L("Currency updated successfully", "تم تحديث العملة بنجاح")}</div></div>`;
+          if (demo === "error") { b.disabled = false; b.textContent = isNew ? L("Create", "إنشاء") : L("Update", "تحديث"); el.querySelector("[data-alert]").innerHTML = alertHtml("danger", isNew ? L("Failed to create currency", "فشل في إنشاء العملة") : L("Failed to update currency", "فشل في تحديث العملة")); return; }
+          if (isNew) C.push({ id: Math.max(...C.map((x) => x.id)) + 1, name: n, code, rate: 1, active: +s, icon }); else Object.assign(c, { name: n, code, active: +s, icon });
+          fetchRates();
+          el.querySelector("[data-alert]").innerHTML = alertHtml("success", isNew ? L("Currency created successfully", "تم إنشاء العملة بنجاح") : L("Currency updated successfully", "تم تحديث العملة بنجاح"));
           setTimeout(() => { SA.close(el); ctl.paint(); }, 700); /* dashboard: full page reload */
         }, 400);
       };
@@ -180,9 +295,12 @@
       const dl = e.target.closest("[data-del]");
       if (dl) {
         const c = C.find((x) => String(x.id) === dl.dataset.del);
-        const el = SA.modal({ id: "wCurDel", title: L("Delete Currency", "حذف العملة"), body: `<div data-alert></div><p class="t-sm text-secondary">${L("Please confirm that you want to delete this currency", "يرجى تأكيد أنك تريد حذف هذه العملة")}</p>`,
+        const el = SA.modal({ id: "wCurDel", static: true, title: L("Delete currency", "حذف العملة"), body: `<div data-alert></div><p class="t-sm text-secondary">${L("Please confirm that you want to delete this currency", "يرجى تأكيد أنك تريد حذف هذه العملة")}</p>`,
           foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn btn--danger" data-ok>${L("Confirm", "تأكيد")}</button>` });
-        el.querySelector("[data-ok]").onclick = (ev) => { ev.currentTarget.disabled = true; ev.currentTarget.textContent = L("Deleting...", "جاري الحذف..."); setTimeout(() => { C.splice(C.indexOf(c), 1); RD.toast("success", L("Currency deleted successfully", "تم حذف العملة بنجاح")); SA.close(el); ctl.paint(); }, 400); };
+        el.querySelector("[data-ok]").onclick = (ev) => { const btn = ev.currentTarget; btn.disabled = true; btn.textContent = L("Deleting...", "جاري الحذف...");
+          setTimeout(() => {
+            if (demo === "error") { btn.disabled = false; btn.textContent = L("Confirm", "تأكيد"); el.querySelector("[data-alert]").innerHTML = alertHtml("danger", L("Failed to delete currency", "فشل في حذف العملة")); return; }
+            C.splice(C.indexOf(c), 1); RD.toast("success", L("Currency deleted successfully", "تم حذف العملة بنجاح")); SA.close(el); ctl.paint(); }, 400); };
       }
     });
     return;
@@ -191,113 +309,151 @@
   /* ================= country sub-pages ================= */
   if (iso) {
     const c = countries.find((x) => x.iso === iso) || countries[0], cur = CUR[c.iso];
+    const SUBS = [["transactions", "Transactions", "المعاملات", "list", "view_transactions"], ["funds", "Funds", "الأموال", "plus", "view_funds"], ["cashout", "Cash out", "السحب النقدي", "upload", "view_cashout"], ["exchanges", "Exchanges", "التبادلات", "refresh", "view_exchanges"]];
+    const active = SUBS.some((s) => s[0] === sub) ? sub : "transactions";
+    const countryHead = (t) => {
+      head(t, { sub: `<span class="row gap-2" style="align-items:center;display:inline-flex"><span class="badge">${esc(c.iso)}</span>${esc(c.name)} · ${esc(cur)}</span>` });
+      const nav = document.createElement("nav");
+      nav.className = "wl-sub";
+      nav.setAttribute("aria-label", L("Wallet sections", "أقسام المحفظة"));
+      nav.innerHTML = `<div class="tabs">${SUBS.map((s) => `<a href="wallet.html?iso=${c.iso}&sub=${s[0]}" data-perm="${s[4]}" class="${s[0] === active ? "is-active" : ""}"${s[0] === active ? ' aria-current="page"' : ""}>${ic(s[3])}<span>${L(s[1], s[2])}</span></a>`).join("")}</div>`;
+      document.getElementById("pageHead").appendChild(nav);
+    };
     if (sub === "funds" || sub === "cashout") {
       const isFund = sub === "funds", rows = all(c.iso, isFund ? "funds" : "cashouts");
-      head(isFund ? ["funds", "أموال"] : ["cash out", "نقود"]);
+      countryHead(isFund ? ["Funds", "الأموال"] : ["Cash out", "السحب النقدي"]);
       const ctl = SA.list({
         mount, data: rows, pills: statusPills, pillMatch: (r, k) => k === "all" || r.status === k,
-        search: ["search by name", "البحث بالاسم"], searchMatch: (r, q) => r._u.name.toLowerCase().includes(q),
-        empty: ["There is no data to display.", "لا توجد بيانات للعرض."],
+        search: ["Search by name", "البحث بالاسم"], searchMatch: (r, q) => r._u.name.toLowerCase().includes(q),
+        empty: EMPTY,
         columns: [
-          { head: ["id", "الرقم"], cell: (r) => r.id },
-          { head: ["user", "المستخدم"], cell: (r) => userCell(r._u) },
-          { hidden: isFund, head: ["country", "البلد"], cell: (r) => esc(r._u.country.name) },
-          { hidden: isFund, head: ["date & time", "التاريخ والوقت"], cell: (r) => dash(r.initiated_at) },
-          { head: ["amount", "المبلغ"], cell: (r) => r.amount || 0 },
-          { head: ["currency", "العملة"], cell: (r) => curCell(cur, r._u.country.name) },
-          { head: ["status", "الحالة"], cell: (r) => stBadge(r.status) },
-          { hidden: !isFund, head: ["initiated by", "بدأ بواسطة"], cell: (r) => (r.initiated_by ? esc(r.initiated_by.name) : "---") },
-          { hidden: !isFund, head: ["initiated on", "بدأ في"], cell: (r) => dash(r.initiated_at) },
-          { head: ["action by", "تم بواسطة"], cell: (r) => (r.action_by ? `<b>${esc(r.action_by.name)}</b>` : "---") },
-          { head: ["action on", "الإجراء في"], cell: (r) => dash(r.action_at) },
-          { head: ["action", "الإجراء"], align: "center", cell: (r) => `<div class="row gap-1" style="justify-content:center">${r.status === "pending" ? SA.iconBtn("edit", L("edit", "تعديل"), `data-edit="${r._u.id}:${r.id}"`) : ""}${SA.iconBtn("eye", L("View", "عرض"), `data-view="${r._u.id}:${r.id}"`)}</div>` },
+          { head: ["ID", "الرقم"], cell: (r) => `<span class="t-sm text-tertiary">#${r.id}</span>` },
+          { head: ["User", "المستخدم"], cell: (r) => userCell(r._u) },
+          { hidden: isFund, head: ["Country", "البلد"], cell: (r) => esc(r._u.country.name) },
+          { hidden: isFund, head: ["Date & time", "التاريخ والوقت"], cell: (r) => dash(r.initiated_at) },
+          { head: ["Amount", "المبلغ"], cell: (r) => amt(`<b>${r.amount || 0}</b>`) },
+          { head: ["Currency", "العملة"], cell: (r) => curCell(cur, r._u.country.name) },
+          { head: ["Status", "الحالة"], align: "center", cell: (r) => stBadge(r.status) },
+          { hidden: !isFund, head: ["Initiated", "بدأ"], cell: (r) => `${byLink(r.initiated_by)}<div class="t-xs text-tertiary">${dash(r.initiated_at)}</div>` },
+          { head: ["Action", "الإجراء"], cell: (r) => `${byLink(r.action_by)}<div class="t-xs text-tertiary">${dash(r.action_at)}</div>` },
+          { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<div class="row gap-1" style="justify-content:center">${r.status === "pending" ? SA.iconBtn("edit", L("Edit", "تعديل"), `data-edit="${r._u.id}:${r.id}" data-perm="${isFund ? "update_funds" : "update_cashout"}"`) : ""}${SA.iconBtn("eye", L("View", "عرض"), `data-view="${r._u.id}:${r.id}" data-perm="view_user_wallet"`)}</div>` },
         ],
       });
       mount.addEventListener("click", (e) => {
         const t = e.target.closest("[data-edit],[data-view]"); if (!t) return;
         const [uid, id] = (t.dataset.edit || t.dataset.view).split(":"), r = rows.find((x) => String(x._u.id) === uid && String(x.id) === id);
         /* the dashboard's FUND_ID / CASH_OUT_ID titles drop the id here (missing {id} placeholder) — kept 1:1 */
-        if (t.dataset.view) return isFund ? fundModal(r, L("fund id", "رقم الصندوق")) : cashModal(r, L("cash out id", "رقم السحب النقدي"));
+        if (t.dataset.view) return isFund ? fundModal(r, L("Fund ID", "رقم الصندوق")) : cashModal(r, L("Cash out ID", "رقم السحب النقدي"));
         editModal(r, isFund, ctl.paint);
       });
       return;
     }
     if (sub === "exchanges") {
       const rows = exchanges(c.iso);
-      head(["exchanges", "التبادلات"]);
+      countryHead(["Exchanges", "التبادلات"]);
       SA.list({
         mount, data: rows, pills: statusPills, pillMatch: (r, k) => k === "all" || r.status === k,
-        search: ["search by name", "البحث بالاسم"], searchMatch: (r, q) => r._u.name.toLowerCase().includes(q),
-        empty: ["There is no data to display.", "لا توجد بيانات للعرض."],
+        search: ["Search by name", "البحث بالاسم"], searchMatch: (r, q) => r._u.name.toLowerCase().includes(q),
+        empty: EMPTY,
         columns: [
-          { head: ["id", "الرقم"], cell: (r) => r.id },
-          { head: ["user", "المستخدم"], cell: (r) => userCell(r._u) },
-          { head: ["date & time", "التاريخ والوقت"], cell: (r) => esc(r.create_at) },
-          { head: ["transaction", "معاملة"], cell: (r) => `${esc(r.transaction)}<div class="t-xs text-tertiary">${esc(r.info.description)}</div>` },
-          { head: ["giving amount", "المبلغ المعطى"], cell: (r) => r.amount },
-          { head: ["currency", "العملة"], cell: (r) => curCell(r.currency, r.country) },
-          { head: ["exchanged amount", "المبلغ المتبادل"], cell: (r) => r.exchanged_amount },
-          { head: ["exchanged currency", "العملة المتبادلة"], cell: (r) => curCell(r.exchanged_currency, r.exchanged_country) },
-          { head: ["action", "الإجراء"], align: "center", cell: (r) => SA.iconBtn("eye", L("View", "عرض"), `data-view="${r.id}"`) },
+          { head: ["ID", "الرقم"], cell: (r) => `<span class="t-sm text-tertiary">#${r.id}</span>` },
+          { head: ["User", "المستخدم"], cell: (r) => userCell(r._u) },
+          { head: ["Date & time", "التاريخ والوقت"], cell: (r) => esc(r.create_at) },
+          { head: ["Transaction", "المعاملة"], cell: (r) => `${esc(PP.cap(r.transaction))}<div class="t-xs text-tertiary">${esc(r.info.description)}</div>` },
+          { head: ["Giving amount", "المبلغ المعطى"], cell: (r) => `${amt(`<b>${r.amount}</b>`)}<div class="t-xs text-tertiary">${esc(r.currency)} · ${esc(r.country)}</div>` },
+          { head: ["Exchanged amount", "المبلغ المتبادل"], cell: (r) => `${amt(`<b>${r.exchanged_amount}</b>`)}<div class="t-xs text-tertiary">${esc(r.exchanged_currency)} · ${esc(r.exchanged_country)}</div>` },
+          { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => SA.iconBtn("eye", L("View", "عرض"), `data-view="${r.id}" data-perm="view_user_wallet"`) },
         ],
       });
       mount.addEventListener("click", (e) => {
         const t = e.target.closest("[data-view]"); if (!t) return;
         const r = rows.find((x) => String(x.id) === t.dataset.view);
         /* the dashboard titles this modal "fund id" — kept 1:1 */
-        SA.modal({ id: "wEx", title: `${L("fund id", "رقم الصندوق")}: ${r.id}`, foot: "", body: kv([[L("id", "الرقم") + ":", r.id], [L("date & time", "التاريخ والوقت") + ":", r.create_at], [L("transaction", "معاملة") + ":", esc(r.transaction)], [L("giving amount", "المبلغ المعطى") + ":", r.amount],
-          [L("currency", "العملة") + ":", r.currency], [L("exchanged amount", "المبلغ المتبادل") + ":", r.exchanged_amount], [L("exchanged currency", "العملة المتبادلة") + ":", r.exchanged_currency],
-          [L("old phone number", "رقم الهاتف القديم") + ":", `<span dir="ltr">${esc(r.old_phone)}</span>`], [L("new phone number", "رقم الهاتف الجديد") + ":", `<span dir="ltr">${esc(r.new_phone)}</span>`]]) });
+        SA.modal({ id: "wEx", title: `${L("Fund ID", "رقم الصندوق")}: ${r.id}`, foot: `<button class="btn btn--ghost" data-close>${L("Close", "إغلاق")}</button>`, body: kv([[L("ID", "الرقم"), r.id], [L("Date & time", "التاريخ والوقت"), r.create_at], [L("Transaction", "المعاملة"), esc(PP.cap(r.transaction))], [L("Giving amount", "المبلغ المعطى"), r.amount],
+          [L("Currency", "العملة"), r.currency], [L("Exchanged amount", "المبلغ المتبادل"), r.exchanged_amount], [L("Exchanged currency", "العملة المتبادلة"), r.exchanged_currency],
+          [L("Old phone number", "رقم الهاتف القديم"), `<span dir="ltr">${esc(r.old_phone)}</span>`], [L("New phone number", "رقم الهاتف الجديد"), `<span dir="ltr">${esc(r.new_phone)}</span>`]]) });
       });
       return;
     }
     /* transactions */
     const rows = all(c.iso, "rows"), PKG = ["package_subscription", "package_payment_refund"];
-    head(["transactions", "المعاملات"]);
+    const startPage = Math.max(1, +qs.get("page") || 1);
+    let ctl = null;
+    /* public event / booking view inside the wallet (TransactionViewToolbarWrapper):
+       Dashboard › Wallet › Public event | Booking, only "Back to transactions" */
+    const evId = qs.get("event"), bkId = qs.get("booking");
+    if (evId || bkId) {
+      const D = OPS.all(), isEv = !!evId;
+      const rec = isEv ? D.events.find((x) => String(x.id) === evId) || D.events[0] : D.bookings.find((x) => String(x.id) === bkId) || D.bookings[0];
+      const back = `<a class="btn btn--sm btn--secondary" href="wallet.html?iso=${c.iso}&sub=transactions&page=${esc(qs.get("redirect_to_page") || 1)}">${ic(rtl() ? "chevronRight" : "chevronLeft")}<span>${L("Back to transactions", "العودة للمعاملات")}</span></a>`;
+      head(isEv ? ["Public event", "الحدث العام"] : ["Booking", "الحجز"], { noBack: true, actions: back });
+      mount.className = "stack gap-6";
+      PP.href = () => `wallet.html?iso=${c.iso}&sub=transactions`; /* links inside the shared view */
+      PP.tabs[isEv ? "public-events" : "bookings"](mount, { partner: OPS.partnerOf(rec), params: new URLSearchParams({ view: String(rec.id) }) });
+      const inner = mount.querySelector(":scope > .row a.btn"); if (inner) inner.remove(); /* the view's own back link — the toolbar's one is used */
+      return;
+    }
+    countryHead(["Transactions", "المعاملات"]);
+    const page = () => (ctl ? ctl.state.page : startPage);
+    const eyeLink = (href, perm) => `<a class="icon-btn" href="${href}"${perm ? ` data-perm="${perm}"` : ""} aria-label="${L("View", "عرض")}" data-tip="${L("View", "عرض")}">${ic("eye")}</a>`;
+    /* eye only for the six known info.type values (others: none) */
     const eye = (r) => {
       const t = r.info.type, u = r._u;
-      if (PKG.includes(t)) return r.info.id != null ? `<a class="icon-btn" href="user-profile.html?id=${u.id}&tab=packages&ref=${r.info.reference || r.info.id}" aria-label="${L("View", "عرض")}">${ic("eye")}</a>` : "";
-      if (t === "cash_out" || t === "wallet_fund") return SA.iconBtn("eye", L("View", "عرض"), `data-w="${t}:${u.id}:${r.info.id}"`);
-      const href = t === "public_event" ? `public-events.html?view=${r.info.id}` : t === "booking" ? `bookings.html?view=${r.info.id}` : `multi-booking.html?details=${r.info.id}`;
-      return `<a class="icon-btn" href="${href}" aria-label="${L("View", "عرض")}">${ic("eye")}</a>`;
+      if (PKG.includes(t)) return r.info.id != null ? eyeLink(`user-profile.html?id=${u.id}&tab=packages&ref=${r.info.reference || r.info.id}`) : "";
+      if (t === "cash_out" || t === "wallet_fund") return SA.iconBtn("eye", L("View", "عرض"), `data-w="${t}:${u.id}:${r.info.id}" data-perm="view_user_wallet"`);
+      if (t === "public_event") return eyeLink(`wallet.html?iso=${c.iso}&sub=transactions&event=${r.info.id}&redirect_to_page=${page()}`, "view_public_event_details");
+      if (t === "booking") return eyeLink(`wallet.html?iso=${c.iso}&sub=transactions&booking=${r.info.id}&redirect_to_page=${page()}`, "view_booking_details");
+      if (t === "multi_booking") return eyeLink(`multi-booking.html?details=${r.info.id}&redirect_to_page=${page()}`, "view_multi_booking_details");
+      return "";
     };
-    SA.list({
+    ctl = SA.list({
       mount, data: rows,
-      pills: [{ key: "all", label: ["all", "الكل"] }, { key: "in", label: ["in", "داخل"] }, { key: "out", label: ["out", "خارج"] }],
+      pills: [{ key: "all", label: ["All", "الكل"] }, { key: "in", label: ["In", "داخل"], icon: "trendUp", tone: "success" }, { key: "out", label: ["Out", "خارج"], icon: "upload", tone: "danger" }],
       pillMatch: (r, k) => k === "all" || (k === "in" ? r.in != null : r.out != null),
-      search: ["search by transaction id", "البحث برقم المعاملة"], searchMatch: (r, q) => String(PKG.includes(r.info.type) ? r.info.reference || r.id : r.id).toLowerCase().includes(q),
-      empty: ["There is no data to display.", "لا توجد بيانات للعرض."],
+      search: ["Search by transaction ID", "البحث برقم المعاملة"], searchMatch: (r, q) => String(PKG.includes(r.info.type) ? r.info.reference || r.id : r.id).toLowerCase().includes(q),
+      empty: EMPTY,
       columns: [
-        { head: ["id", "الرقم"], cell: (r) => esc(PKG.includes(r.info.type) ? r.info.reference || r.id : r.id) },
-        { head: ["user", "المستخدم"], cell: (r) => userCell(r._u) },
-        { head: ["date & time", "التاريخ والوقت"], cell: (r) => esc(r.created_at) },
-        { head: ["transaction", "معاملة"], cell: (r) => `${esc(r.transaction || (r.info.type === "package_subscription" ? L("Package Payment", "دفع باقة") : L("Package Refund", "استرداد باقة")))}${r.info.package || r.info.description ? `<div class="t-xs text-tertiary">${esc(r.info.package ? r.info.package.name : r.info.description)}</div>` : ""}` },
-        { head: ["in", "داخل"], cell: (r) => `<span style="color:var(--color-success)">${dash(r.in)}</span>` },
-        { head: ["out", "خارج"], cell: (r) => `<span style="color:var(--color-danger)">${dash(r.out)}</span>` },
-        { head: ["balance", "الرصيد"], cell: (r) => r.balance },
-        { head: ["currency", "العملة"], cell: (r) => curCell(cur, r.country) },
-        { head: ["action", "الإجراء"], align: "center", cell: eye },
+        { head: ["ID", "الرقم"], cell: (r) => `<span class="t-sm text-tertiary">${esc(PKG.includes(r.info.type) ? r.info.reference || r.id : r.id)}</span>` },
+        { head: ["User", "المستخدم"], cell: (r) => userCell(r._u) },
+        { head: ["Date & time", "التاريخ والوقت"], cell: (r) => esc(r.created_at) },
+        { head: ["Transaction", "المعاملة"], cell: (r) => `${esc(PP.cap(r.transaction) || (r.info.type === "package_subscription" ? L("Package payment", "دفع باقة") : L("Package refund", "استرداد باقة")))}${r.info.package || r.info.description ? `<div class="t-xs text-tertiary">${esc(r.info.package ? r.info.package.name : r.info.description)}</div>` : ""}` },
+        { head: ["In", "داخل"], align: "end", cell: (r) => (r.in != null ? `<span class="wl-amt wl-in">${esc(r.in)}</span>` : `<span class="text-tertiary">---</span>`) },
+        { head: ["Out", "خارج"], align: "end", cell: (r) => (r.out != null ? `<span class="wl-amt wl-out">${esc(r.out)}</span>` : `<span class="text-tertiary">---</span>`) },
+        { head: ["Balance", "الرصيد"], align: "end", cell: (r) => `<b class="wl-amt">${r.balance}</b>` },
+        { head: ["Currency", "العملة"], cell: (r) => curCell(cur, r.country) },
+        { head: ["Actions", "الإجراءات"], align: "center", cell: eye },
       ],
+      /* keep the page in the URL so "Back to transactions" returns to it */
+      after: () => { if (ctl) { const u = new URL(location.href); u.searchParams.set("page", ctl.state.page); history.replaceState(null, "", u); } },
     });
+    if (startPage > 1) { ctl.state.page = startPage; ctl.paint(); }
     mount.addEventListener("click", (e) => {
       const b = e.target.closest("[data-w]"); if (!b) return;
       const [t, uid, id] = b.dataset.w.split(":"), u = HF.SA.users.find((x) => String(x.id) === uid), W = US.wallet(u);
-      if (t === "wallet_fund") { const f = Object.assign(W.funds.find((x) => String(x.id) === id) || W.funds[0], { _u: u }); fundModal(f, `${L("fund id", "رقم الصندوق")}: ${f.id}`); }
-      else { const co = Object.assign(W.cashouts.find((x) => String(x.id) === id) || W.cashouts[0], { _u: u }); cashModal(co, `${L("cash out id", "رقم السحب النقدي")}: ${co.id}`); }
+      if (t === "wallet_fund") { const f = Object.assign(W.funds.find((x) => String(x.id) === id) || W.funds[0], { _u: u }); fundModal(f, `${L("Fund ID", "رقم الصندوق")}: ${f.id}`); }
+      else { const co = Object.assign(W.cashouts.find((x) => String(x.id) === id) || W.cashouts[0], { _u: u }); cashModal(co, `${L("Cash out ID", "رقم السحب النقدي")}: ${co.id}`); }
     });
     return;
   }
 
   /* ================= overview ================= */
-  SA.head(document.getElementById("pageHead"), { title: ["wallet", "محفظة"], actions: `<a class="btn btn--sm" href="wallet.html?sub=currencies">${L("currency management", "إدارة العملات")}</a>` });
-  mount.innerHTML = `<div class="sa-stats" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">${countries.map((c) => {
+  head(["Wallet", "المحفظة"], { root: true, sub: L("Users' wallet balances and pending requests per country", "أرصدة محافظ المستخدمين والطلبات المعلقة لكل بلد"),
+    actions: `<a class="btn btn--sm" href="wallet.html?sub=currencies" data-perm="view_currencies">${ic("globe")}<span>${L("Currency management", "إدارة العملات")}</span></a>` });
+  const go = rtl() ? "chevronLeft" : "chevronRight";
+  /* GET /wallets — no wallets: "There is no data to display." (?demo=empty) */
+  if (demo === "empty") { mount.innerHTML = `<section class="card card--pad animate-in" style="text-align:center;padding-block:var(--space-10)"><p class="text-tertiary" style="margin:0">${L(EMPTY[0], EMPTY[1])}</p></section>`; return; }
+  mount.innerHTML = `<div class="wl-grid">${countries.map((c) => {
     const s = summary(c.iso), code = CUR[c.iso];
-    const row = (t, n, v, sub2) => `<tr><td><a href="wallet.html?iso=${c.iso}&sub=${sub2}" style="color:var(--color-text);font-weight:var(--weight-semibold)">${t}</a><div class="t-xs text-tertiary">${n} ${L("transactions", "المعاملات")}</div></td><td style="text-align:end"><b>${fmt(v)}</b> <span class="t-xs text-tertiary">${code}</span></td></tr>`;
-    return `<section class="card card--pad animate-in stack gap-3" style="align-items:center;text-align:center">
-      <div class="row gap-2" style="align-items:center"><span class="badge">${c.iso}</span><h3 class="t-title">${esc(c.name)}</h3></div>
-      <span class="t-sm text-tertiary">${L("total balance", "الرصيد الإجمالي")}</span><b style="font-size:26px">${fmt(s.total_balance || 0)}</b><span class="t-sm text-tertiary">${code}</span>
-      <table class="data-table" style="width:100%"><tbody>${row(L("pending funds", "الأموال المعلقة"), s.funds_transactions, s.pending_funds, "funds")}${row(L("pending cash out", "السحب النقدي المعلق"), s.cash_out_transactions, s.pending_cash_out, "cashout")}${row(L("exchanges", "التبادلات"), s.exchange_transactions, s.exchanges, "exchanges")}</tbody></table>
-      <a class="btn" href="wallet.html?iso=${c.iso}&sub=transactions">${L("show transactions", "عرض المعاملات")}</a></section>`;
+    /* a row links to its list only with that list's key (CountryWallet.js) — else plain text */
+    const row = (t, n, v, sub2, icon, tone, perm) => { const link = RD.can(perm); return `<${link ? `a class="wl-row" href="wallet.html?iso=${c.iso}&sub=${sub2}"` : `div class="wl-row wl-row--static"`}>
+        <span class="kpi-ic" style="background:var(--color-${tone}-subtle);color:var(--color-${tone === "primary" ? "primary-ink" : tone})">${ic(icon)}</span>
+        <span class="wl-row__txt"><b>${t}</b><span class="t-xs text-tertiary">${L(`${fmt(n)} transactions`, `${fmt(n)} معاملة`)}</span></span>
+        <span class="wl-row__amt">${fmt(v)} <small>${code}</small></span>${link ? `<span class="wl-row__go" aria-hidden="true">${ic(go)}</span>` : ""}</${link ? "a" : "div"}>`; };
+    return `<section class="card card--pad wl-card animate-in" aria-labelledby="wl-${c.iso}">
+      <div class="wl-card__head"><span class="wl-iso" aria-hidden="true">${esc(c.iso)}</span><div style="flex:1;min-width:0"><h2 id="wl-${c.iso}">${esc(c.name)}</h2><span class="t-xs text-tertiary">${L("Currency", "العملة")}: ${code}</span></div></div>
+      <div class="wl-balance"><span class="wl-balance__label">${L("Total balance", "الرصيد الإجمالي")}</span><span class="wl-balance__val">${fmt(s.total_balance || 0)}<small>${code}</small></span></div>
+      <div class="wl-rows">${row(L("Pending funds", "الأموال المعلقة"), s.funds_transactions, s.pending_funds, "funds", "plus", "warning", "view_funds")}${row(L("Pending cash out", "السحب النقدي المعلق"), s.cash_out_transactions, s.pending_cash_out, "cashout", "upload", "warning", "view_cashout")}${row(L("Exchanges", "التبادلات"), s.exchange_transactions, s.exchanges, "exchanges", "refresh", "primary", "view_exchanges")}</div>
+      <div class="wl-card__foot"><a class="btn btn--sm" href="wallet.html?iso=${c.iso}&sub=transactions" data-perm="view_transactions"><span>${L("Show transactions", "عرض المعاملات")}</span>${ic(go)}</a></div></section>`;
   }).join("")}</div>`;
 })();
 </script>

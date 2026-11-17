@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Page Templates · HighFive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .tpl-list { width: 220px; flex-shrink: 0; display: flex; flex-direction: column; gap: 2px; }
+  .tpl-list button { text-align: start; padding: 10px 12px; border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); display: flex; align-items: center; gap: 8px; }
+  .tpl-list button svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .tpl-list button:hover { background: var(--color-surface-hover); color: var(--color-text); }
+  .tpl-list button.is-active { background: var(--color-primary-subtle); color: var(--color-primary); font-weight: var(--weight-semibold); }
+  .tpl-stage { flex: 1; min-width: 0; background: var(--color-surface-sunken); border-radius: var(--radius-lg); padding: var(--space-8); display: flex; flex-direction: column; align-items: center; gap: var(--space-5); }
+  .tpl-used { width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font-size: var(--text-xs); color: var(--color-text-tertiary); }
+  .tpl-used a { color: var(--color-primary); font-weight: var(--weight-semibold); }
+  .tpl-frame { width: 100%; max-width: 760px; }
+  @media (max-width: 768px) {
+    .tpl-wrap { flex-direction: column; }
+    .tpl-list { width: 100%; flex-direction: row; overflow-x: auto; scrollbar-width: none; }
+    .tpl-list button { white-space: nowrap; flex-shrink: 0; }
+    .tpl-stage { padding: var(--space-4); }
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner">
+
+      <header class="page-head animate-in" style="margin-bottom:var(--space-6)">
+        <h1>Page Templates</h1>
+        <p class="lead">The page types every Super Admin screen is built from - each one links to the real pages that use it.</p>
+      </header>
+
+      <div class="row gap-6 tpl-wrap" style="align-items:flex-start;width:100%">
+        <nav class="tpl-list" id="tplList"></nav>
+        <div class="tpl-stage" id="tplStage"></div>
+      </div>
+
+    </div></main>
+  </div>
+</div>
+<div class="device-stage" id="deviceStage"></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script>
+(() => {
+  RD.boot({ activeId: "templates", title: "Page Templates" });
+  const ic = RD.icon;
+  const ar = document.documentElement.dir === "rtl", L = (en, a) => (ar ? a : en);
+  const kebab = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="6" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="18" r="1.9"/></svg>`;
+  const status = (on) => `<span class="status ${on ? "status--live" : "status--inactive"}"><span class="dot"></span>${on ? L("Active", "نشط") : L("Inactive", "غير نشط")}</span>`;
+  const used = (pages) => `<div class="tpl-used"><b>${L("Used in", "مستخدم في")}:</b>${pages.map(([href, label]) => `<a href="${href}">${label}</a>`).join("<span>·</span>")}</div>`;
+  const head = (title, crumb, actions) => `
+    <div class="row between gap-4" style="flex-wrap:wrap;align-items:flex-end">
+      <div><h3>${title}</h3><span class="t-xs text-tertiary">${L("Dashboard", "لوحة القيادة")} › ${crumb || title}</span></div>
+      <div class="row gap-2" style="flex-wrap:wrap">${actions || ""}</div>
+    </div>`;
+  const pager = (total) => `
+    <div class="data-table-footer" style="flex-wrap:wrap;gap:var(--space-3)">
+      <span class="t-sm text-tertiary">${L(`Showing 1 to 3 of ${total} items`, `عرض 1 إلى 3 من ${total} عنصر`)}</span>
+      <div class="pagination"><button disabled>‹</button><button class="is-active">1</button><button>2</button><button>3</button><button>›</button></div>
+    </div>`;
+
+  const TEMPLATES = [
+    { id: "login", title: L("Sign in", "تسجيل الدخول"), icon: "users", body: () => `
+      <div class="auth-frame tpl-frame" style="max-width:640px">
+        <div class="auth-brand" style="flex:1;padding:var(--space-8);justify-content:center">
+          <h3>HighFive Super Admin</h3>
+          <p style="font-size:var(--text-sm);margin-top:var(--space-2)">${L("Partners, packages, users and financials in one dashboard.", "الشركاء والباقات والمستخدمين والماليات في لوحة واحدة.")}</p>
+        </div>
+        <div class="auth-form" style="flex:1;padding:var(--space-8);display:flex;flex-direction:column;gap:var(--space-4);background:var(--color-surface)">
+          <div><b class="t-title">${L("Sign In", "تسجيل الدخول")}</b>
+            <p class="t-xs text-tertiary" style="margin-top:4px">${L("Please Enter Admin Email Or Phone Number And Password", "يرجى إدخال البريد الإلكتروني أو رقم الهاتف وكلمة المرور الخاصة بالمسؤول")}</p></div>
+          <div class="field"><label class="field__label">${L("Email Or Phone", "البريد الإلكتروني أو الهاتف")}</label><input class="input" placeholder="admin@highfive.sa"></div>
+          <div class="field"><label class="field__label">${L("Password", "كلمة المرور")}</label><input class="input" type="password" placeholder="••••••••"></div>
+          <a class="t-xs" href="forgot-password.html" style="color:var(--color-primary);align-self:flex-end">${L("Forgot Password ?", "هل نسيت كلمة المرور ؟")}</a>
+          <button class="btn" style="width:100%">${L("Sign In", "تسجيل الدخول")}</button>
+        </div>
+      </div>
+      ${used([["login.html", L("Login", "تسجيل الدخول")]])}` },
+
+    { id: "otp", title: L("Forgot password + code", "نسيت كلمة المرور + الرمز"), icon: "lock", body: () => `
+      <div class="row wrap gap-5 tpl-frame" style="align-items:stretch">
+        <div class="card card--pad stack gap-4" style="flex:1;min-width:260px">
+          <div style="text-align:center"><b class="t-title">${L("Forgot Password ?", "هل نسيت كلمة المرور ؟")}</b>
+            <p class="t-xs text-tertiary" style="margin-top:4px">${L("Enter your email to reset your password.", "أدخل بريدك الإلكتروني لإعادة تعيين كلمة المرور.")}</p></div>
+          <div class="field"><label class="field__label">${L("Email", "البريد الإلكتروني")}</label><input class="input" placeholder="${L("Enter Your Email Address", "أدخل عنوان بريدك الإلكتروني")}"></div>
+          <button class="btn" style="width:100%">${L("next", "التالي")}</button>
+        </div>
+        <div class="card card--pad stack gap-4" style="flex:1;min-width:260px">
+          <div style="text-align:center"><b class="t-title">${L("Enter Code", "أدخل الرمز")}</b>
+            <p class="t-xs text-tertiary" style="margin-top:4px">${L("Enter the code sent to", "أدخل الرمز الذي تم إرساله إلى")} (<b dir="ltr">+96*****67</b>)</p></div>
+          <div class="auth-otp" dir="ltr">${[1, 2, 3, 4].map((n) => `<input class="input" maxlength="1" value="${n < 3 ? n : ""}" aria-label="digit ${n}">`).join("")}</div>
+          <button class="btn" style="width:100%">${L("Verify", "تحقق")}</button>
+          <span class="t-xs text-tertiary" style="text-align:center">${L("Resend code in", "إعادة إرسال الرمز بعد")} 30 ${L("Seconds", "ثانية")}</span>
+        </div>
+      </div>
+      ${used([["forgot-password.html", L("Forgot password", "نسيت كلمة المرور")], ["verification-code.html", L("Verification code", "رمز التحقق")]])}` },
+
+    { id: "list", title: L("List page", "صفحة قائمة"), icon: "list", body: () => `
+      <div class="stack gap-4 tpl-frame">
+        ${head(L("Partners", "الشركاء"), null, `<button class="btn btn--secondary btn--sm">${ic("sliders")} ${L("Filter", "تصفية")}</button><button class="btn btn--sm">${ic("plus")} ${L("Add Partner", "إضافة شريك")}</button>`)}
+        <section class="data-table-wrap">
+          <div class="data-table-toolbar" style="flex-wrap:wrap;gap:var(--space-3)">
+            <div class="segmented"><button class="is-active">${L("All", "الكل")} (36)</button><button>${L("Active", "نشط")} (24)</button><button>${L("Pending", "معلق")} (7)</button><button>${L("Inactive", "غير نشط")} (5)</button></div>
+            <span class="grow"></span>
+            <div class="input-wrap" style="min-width:min(100%,260px)"><span class="input-wrap__icon">${ic("search")}</span><input class="input" type="search" placeholder="${L("Search", "بحث")}"></div>
+          </div>
+          <div class="data-table-scroll"><table class="data-table">
+            <thead><tr><th>${L("Company", "الشركة")}</th><th>${L("Country", "الدولة")}</th><th>${L("Units", "الوحدات")}</th><th>${L("Status", "الحالة")}</th><th style="width:44px"></th></tr></thead>
+            <tbody>${[["Al Olaya Sports Co.", "Ahmed Al-Harbi", "Saudi Arabia", 3, 1], ["Smash Padel Club", "Sara Al-Qahtani", "Saudi Arabia", 2, 1], ["Blue Wave Aquatics", "Omar Farouk", "Egypt", 1, 0]].map((r) => `
+              <tr><td><div class="cell-user"><span class="avatar avatar--sm">${r[0].split(" ").map((w) => w[0]).slice(0, 2).join("")}</span><div><div style="font-weight:600">${r[0]}</div><span class="t-xs text-tertiary">${r[1]}</span></div></div></td>
+                <td data-label="${L("Country", "الدولة")}">${r[2]}</td><td data-label="${L("Units", "الوحدات")}">${r[3]}</td>
+                <td data-label="${L("Status", "الحالة")}">${status(r[4])}</td>
+                <td><button class="icon-btn tbl-kebab" style="width:32px;height:32px" aria-label="${L("Row actions", "إجراءات")}">${kebab}</button></td></tr>`).join("")}</tbody>
+          </table></div>
+          ${pager(36)}
+        </section>
+      </div>
+      ${used([["partners.html", L("Partners", "الشركاء")], ["units.html", L("Units", "الوحدات")], ["packages.html", L("Packages", "الباقات")], ["users.html", L("Users", "المستخدمين")], ["bookings.html", L("Bookings", "الحجوزات")], ["employees.html", L("Employees", "الموظفين")]])}` },
+
+    { id: "profile", title: L("Profile with tabs", "بروفايل بتابات"), icon: "layout", body: () => `
+      <div class="stack gap-4 tpl-frame">
+        ${head("Al Olaya Sports Co.", `${L("Partners", "الشركاء")} › Al Olaya Sports Co.`, `<button class="btn btn--secondary btn--sm">${ic("chevronLeft")} ${L("Back", "رجوع")}</button>`)}
+        <div class="card card--pad row gap-4" style="flex-wrap:wrap;align-items:center">
+          <span class="avatar avatar--lg">AO</span>
+          <div style="flex:1;min-width:200px"><b class="t-title">Al Olaya Sports Co.</b>
+            <div class="row gap-2" style="margin-top:6px;flex-wrap:wrap">${status(1)}<span class="badge">Saudi Arabia · Riyadh</span></div></div>
+          <div class="row gap-2"><button class="btn btn--secondary btn--sm">${ic("edit")} ${L("Edit", "تعديل")}</button></div>
+        </div>
+        <div class="segmented"><button class="is-active">${L("Details", "التفاصيل")}</button><button>${L("Units", "الوحدات")} (3)</button><button>${L("Packages", "الباقات")} (2)</button><button>${L("Bookings", "الحجوزات")}</button><button>${L("Coupons", "الكوبونات")}</button></div>
+        <div class="card card--pad"><div class="detail-list">
+          <div class="detail-row"><span class="detail-row__k">${L("Owner", "المالك")}</span><span class="detail-row__v">Ahmed Al-Harbi</span></div>
+          <div class="detail-row"><span class="detail-row__k">${L("Email", "البريد الإلكتروني")}</span><span class="detail-row__v">ahmed@alolaya.sa</span></div>
+          <div class="detail-row"><span class="detail-row__k">${L("Phone", "الهاتف")}</span><span class="detail-row__v" dir="ltr">+966 50 123 4567</span></div>
+          <div class="detail-row"><span class="detail-row__k">${L("Commercial register", "السجل التجاري")}</span><span class="detail-row__v">1010123456</span></div>
+        </div></div>
+      </div>
+      ${used([["partner-profile.html", L("Partner profile", "بروفايل الشريك")], ["unit-profile.html", L("Unit profile", "بروفايل الوحدة")], ["user-profile.html", L("User profile", "بروفايل المستخدم")], ["package-detail.html", L("Package details", "تفاصيل الباقة")]])}` },
+
+    { id: "crud", title: L("Setup list + modal", "قائمة إعداد + مودال"), icon: "gear", body: () => `
+      <div class="stack gap-4 tpl-frame">
+        ${head(L("Languages", "اللغات"), `${L("Setup Files", "ملفات الإعداد")} › ${L("Languages", "اللغات")}`, `<button class="btn btn--sm">${ic("plus")} ${L("Add", "إضافة")}</button>`)}
+        <div class="row gap-5" style="flex-wrap:wrap;align-items:flex-start">
+          <section class="data-table-wrap" style="flex:1.3;min-width:260px">
+            <div class="data-table-scroll"><table class="data-table">
+              <thead><tr><th>#</th><th>${L("Name", "الاسم")}</th><th>${L("Status", "الحالة")}</th><th style="width:96px"></th></tr></thead>
+              <tbody>${[[1, "Arabic", 1], [2, "English", 1], [3, "French", 0]].map((r) => `
+                <tr><td>${r[0]}</td><td data-label="${L("Name", "الاسم")}" style="font-weight:600">${r[1]}</td><td data-label="${L("Status", "الحالة")}">${status(r[2])}</td>
+                  <td><span class="row gap-1"><button class="icon-btn" aria-label="${L("Translation", "الترجمة")}">${ic("globe")}</button><button class="icon-btn" aria-label="${L("Edit", "تعديل")}">${ic("edit")}</button><button class="icon-btn" aria-label="${L("Delete", "حذف")}">${ic("trash")}</button></span></td></tr>`).join("")}</tbody>
+            </table></div>
+          </section>
+          <div class="modal" style="position:static;transform:none;opacity:1;animation:none;flex:1;min-width:260px;max-width:none;box-shadow:var(--shadow-md)">
+            <div class="modal__head"><span>${L("Add", "إضافة")}</span><button class="icon-btn" style="width:32px;height:32px" aria-label="${L("Close", "إغلاق")}">${ic("close")}</button></div>
+            <div class="modal__body">
+              <div class="field"><label class="field__label">${L("Name", "الاسم")} <span class="req">*</span></label><input class="input" placeholder="${L("Name", "الاسم")}"></div>
+              <label class="switch"><input type="checkbox" checked><span class="switch__track"></span> ${L("Active", "نشط")}</label>
+            </div>
+            <div class="modal__foot"><button class="btn btn--ghost">${L("Cancel", "إلغاء")}</button><button class="btn">${L("Save", "حفظ")}</button></div>
+          </div>
+        </div>
+      </div>
+      ${used([["setup-languages.html", L("Languages", "اللغات")], ["setup-types.html", L("Types", "الأنواع")], ["setup-banks.html", L("Banks", "البنوك")], ["locations-countries.html", L("Countries", "الدول")], ["locations-cities.html", L("Cities", "المدن")], ["settings.html", L("Settings", "الإعدادات")]])}` },
+
+    { id: "finance", title: L("Per-currency summary", "ملخص لكل عملة"), icon: "revenue", body: () => {
+      const col = (t, o, bold) => `<div class="card card--pad stack gap-2" style="flex:1;min-width:150px${bold ? ";font-weight:var(--weight-bold)" : ""}"><span class="t-sm">${t}</span>${o.map((v) => `<span class="t-mono">${v}</span>`).join("")}</div>`;
+      return `
+      <div class="card card--pad stack gap-4 tpl-frame">
+        <div class="row gap-2" style="justify-content:center;align-items:center"><span class="badge">SA</span><b class="t-title">${L("Saudi Arabia", "السعودية")}</b></div>
+        <span class="t-sm text-tertiary" style="text-align:center">${L("Saudi Riyal", "ريال سعودي")}</span>
+        <div class="row gap-3" style="flex-wrap:wrap">${col(L("online", "عبر الإنترنت"), ["101010.00", "85858.50"])}${col(L("cash", "نقدي"), ["28305.00", "4245.75"])}${col(L("total", "المجموع"), ["129315.00", "90104.25"], 1)}</div>
+        <button class="btn btn--sm" style="align-self:center">${L("View", "عرض")}</button>
+      </div>
+      ${used([["financials.html", L("Financials", "المالية")], ["wallet.html", L("Wallet", "المحفظة")], ["subscriptions.html", L("Subscriptions", "الاشتراكات")]])}`; } },
+
+    { id: "empty", title: L("Empty state", "حالة فارغة"), icon: "box", body: () => `
+      <div class="card card--pad stack gap-3" style="text-align:center;align-items:center;max-width:360px">
+        <span style="width:48px;height:48px;border-radius:var(--radius-full);background:var(--color-surface-sunken);color:var(--color-text-tertiary);display:grid;place-items:center">${ic("box")}</span>
+        <div><b class="t-sm">${L("There is no data to display", "لا توجد بيانات لعرضها")}</b><p class="t-xs text-tertiary" style="margin-top:2px">${L("Try a different search or clear the filters.", "جرّب بحثًا مختلفًا أو امسح الفلاتر.")}</p></div>
+        <button class="btn btn--secondary btn--sm">${L("Reset", "إعادة تعيين")}</button>
+      </div>
+      ${used([["partners.html", L("Every list page", "كل صفحات القوائم")]])}` },
+
+    { id: "error", title: L("404 / 500", "404 / 500"), icon: "close", body: () => `
+      <div class="row wrap gap-5 tpl-frame" style="justify-content:center">
+        ${[["404", L("Oops!", "عذراً!"), L("We can't find that page.", "لا يمكننا العثور على هذه الصفحة.")], ["500", L("System Error", "خطأ في النظام"), L("Something went wrong! Please try again later.", "حدث خطأ ما! يرجى المحاولة لاحقاً.")]].map((e) => `
+        <div class="card card--pad stack gap-3" style="text-align:center;align-items:center;flex:1;min-width:240px;max-width:340px">
+          <b style="font-size:48px;line-height:1;color:var(--color-primary)">${e[0]}</b>
+          <h3>${e[1]}</h3>
+          <p class="t-sm text-secondary">${e[2]}</p>
+          <button class="btn btn--sm">${L("Return Home", "العودة للرئيسية")}</button>
+        </div>`).join("")}
+      </div>
+      ${used([["error-404.html", "404"], ["error-500.html", "500"]])}` },
+  ];
+
+  function render(id) {
+    const t = TEMPLATES.find((x) => x.id === id);
+    document.getElementById("tplList").innerHTML = TEMPLATES.map((x) =>
+      `<button class="${x.id === id ? "is-active" : ""}" data-tpl="${x.id}">${ic(x.icon)}${x.title}</button>`).join("");
+    document.getElementById("tplStage").innerHTML = t.body();
+  }
+  document.getElementById("tplList").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-tpl]"); if (b) render(b.dataset.tpl);
+  });
+  render(TEMPLATES[0].id);
+})();
+</script>
+</body>
+</html>

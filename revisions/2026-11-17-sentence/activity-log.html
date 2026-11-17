@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Activity log · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+  /* ---- redesign 2026-11-17: global list layer (same composition as partners.html) ---- */
+  .ops-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+  #listMount .data-table-toolbar > .grow { display: none; }
+  #listMount .data-table-toolbar > .input-wrap { flex: 1 1 320px; min-width: 0 !important; }
+  .ops-chips { padding: 0 var(--space-5) var(--space-4); }
+  .ops-id { font: inherit; font-weight: var(--weight-semibold); color: var(--color-text); padding: 0; cursor: pointer; text-align: start; }
+  .ops-id:hover { color: var(--color-primary-ink); text-decoration: underline; text-underline-offset: 3px; }
+  .ops-two { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .ops-two > b { font-weight: var(--weight-medium); }
+  .ops-check { display: inline-flex; flex-direction: column; gap: var(--space-1); align-items: flex-start; }
+  #listMount tbody tr:has([data-peek]) { cursor: pointer; }
+  #listMount > .stat-strip { grid-template-columns: repeat(auto-fit, minmax(min(100%, 128px), 1fr)) !important; }
+  .al-bar { flex-direction: column; align-items: stretch !important; gap: var(--space-3) !important; }
+  .al-bar > .input-wrap { flex: none !important; min-width: 0 !important; }
+  .al-filters { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+  .al-sel { min-width: 150px; flex: 0 1 180px; }
+  .al-dates { display: inline-flex; align-items: center; gap: var(--space-2); flex: 1 1 300px; min-width: 0; }
+  .al-dates .input { min-width: 0; flex: 1 1 0; width: 0; } /* width 0: the date inputs' intrinsic width (wider with the dark color-scheme picker) must not set the row's min-content */
+  .al-filters { min-width: 0; }
+  @media (max-width: 640px) { .al-filters > * { flex: 1 1 100%; } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/sa-emp.js"></script>
+<script src="assets/js/sa-ops.js"></script>
+<script>
+(() => {
+  /* Employees activity log — mirrors pages/emploayees/activity-log:
+       list     /employees/activity-log        activity-log.html   search · modules (grouped multi) · action ·
+                                                                    performed by · acting as · date range · Clear all
+       details  /employees/activity-log/:id    ?id=<logId>         summary + acting-as box + changed fields (before/after)
+                                                                    + raw JSON. Back restores the list's filters.
+     Filters live in the URL (as in the dashboard). API: GET /activity-logs(/filters|/{id}).
+     Permissions (dashboard PERMISSIONS.EMPLOYEES — data-perm, demo ?perm=limited | ?perm=none):
+       list + details page view_activity_log · View raw JSON view_activity_log_raw
+       (the dashboard marks that string as a best guess until the backend key is wired up). */
+  const qs = new URLSearchParams(location.search), logId = qs.get("id");
+  RD.boot({ activeId: "emp-activity-log", title: "Activity log", perm: "view_activity_log" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic } = SA;
+  const S = HF.SA, data = S.activityLogs;
+  const mount = document.getElementById("listMount");
+  const title = (s) => String(s || "").replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  /* Redesign (2026-11-17): action / attribute badges use the status tones (the dashboard's
+     inline green · blue · red · amber map to success · info · danger · warning). */
+  const TONE = { green: "success", blue: "info", red: "danger", amber: "warning" };
+  const ACT = { created: L("Created", "تم الإنشاء"), updated: L("Updated", "تم التحديث"), deleted: L("Deleted", "تم الحذف"), login: L("Login", "تسجيل الدخول"), translated: L("Translated", "تمت الترجمة") };
+  const actWord = (v) => ACT[String(v).toLowerCase()] || title(v);
+  /* getActionBadgeStyle: the API's action.color first; the verb only as a fallback */
+  const toneOf = (a) => (a && a.color && TONE[a.color] ? a.color : /creat/i.test(a.label || a.value) ? "green" : /updat|edit/i.test(a.label || a.value) ? "blue" : /delet|remov/i.test(a.label || a.value) ? "red" : "amber");
+  const actBadge = (a) => SA.badge(TONE[toneOf(a)], actWord(a.value || a.label));
+  const ATTR = { blocked_from_booking: [L("Blocked from booking", "محظور من الحجز"), "red"], blocked_from_event: [L("Blocked from event", "محظور من الفعالية"), "red"], suspended: [L("Suspended", "موقوف"), "amber"], verified: [L("Verified", "موثّق"), "green"] };
+  const MOD_AR = { partners: "الشركاء", units: "الوحدات", packages: "الباقات", users: "المستخدمون", wallet_funds: "أرصدة المحفظة", currencies: "العملات", employees: "الموظفون", jobs: "الوظائف", comments: "التعليقات" };
+  const modName = (m) => L(m.label, MOD_AR[m.key || m.value] || m.label);
+
+  /* ================= details ================= */
+  /* Redesign: record header (action · record · id · back), a facts grid (when · module ·
+     related record · performed by · contact), the acting-as note, then the same fields
+     table and raw JSON toggle. */
+  if (logId) {
+    const g = data.find((x) => String(x.id) === logId) || data[0];
+    const back = `activity-log.html${sessionStorage.getItem("al:search") || ""}`;
+    document.getElementById("pageHead").hidden = true;
+    /* getChangeType: from the action verb — "creat" / "delet" → one Value column, anything else → Before / After */
+    const verb = String(g.action.value || "").toLowerCase();
+    const isUpd = !verb.includes("creat") && !verb.includes("delet");
+    const notSet = `<span class="text-tertiary">${L("Not set", "غير محدد")}</span>`;
+    /* formatChangeValue / describeFieldValue (activityLogUtils.js) */
+    const BOOL_KEY = /^(is|has|can|should|allow|show)_|active|status|enabled|verified|blocked|suspended|visible|featured/i, REF_KEY = /_(by|at|id|ids|count)$/i;
+    const isDateField = (k, v) => !!v && typeof v === "string" && (/_at$|_date$|^date_|_time$/i.test(k) || /^\d{4}-\d{2}-\d{2}T/.test(v));
+    const humanize = (k, v) => {
+      const isB = typeof v === "boolean";
+      if (!isB && v !== 0 && v !== 1) return null;
+      if (!isB && (REF_KEY.test(k) || !BOOL_KEY.test(k))) return null;
+      const on = isB ? v : v === 1;
+      return /active|status|enabled/i.test(k) ? (on ? L("Active", "نشط") : L("Inactive", "غير نشط")) : on ? L("Yes", "نعم") : L("No", "لا");
+    };
+    const pad = (n) => String(n).padStart(2, "0");
+    const fmtDate = (v) => { const s = String(v); if (/^\d{2}\/\d{2}\/\d{4}/.test(s)) return s; const d = new Date(s); return isNaN(d) ? s : `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+    /* {value,label} wrapper: the raw value, unless the label is a real humanization of it */
+    const unwrap = (k, w) => {
+      if (w == null) return null;
+      if (typeof w !== "object" || Array.isArray(w)) return w;
+      if (!("value" in w)) return "label" in w ? w.label : w;
+      const v = w.value, lab = w.label;
+      const humanLabel = typeof lab === "string" && lab !== "" && lab !== String(v) && v != null && v !== "" && humanize(k, v) === null && !isDateField(k, v);
+      return humanLabel ? lab : v;
+    };
+    const fmt = (k, w, tone) => {
+      const v = unwrap(k, w);
+      if (v == null || v === "") return notSet;
+      if (k === "attribute") { const a = ATTR[String(v).toLowerCase()] || [title(v), "amber"]; return SA.badge(TONE[a[1]], a[0]); }
+      if (k === "player_id") { const id = w && typeof w === "object" && "value" in w ? w.value : v, u = S.users.find((x) => x.id === id), name = v !== id ? v : u ? u.name : null;
+        return `<a href="user-profile.html?id=${esc(id)}&tab=details" style="color:var(--color-text-link)">${esc(name || L(`User #${id}`, `مستخدم #${id}`))}</a>`; }
+      let out = humanize(k, v);
+      if (out === null) out = typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v.split("-").reverse().join("/") /* date only: dd/MM/yyyy, no time, no TZ shift */
+        : isDateField(k, v) ? fmtDate(v) : typeof v === "object" ? JSON.stringify(v) : String(v);
+      out = `<span dir="auto">${esc(out)}</span>`;
+      return tone === "before" ? `<span style="color:var(--color-danger);text-decoration:line-through">${out}</span>` : tone === "after" ? `<span style="color:var(--color-success)">${out}</span>` : out;
+    };
+    /* the two field labels the app translates itself (FIELD_LABEL_TRANSLATION_IDS), in both layouts */
+    const fieldLabel = (f) => (f.field === "attribute" ? L("Attribute", "الخاصية") : f.field === "player_id" ? L("Player", "اللاعب") : esc(f.label || title(f.field)));
+    const fields = ((g.changes && g.changes.fields) || []).map((f) => (f.before !== undefined || f.after !== undefined ? f : Object.assign({}, f, { after: f.value })));
+    const p = g.performed_by;
+    mount.className = "stack gap-6";
+    mount.innerHTML = `<nav class="t-sm text-tertiary" aria-label="Breadcrumb"><a href="index.html" style="color:inherit">${L("Dashboard", "لوحة القيادة")}</a> › <a href="employees.html" style="color:inherit">${L("Employees", "الموظفين")}</a> › <a href="${back}" style="color:inherit">${L("Activity log", "سجل النشاط")}</a> › <span>${L(`Activity #${g.id}`, `النشاط #${g.id}`)}</span></nav>
+      <section class="card card--pad stack gap-5 animate-in">
+        <div class="record-head">
+          <span class="record-head__media" aria-hidden="true">${ic(toneOf(g.action) === "red" ? "trash" : toneOf(g.action) === "green" ? "plus" : "edit")}</span>
+          <div class="record-head__id"><h1 class="t-h3">${esc(g.record.label)}</h1>
+            <div class="record-head__badges">${actBadge(g.action)}<span class="badge">${esc(modName(g.module))}</span></div>
+            <div class="record-head__meta"><span>${L("Activity", "النشاط")} #${g.id}</span><span aria-hidden="true">·</span><span>${L("Record", "السجل")} #${g.record.id}</span><span aria-hidden="true">·</span><span dir="ltr">${esc(fmtDate(g.created_at))}</span></div></div>
+          <div class="record-head__actions"><a class="btn btn--secondary" href="${back}">${ic(document.documentElement.dir === "rtl" ? "chevronRight" : "chevronLeft")}<span>${L("Back to activity log", "العودة إلى سجل النشاط")}</span></a></div>
+        </div>
+        ${PP.kv([[L("Date & time", "التاريخ والوقت"), `<span dir="ltr">${esc(fmtDate(g.created_at))}</span>`], [L("Module", "الوحدة"), esc(modName(g.module))],
+          [L("Related record", "السجل المرتبط"), `<span style="color:var(--color-primary-ink)">${esc(modName(g.module))} #${g.record.id}</span>${g.record.exists ? "" : ` <span class="text-tertiary" style="font-weight:var(--weight-regular)">${L("(deleted)", "(محذوف)")}</span>`}`],
+          [L("Performed by", "تم بواسطة"), `<div class="row gap-2" style="align-items:center">${PP.avatar(p.name)}<div><b>${esc(p.name)}</b><div class="t-xs text-tertiary" style="font-weight:var(--weight-regular)">${esc(title(p.role))}</div></div></div>`],
+          [L("Contact", "التواصل"), `<span style="overflow-wrap:anywhere">${esc(p.email)}</span><div class="t-xs text-tertiary" dir="ltr" style="font-weight:var(--weight-regular);text-align:start">${esc(p.phone)}</div>`]])}
+        ${g.acting_as ? `<div class="alert alert--warning"><span class="alert__icon">${ic("users")}</span><div class="alert__body stack gap-2"><b>${L("Acting as", "بالنيابة عن")}</b>
+          ${PP.kv([[L("Partner", "الشريك"), esc(g.acting_as.label)], [L("Company", "الشركة"), esc(g.acting_as.company)]])}</div></div>` : ""}
+      </section>
+      <section class="data-table-wrap animate-in"><div class="data-table-toolbar" style="flex-wrap:wrap;gap:var(--space-3)"><b class="t-title">${isUpd ? L(`Changed fields (${fields.length})`, `الحقول المتغيرة (${fields.length})`) : L(`Fields (${fields.length})`, `الحقول (${fields.length})`)}</b><span class="grow"></span>
+          <button type="button" class="btn btn--sm btn--secondary" data-raw data-perm="view_activity_log_raw" aria-expanded="false">${ic("list")}<span>${L("View raw JSON", "عرض JSON الخام")}</span></button></div>
+        ${SA.table({ rows: fields, empty: ["There is no data to display.", "لا توجد بيانات للعرض."], columns: isUpd ? [
+          { head: ["Field", "الحقل"], cell: (f) => `<b>${fieldLabel(f)}</b>` },
+          { head: ["Before", "قبل"], cell: (f) => fmt(f.field, f.before, "before") },
+          { head: ["After", "بعد"], cell: (f) => fmt(f.field, f.after, "after") },
+        ] : [{ head: ["Field", "الحقل"], cell: (f) => `<b>${fieldLabel(f)}</b>` }, { head: ["Value", "القيمة"], cell: (f) => fmt(f.field, f.after !== undefined ? f.after : f.before) }] })}
+        <pre data-json hidden style="margin:0;background:var(--color-surface-sunken);padding:var(--space-4);max-height:400px;overflow:auto;direction:ltr;text-align:left;font-size:var(--text-xs);border-top:var(--border-thin) solid var(--color-border-subtle)">${esc(JSON.stringify(g, null, 2))}</pre></section>`;
+    mount.querySelector("[data-raw]").onclick = (e) => { const pre = mount.querySelector("[data-json]"); pre.hidden = !pre.hidden; e.currentTarget.setAttribute("aria-expanded", String(!pre.hidden)); };
+    return;
+  }
+
+  /* ================= list ================= */
+  /* Redesign: head with a live summary; one toolbar — search, then every filter as a
+     compact control with the date range — and removable chips for what is applied;
+     module as a chip, performer with avatar. Same filters, URL sync and paging. */
+  const f = { search: qs.get("search") || "", modules: qs.getAll("modules[]"), action: qs.get("action") || "", employee_id: qs.get("employee_id") || "", acting: qs.get("acting_as_partner_id") || "", from: qs.get("date_from") || "", to: qs.get("date_to") || "" };
+  let page = +(qs.get("page") || 1), limit = +(qs.get("limit") || 15), openMenu = null;
+  OPS.head(document.getElementById("pageHead"), { title: ["Activity log", "سجل النشاط"], crumbs: [["Employees", "الموظفين", "employees.html"]],
+    sub: L(`${SA.fmt(data.length)} activities by ${new Set(data.map((g) => g.performed_by.name)).size} employees · ${data.filter((g) => g.acting_as).length} acting as a partner`, `${SA.fmt(data.length)} نشاط بواسطة ${new Set(data.map((g) => g.performed_by.name)).size} موظفين · ${data.filter((g) => g.acting_as).length} بالنيابة عن شريك`) });
+  const sync = () => {
+    const u = new URLSearchParams();
+    if (f.search) u.set("search", f.search); f.modules.forEach((m) => u.append("modules[]", m));
+    [["action", f.action], ["employee_id", f.employee_id], ["acting_as_partner_id", f.acting], ["date_from", f.from], ["date_to", f.to]].forEach(([k, v]) => v && u.set(k, v));
+    if (page > 1) u.set("page", page); if (limit !== 15) u.set("limit", limit);
+    const s = u.toString() ? "?" + u : ""; history.replaceState(null, "", location.pathname.split("/").pop() + s);
+    try { sessionStorage.setItem("al:search", s); } catch (e) {}
+  };
+  const dmy = (s) => { const [d, m, y] = s.slice(0, 10).split("/"); return `${y}-${m}-${d}`; };
+  const rows = () => data.filter((g) => (!f.search || g.record.label.toLowerCase().includes(f.search.toLowerCase()) || String(g.record.id).includes(f.search.replace("#", "")))
+    && (!f.modules.length || f.modules.includes(g.module.value)) && (!f.action || g.action.value === f.action) && (!f.employee_id || String(g.performed_by.id) === f.employee_id)
+    && (!f.acting || (g.acting_as && g.acting_as.value === f.acting)) && (!f.from || dmy(g.created_at) >= f.from) && (!f.to || dmy(g.created_at) <= f.to));
+  const modLabel = () => (!f.modules.length ? L("All modules", "كل الوحدات") : f.modules.length <= 2 ? f.modules.map((m) => modName(S.logModules.find((x) => x.value === m))).join(", ") : L(`${f.modules.length} modules`, `${f.modules.length} وحدات`));
+  const actingLabel = () => (f.acting ? S.actingAs.find((x) => x.value === f.acting).label : L("Acting as", "بالنيابة عن"));
+  /* Performed by: value = employee id, label = name (GET /activity-logs/filters → performed_by) */
+  const performers = [...new Map(data.map((g) => [String(g.performed_by.id), g.performed_by.name])).entries()];
+  const performerName = (id) => (performers.find((x) => x[0] === id) || [id, id])[1];
+  const chip = (k, lab, val) => `<span class="filter-chip"><span class="filter-chip__key">${esc(lab)}</span><span class="filter-chip__op">${L("is", "=")}</span><span class="filter-chip__val">${esc(val)}</span><button type="button" class="filter-chip__x" data-unf="${k}" aria-label="${esc(L("Remove", "إزالة") + " " + lab)}">${ic("close")}</button></span>`;
+  const chips = () => {
+    const c = [];
+    if (f.modules.length) c.push(chip("modules", L("Modules", "الوحدات"), modLabel()));
+    if (f.action) c.push(chip("action", L("Action", "الإجراء"), actWord(f.action)));
+    if (f.employee_id) c.push(chip("employee_id", L("Performed by", "تم بواسطة"), performerName(f.employee_id)));
+    if (f.acting) c.push(chip("acting", L("Acting as", "بالنيابة عن"), actingLabel()));
+    if (f.from || f.to) c.push(chip("dates", L("Date", "التاريخ"), OPS.range(f.from, f.to)));
+    return c.length || f.search ? `<div class="filterbar ops-chips">${c.join("")}<button type="button" class="filterbar__clear" data-clear>${L("Clear all", "مسح الكل")}</button></div>` : "";
+  };
+  const sel = (k, opts, label) => `<div class="select al-sel"><select data-f="${k}" aria-label="${label}">${opts.map((o) => `<option value="${esc(o[0])}" ${o[0] === f[k] ? "selected" : ""}>${esc(o[1])}</option>`).join("")}</select><span class="select__caret">${ic("chevronDown")}</span></div>`;
+  function paint() {
+    const all = rows(), pages = Math.max(1, Math.ceil(all.length / limit)); if (page > pages) page = pages;
+    const slice = all.slice((page - 1) * limit, page * limit);
+    mount.innerHTML = `<section class="data-table-wrap">
+      <div class="data-table-toolbar al-bar">
+        ${SA.search(["Search record name or #ID", "ابحث باسم السجل أو رقمه"], f.search)}
+        <div class="al-filters">
+          <button type="button" class="btn btn--sm btn--secondary" data-menu="modules" aria-haspopup="dialog">${ic("layers")}<span>${esc(modLabel())}</span>${ic("chevronDown")}</button>
+          ${sel("action", [["", L("All actions", "كل الإجراءات")]].concat(S.logActions.map((a) => [a.value, actWord(a.value)])), L("Action", "الإجراء"))}
+          ${sel("employee_id", [["", L("Performed by", "تم بواسطة")]].concat(performers), L("Performed by", "تم بواسطة"))}
+          <button type="button" class="btn btn--sm btn--secondary" data-menu="acting" aria-haspopup="dialog">${ic("users")}<span>${esc(actingLabel())}</span>${ic("chevronDown")}</button>
+          <span class="al-dates"><input class="input" type="date" data-f="from" value="${f.from}" aria-label="${L("From", "من")}"><span class="text-tertiary" aria-hidden="true">→</span><input class="input" type="date" data-f="to" value="${f.to}" min="${f.from}" aria-label="${L("To", "إلى")}"></span>
+        </div>
+      </div>
+      ${chips()}
+      ${SA.table({ rows: slice, empty: ["There is no data to display.", "لا توجد بيانات للعرض."], columns: [
+        { head: ["Date & time", "التاريخ والوقت"], cell: (g) => `<span dir="ltr" style="white-space:nowrap">${esc(g.created_at)}</span>` },
+        { head: ["Module", "الوحدة"], cell: (g) => `<span class="chip">${esc(modName(g.module))}</span>` },
+        { head: ["Action", "الإجراء"], cell: (g) => actBadge(g.action) },
+        { head: ["Performed by", "تم بواسطة"], cell: (g) => `<div class="cell-user" style="min-width:220px">${PP.avatar(g.performed_by.name)}<div><b>${esc(g.performed_by.name)}</b><div class="t-xs text-tertiary">${esc(title(g.performed_by.role))}</div>${g.acting_as ? `<span class="badge badge--warning" style="margin-top:4px;white-space:normal">${L(`Acting as ${esc(g.acting_as.label)} — ${esc(g.acting_as.company)}`, `بالنيابة عن ${esc(g.acting_as.label)} — ${esc(g.acting_as.company)}`)}</span>` : ""}</div></div>` },
+        { head: ["Record", "السجل"], cell: (g) => OPS.two(esc(g.record.label || "#" + g.record.id), `#${g.record.id}`) },
+        { head: ["Details", "التفاصيل"], align: "center", cell: (g) => `<a class="icon-btn" href="activity-log.html?id=${g.id}" aria-label="${L("Details", "التفاصيل")} #${g.id}" data-tip="${L("Details", "التفاصيل")}">${ic("eye")}</a>` },
+      ] })}
+      ${all.length ? SA.pager({ page, limit, total: all.length, sizes: [15, 50, 100] }) : ""}</section>`;
+    sync();
+  }
+  /* grouped / searchable checkbox menu (CheckboxFilterDropdown) */
+  function menu(kind, trigger) {
+    let pop = document.getElementById("alMenu");
+    if (pop && openMenu === kind && pop.classList.contains("is-open")) { pop.classList.remove("is-open"); openMenu = null; return; }
+    if (!pop) { pop = document.createElement("div"); pop.id = "alMenu"; pop.className = "popover"; pop.style.cssText = "width:300px"; document.body.appendChild(pop); }
+    openMenu = kind;
+    const isMod = kind === "modules";
+    let pending = isMod ? f.modules.slice() : f.acting ? [f.acting] : [], q = "";
+    const GROUP_AR = { Partners: "الشركاء", Users: "المستخدمون", Finance: "المالية", Employees: "الموظفون", Operations: "التشغيل" };
+    const opts = isMod ? S.logModules.map((o) => Object.assign({}, o, { label: modName(o) })) : S.actingAs.map((a) => ({ value: a.value, label: a.label, sub: a.company }));
+    const draw = () => {
+      const list = opts.filter((o) => !q || (o.label + " " + (o.sub || "")).toLowerCase().includes(q));
+      const groups = isMod ? [...new Set(list.map((o) => o.group))] : [null];
+      pop.innerHTML = `<div class="popover__body stack gap-3">${SA.search(isMod ? ["Search modules", "ابحث في الوحدات"] : ["Search partners", "ابحث عن شريك"], q)}
+        <div class="stack gap-2" style="max-height:216px;overflow:auto">${list.length ? groups.map((gr) => `${gr ? `<span class="t-xs text-tertiary" style="text-transform:uppercase;letter-spacing:.06em">${esc(L(gr, GROUP_AR[gr] || gr))}</span>` : ""}${list.filter((o) => !gr || o.group === gr).map((o) => `<label class="check"><input type="checkbox" value="${o.value}" ${pending.includes(o.value) ? "checked" : ""}><span class="check__box">${ic("check")}</span><span>${esc(o.label)}${o.sub ? `<span class="t-xs text-tertiary" style="display:block">${esc(o.sub)}</span>` : ""}</span></label>`).join("")}`).join("")
+          : `<span class="t-sm text-tertiary">${L("There is no data to display.", "لا توجد بيانات للعرض.")}</span>`}</div>
+        ${isMod ? "" : `<p class="t-xs text-tertiary">${L("Partners appear here as a context to filter by, never as actors in the results.", "الشركاء يظهرون هنا كسياق للتصفية فقط، وليسوا فاعلين في النتائج.")}</p>`}</div>
+        <div class="popover__foot"><button type="button" class="btn btn--sm btn--secondary" data-mclear>${isMod ? L("Clear modules", "مسح الوحدات") : L("Clear partners", "مسح الشركاء")}</button><button type="button" class="btn btn--sm" data-mapply>${L("Apply", "تطبيق")}</button></div>`;
+      const inp = pop.querySelector("[data-search]"); inp.focus(); inp.setSelectionRange(q.length, q.length);
+    };
+    const apply = (sel) => { if (isMod) f.modules = sel; else f.acting = sel[0] || ""; page = 1; pop.classList.remove("is-open"); openMenu = null; paint(); };
+    pop.oninput = (e) => { if (e.target.matches("[data-search]")) { q = e.target.value.toLowerCase(); draw(); } };
+    pop.onchange = (e) => { if (e.target.type !== "checkbox") return; if (isMod) pending = e.target.checked ? pending.concat(e.target.value) : pending.filter((x) => x !== e.target.value); else { pending = e.target.checked ? [e.target.value] : []; draw(); } };
+    pop.onclick = (e) => { if (e.target.closest("[data-mclear]")) apply([]); if (e.target.closest("[data-mapply]")) apply(pending); };
+    draw();
+    SA.popover(pop, trigger);
+  }
+  mount.addEventListener("input", (e) => { if (e.target.matches("[data-search]")) { f.search = e.target.value; page = 1; paint(); const i = mount.querySelector("[data-search]"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); } });
+  mount.addEventListener("change", (e) => {
+    const k = e.target.dataset.f; if (k) { f[k] = e.target.value; page = 1; return paint(); }
+    if (e.target.matches("[data-limit]")) { limit = +e.target.value; page = 1; paint(); }
+  });
+  mount.addEventListener("click", (e) => {
+    const m = e.target.closest("[data-menu]"); if (m) return menu(m.dataset.menu, m);
+    const un = e.target.closest("[data-unf]");
+    if (un) { const k = un.dataset.unf; if (k === "modules") f.modules = []; else if (k === "dates") { f.from = ""; f.to = ""; } else f[k] = ""; page = 1; return paint(); }
+    if (e.target.closest("[data-clear]")) { Object.assign(f, { search: "", modules: [], action: "", employee_id: "", acting: "", from: "", to: "" }); page = 1; return paint(); }
+    const pg = e.target.closest("[data-page]"); if (pg && !pg.disabled) { page = +pg.dataset.page; paint(); }
+  });
+  paint();
+})();
+</script>
+</body>
+</html>

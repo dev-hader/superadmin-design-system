@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
         <script>
             try {
                 document.documentElement.setAttribute("data-theme", localStorage.getItem("rd-theme") === "1" ? "dark" : "light");
@@ -9,7 +10,7 @@
             } catch (e) {}
         </script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Verification Code · High Five</title>
+        <title>Verification code · High Five</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -18,6 +19,79 @@
         <link rel="stylesheet" href="assets/css/app.css" />
         <link rel="stylesheet" href="assets/css/components.css" />
         <link rel="stylesheet" href="assets/shell.css" />
+        <link rel="stylesheet" href="assets/css/skin-v2.css?v=7" />
+        <link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7" />
+        <style>
+            /* ---- Super Admin auth card (page-level layer on top of the shared
+               "AUTH — brand panel + raised card" treatment in components.css):
+               start-aligned head with a kicker / icon tile, label-row links,
+               controls wrapped so the leading icon stays centred when an error
+               line appears, a 3-step progress for the reset flow, and a quiet
+               footer row for "back" links. Tokens only. ---- */
+            .sa-card .auth-head { text-align: start; margin-block-end: var(--space-6); }
+            .sa-card .auth-head h1 { font-size: var(--text-h2); line-height: 1.2; letter-spacing: -0.01em; }
+            .sa-card .auth-head p { margin-block-start: var(--space-2); }
+            .sa-kicker { display: flex; align-items: center; gap: var(--space-2); margin-block-end: var(--space-5); }
+            .sa-kicker .badge { gap: 6px; }
+            .sa-kicker .badge svg { width: 14px; height: 14px; }
+            /* the card mark (shown once the rail collapses) sits at the start, in line with the head */
+            .sa-card .auth-card__logo { justify-content: flex-start; }
+            .sa-kicker { justify-content: space-between; }
+            .sa-kicker .auth-card__logo { margin: 0; }
+            .sa-head-ic { width: 48px; height: 48px; border-radius: var(--radius-lg); display: grid; place-items: center; background: var(--color-primary-subtle); color: var(--color-primary-ink); margin-block-end: var(--space-4); }
+            .sa-head-ic svg { width: 24px; height: 24px; }
+            .sa-ctl { position: relative; }
+            .sa-ctl > .input { block-size: 48px; }
+            .sa-card .lg-fi { bottom: auto; top: 50%; translate: 0 -50%; }
+            .sa-label-row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); margin-block-end: 6px; }
+            .sa-card .sa-label-row .field__label { margin: 0; }
+            .sa-link { color: var(--color-primary-ink); font-size: var(--text-sm); font-weight: var(--weight-medium); text-decoration: none; white-space: nowrap; }
+            .sa-link:hover { text-decoration: underline; }
+            .sa-card .field__error { margin-block-start: 6px; }
+            .sa-card .alert { margin-block-end: var(--space-5); align-items: center; }
+            .sa-card .alert__icon { display: grid; place-items: center; }
+            .sa-card .alert__icon svg { width: 18px; height: 18px; }
+            .sa-card .alert__body { font-size: var(--text-sm); }
+            .sa-foot { margin-block-start: var(--space-6); padding-block-start: var(--space-5); border-top: 1px solid var(--color-border-subtle); display: flex; align-items: center; justify-content: center; gap: var(--space-3); flex-wrap: wrap; }
+            .sa-foot .btn svg { width: 16px; height: 16px; }
+            [dir="rtl"] .sa-flip svg { transform: scaleX(-1); }
+            /* reset-flow progress: Email · Code · New password */
+            .sa-steps { list-style: none; margin: 0 0 var(--space-6); padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); }
+            .sa-step { display: grid; gap: 6px; font-size: var(--text-xs); font-weight: var(--weight-medium); color: var(--color-text-tertiary); min-inline-size: 0; }
+            .sa-step::before { content: ""; block-size: 4px; border-radius: var(--radius-full); background: var(--color-border); }
+            .sa-step.is-done::before, .sa-step.is-current::before { background: var(--color-primary); }
+            .sa-step.is-done { color: var(--color-text-secondary); }
+            .sa-step.is-current { color: var(--color-text); }
+            .sa-step > span { line-height: 1.35; overflow-wrap: anywhere; }
+            .sa-step b { font-family: var(--font-mono); font-weight: var(--weight-medium); margin-inline-end: 4px; }
+            /* phones: the theme / language tools are fixed top-end, so keep the
+               card clear of them when it is taller than the screen, and tighten
+               the head a step */
+            @media (max-width: 860px) {
+                .auth-main { align-items: safe center; }
+                .sa-card { margin-block-start: var(--space-12); }
+                .sa-card .auth-head { margin-block-end: var(--space-5); }
+                .sa-head-ic { width: 40px; height: 40px; margin-block-end: var(--space-3); }
+                .sa-head-ic svg { width: 20px; height: 20px; }
+                .sa-steps { margin-block-end: var(--space-5); }
+            }
+        </style>
+        <style>
+            /* code step: masked phone chip, wide digit boxes, resend row, sample-code hint */
+            .sa-sent { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); margin-block-start: var(--space-3); font-size: var(--text-sm); color: var(--color-text-secondary); }
+            .sa-phone { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: var(--radius-full); background: var(--color-surface-sunken); border: 1px solid var(--color-border-subtle); color: var(--color-text); font-family: var(--font-mono); font-size: var(--text-xs); font-weight: var(--weight-medium); }
+            .sa-phone svg { width: 14px; height: 14px; color: var(--color-text-tertiary); }
+            .sa-card .auth-otp { justify-content: flex-start; gap: var(--space-3); }
+            .sa-card .auth-otp input { flex: 1 1 0; min-inline-size: 0; max-inline-size: 64px; inline-size: auto; block-size: 60px; }
+            .sa-resend { display: flex; align-items: center; justify-content: center; gap: var(--space-1); margin-block-start: var(--space-4); color: var(--color-text-tertiary); }
+            .sa-resend > svg { width: 16px; height: 16px; }
+            .sa-resend .btn { padding-inline: var(--space-2); }
+            .sa-hint { display: flex; align-items: center; justify-content: center; gap: var(--space-2); margin-block-start: var(--space-4); padding: var(--space-2) var(--space-3); border: 1px dashed var(--color-border); border-radius: var(--radius-md); font-size: var(--text-xs); color: var(--color-text-secondary); }
+            .sa-hint svg { width: 14px; height: 14px; color: var(--color-info); }
+            /* the code step is the tallest card — on short laptop screens drop
+               its icon tile so it still fits without scrolling */
+            @media (max-height: 860px) { #codeForm .sa-head-ic { display: none; } }
+        </style>
     </head>
     <body>
         <!-- Verification code — mirrors modules/auth/components/VerificationCode.tsx
@@ -29,53 +103,68 @@
             <aside class="auth-brand"></aside>
             <main class="auth-main">
                 <!-- step 1 -->
-                <form class="auth-card" id="codeForm" novalidate>
+                <form class="auth-card sa-card" id="codeForm" novalidate>
                     <a class="auth-card__logo" href="login.html"></a>
-                    <div class="auth-head" style="text-align:center">
-                        <h1 data-ar="هل نسيت كلمة المرور ؟">Forgot Password ?</h1>
+                    <ol class="sa-steps">
+                        <li class="sa-step is-done"><span><b>1</b><span data-ar="البريد الإلكتروني">Email</span></span></li>
+                        <li class="sa-step is-current" aria-current="step"><span><b>2</b><span data-ar="الرمز">Code</span></span></li>
+                        <li class="sa-step"><span><b>3</b><span data-ar="كلمة مرور جديدة">New password</span></span></li>
+                    </ol>
+                    <div class="auth-head">
+                        <span class="sa-head-ic" data-ic="chat" aria-hidden="true"></span>
+                        <h1 data-ar="هل نسيت كلمة المرور؟">Forgot password?</h1>
                         <p data-ar="أدخل بريدك الإلكتروني لإعادة تعيين كلمة المرور.">Enter your email to reset your password.</p>
-                        <p class="t-sm"><span data-ar="أدخل الرمز الذي تم إرساله إلى">Enter the code sent to</span> (<b dir="ltr" id="maskedPhone">+96*****67</b>)</p>
+                        <div class="sa-sent"><span data-ar="أدخل الرمز الذي تم إرساله إلى">Enter the code sent to</span> <b class="sa-phone" dir="ltr"><span data-ic="mobile" aria-hidden="true"></span><span id="maskedPhone">+96*****67</span></b></div>
                     </div>
-                    <div class="alert alert--success" id="okBox" hidden><div class="alert__body" data-ar="تم التحقق من الرمز بنجاح">Code verified successfully</div></div>
-                    <div class="alert alert--danger" id="errBox" hidden><div class="alert__body" id="errText"></div></div>
+                    <div class="alert alert--success" id="okBox" hidden><span class="alert__icon" data-ic="check"></span><div class="alert__body" data-ar="تم التحقق من الرمز بنجاح">Code verified successfully</div></div>
+                    <div class="alert alert--danger" id="errBox" hidden><span class="alert__icon" data-ic="warn"></span><div class="alert__body" id="errText"></div></div>
 
                     <div class="auth-field">
-                        <label class="field__label" style="text-align:center" data-ar="أدخل الرمز">Enter Code</label>
+                        <label class="field__label" data-ar="أدخل الرمز">Enter code</label>
                         <div class="auth-otp" dir="ltr">
                             <input class="input" inputmode="numeric" maxlength="1" data-d="0" aria-label="digit 1" />
                             <input class="input" inputmode="numeric" maxlength="1" data-d="1" aria-label="digit 2" />
                             <input class="input" inputmode="numeric" maxlength="1" data-d="2" aria-label="digit 3" />
                             <input class="input" inputmode="numeric" maxlength="1" data-d="3" aria-label="digit 4" />
                         </div>
-                        <span class="field__error" id="digitErr" hidden style="justify-content:center"></span>
+                        <span class="field__error" id="digitErr" hidden></span>
                     </div>
 
                     <div class="auth-actions"><button class="btn" type="submit" id="btnVerify" data-ar="تحقق">Verify</button></div>
-                    <div class="row between" style="align-items:center;flex-wrap:wrap;gap:var(--space-2)">
-                        <a class="btn btn--sm btn--secondary" href="login.html"><span aria-hidden="true">←</span> <span data-ar="العودة لتسجيل الدخول">Back To Login</span></a>
-                        <button type="button" class="btn btn--sm btn--ghost" id="btnResend" disabled></button>
+                    <div class="sa-resend"><span data-ic="clock" aria-hidden="true"></span><button type="button" class="btn btn--sm btn--ghost" id="btnResend" disabled></button></div>
+                    <p class="sa-hint"><span data-ic="info" aria-hidden="true"></span><span data-ar="رمز تجريبي: 1234">Sample code: 1234</span></p>
+                    <div class="sa-foot">
+                        <a class="btn btn--sm btn--ghost sa-flip" href="login.html"><span data-ic="chevronLeft" aria-hidden="true"></span><span data-ar="العودة لتسجيل الدخول">Back to login</span></a>
                     </div>
-                    <p class="t-xs text-tertiary" style="text-align:center" data-ar="رمز تجريبي: 1234">Sample code: 1234</p>
                 </form>
 
                 <!-- step 2 -->
-                <form class="auth-card" id="pwForm" novalidate hidden>
+                <form class="auth-card sa-card" id="pwForm" novalidate hidden>
                     <a class="auth-card__logo" href="login.html"></a>
-                    <div class="auth-head" style="text-align:center">
-                        <h1 data-ar="إعادة تعيين كلمة المرور">Reset Password</h1>
+                    <ol class="sa-steps">
+                        <li class="sa-step is-done"><span><b>1</b><span data-ar="البريد الإلكتروني">Email</span></span></li>
+                        <li class="sa-step is-done"><span><b>2</b><span data-ar="الرمز">Code</span></span></li>
+                        <li class="sa-step is-current" aria-current="step"><span><b>3</b><span data-ar="كلمة مرور جديدة">New password</span></span></li>
+                    </ol>
+                    <div class="auth-head">
+                        <span class="sa-head-ic" data-ic="lock" aria-hidden="true"></span>
+                        <h1 data-ar="إعادة تعيين كلمة المرور">Reset password</h1>
                     </div>
-                    <div class="alert alert--success" id="pwOk" hidden><div class="alert__body" data-ar="تم إعادة تعيين كلمة المرور بنجاح.. يرجى الانتظار">Password reset successfully.. Please wait</div></div>
+                    <div class="alert alert--success" id="pwOk" hidden><span class="alert__icon" data-ic="check"></span><div class="alert__body" data-ar="تمت إعادة تعيين كلمة المرور بنجاح… يرجى الانتظار">Password reset successfully. Please wait…</div></div>
                     <div class="auth-field">
-                        <label class="field__label" data-ar="كلمة المرور الجديدة">New Password</label>
-                        <div class="auth-pw"><input class="input" id="pw" type="password" autocomplete="new-password" placeholder="Enter your new password" data-ar-placeholder="أدخل كلمة المرور الجديدة" /><span class="auth-pw__eye" data-eye="pw" aria-label="Show password"></span></div>
+                        <label class="field__label" for="pw" data-ar="كلمة المرور الجديدة">New password</label>
+                        <div class="auth-pw"><input class="input" id="pw" type="password" autocomplete="new-password" placeholder="Enter your new password" data-ar-placeholder="أدخل كلمة المرور الجديدة" /><span class="auth-pw__eye" data-eye="pw" aria-label="Show password"></span><span class="lg-fi" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span></div>
                         <span class="field__error" id="pwErr" hidden></span>
                     </div>
                     <div class="auth-field">
-                        <label class="field__label" data-ar="تأكيد كلمة المرور">Confirm Password</label>
-                        <div class="auth-pw"><input class="input" id="pw2" type="password" autocomplete="new-password" placeholder="Confirm Password" data-ar-placeholder="تأكيد كلمة المرور" /><span class="auth-pw__eye" data-eye="pw2" aria-label="Show password"></span></div>
+                        <label class="field__label" for="pw2" data-ar="تأكيد كلمة المرور">Confirm password</label>
+                        <div class="auth-pw"><input class="input" id="pw2" type="password" autocomplete="new-password" placeholder="Confirm password" data-ar-placeholder="أكّد كلمة المرور" /><span class="auth-pw__eye" data-eye="pw2" aria-label="Show password"></span><span class="lg-fi" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span></div>
                         <span class="field__error" id="pw2Err" hidden></span>
                     </div>
-                    <div class="auth-actions"><button class="btn" type="submit" id="btnReset" data-ar="إعادة تعيين كلمة المرور">Reset Password</button></div>
+                    <div class="auth-actions"><button class="btn" type="submit" id="btnReset" data-ar="إعادة تعيين كلمة المرور">Reset password</button></div>
+                    <div class="sa-foot">
+                        <a class="btn btn--sm btn--ghost sa-flip" href="login.html"><span data-ic="chevronLeft" aria-hidden="true"></span><span data-ar="العودة لتسجيل الدخول">Back to login</span></a>
+                    </div>
                 </form>
             </main>
         </div>
@@ -88,6 +177,37 @@
                 const ar = document.documentElement.dir === "rtl", T = (en, a) => (ar ? a : en);
                 const $ = (id) => document.getElementById(id);
                 document.querySelectorAll("[data-ar-placeholder]").forEach((i) => ar && (i.placeholder = i.dataset.arPlaceholder));
+                /* icons for [data-ic] slots (badge, alerts, head tile, footer) */
+                document.querySelectorAll("[data-ic]").forEach((x) => (x.innerHTML = RD.icon(x.dataset.ic)));
+                /* Brand rail: AUTH.init() fills it with the shared (Partner)
+                   pitch; re-render it with the same .lg-* building blocks but
+                   Super Admin copy. Arabic is picked here because arInit()
+                   already ran inside AUTH.init(). */
+                const rail = document.querySelector(".auth-brand");
+                if (rail) {
+                    const feats = [
+                        ["users", T("Partners & services", "الشركاء والخدمات"), T("Partners, their services, lists and translations.", "الشركاء وخدماتهم وقوائمهم وترجماتها.")],
+                        ["ticket", T("Bookings & financials", "الحجوزات والماليات"), T("Every booking, payment and promo code.", "كل حجز ودفعة وكود خصم.")],
+                        ["gear", T("Setup & content", "الإعدادات والمحتوى"), T("Types, locations, pages and notifications.", "الأنواع والمواقع والصفحات والإشعارات.")],
+                    ];
+                    rail.innerHTML = `
+                        <div class="lg-lockup">${AUTH.MARK("lgMarkGrad", 58, 48)}<span class="lg-wordmark">High<b>Five</b></span></div>
+                        <div class="lg-d__head" style="--d:.1s">
+                            <h2 class="lg-h">${T("Every partner,", "كل شريك،")}<br />${T("every booking", "كل حجز")}</h2>
+                            <div class="lg-h__soft">${T("one control room.", "في لوحة تحكم واحدة.")}</div>
+                        </div>
+                        <div class="lg-feats">${feats
+                            .map(
+                                ([ic, t, s], i) => `<div class="lg-feat" style="--d:${0.25 + i * 0.1}s">
+                            <span class="lg-feat__ic" aria-hidden="true">${RD.icon(ic)}</span>
+                            <div><div class="lg-feat__t">${t}</div><div class="lg-feat__s">${s}</div></div>
+                        </div>`,
+                            )
+                            .join("")}</div>`;
+                }
+                if (ar) document.title = "رمز التحقق · High Five";
+                /* AUTH.init() only fills the first card's mark — give the step-2 card its own */
+                document.querySelectorAll(".auth-card__logo").forEach((a, i) => { if (!a.innerHTML.trim()) a.innerHTML = AUTH.MARK("lgMarkGradStep" + i, 34, 28); });
                 let phone = "+966501234567";
                 try { phone = localStorage.getItem("PHONE_VALIDATION") || phone; } catch (x) {}
                 $("maskedPhone").textContent = `${phone.slice(0, 3)}*****${phone.slice(-2)}`;
@@ -106,7 +226,7 @@
                 const tick = () => {
                     const b = $("btnResend");
                     b.disabled = left > 0;
-                    b.textContent = left > 0 ? `${T("Resend code in", "إعادة إرسال الرمز بعد")} ${left} ${T("Seconds", "ثانية")}` : T("Resend Code", "إعادة إرسال الرمز");
+                    b.textContent = left > 0 ? `${T("Resend code in", "إعادة إرسال الرمز بعد")} ${left} ${T("seconds", "ثانية")}` : T("Resend code", "إعادة إرسال الرمز");
                     if (left > 0) timer = setTimeout(() => { left--; tick(); }, 1000);
                 };
                 tick();
@@ -115,7 +235,7 @@
                 $("codeForm").addEventListener("submit", (e) => {
                     e.preventDefault();
                     const bad = digits.find((d) => !/^[0-9]$/.test(d.value));
-                    if (bad) return fieldErr("digitErr", bad.value ? T("Must be a digit", "يجب أن يكون رقمًا") : T("this field is required", "هذا الحقل مطلوب"));
+                    if (bad) return fieldErr("digitErr", bad.value ? T("Must be a digit", "يجب أن يكون رقمًا") : T("This field is required", "هذا الحقل مطلوب"));
                     fieldErr("digitErr", "");
                     const b = $("btnVerify"); b.disabled = true; b.textContent = T("Please wait...", "يرجى الانتظار...");
                     setTimeout(() => {
@@ -123,7 +243,7 @@
                         if (digits.map((d) => d.value).join("") !== "1234") {
                             /* wrong code: form resets, the API message (or this fallback) shows */
                             digits.forEach((d) => (d.value = "")); digits[0].focus();
-                            $("errText").textContent = T("The login details are incorrect", "تفاصيل تسجيل الدخول غير صحيحة"); $("errBox").hidden = false; return;
+                            $("errText").textContent = T("The login details are incorrect", "بيانات تسجيل الدخول غير صحيحة"); $("errBox").hidden = false; return;
                         }
                         $("errBox").hidden = true; $("okBox").hidden = false;
                         setTimeout(() => { $("codeForm").hidden = true; $("pwForm").hidden = false; $("pw").focus(); }, 1000); /* step 2 after 1 s */
@@ -133,16 +253,17 @@
                 $("pwForm").addEventListener("submit", (e) => {
                     e.preventDefault();
                     const p = $("pw").value, c = $("pw2").value;
-                    fieldErr("pwErr", !p ? T("Password is required", "كلمة المرور مطلوبة") : p.length < 8 ? T("Minimum 8 symbols", "8 رموز كحد أدنى") : p.length > 50 ? T("Maximum 50 symbols", "50 رمزًا كحد أقصى") : "");
-                    fieldErr("pw2Err", !c ? T("Password confirmation is required", "تأكيد كلمة المرور مطلوب") : c !== p ? T("Passwords must match", "كلمات المرور يجب أن تتطابق") : "");
+                    fieldErr("pwErr", !p ? T("Password is required", "كلمة المرور مطلوبة") : p.length < 8 ? T("Minimum 8 symbols", "8 رموز على الأقل") : p.length > 50 ? T("Maximum 50 symbols", "50 رمزًا كحد أقصى") : "");
+                    fieldErr("pw2Err", !c ? T("Password confirmation is required", "تأكيد كلمة المرور مطلوب") : c !== p ? T("Passwords must match", "يجب أن تتطابق كلمتا المرور") : "");
                     if (!$("pwErr").hidden || !$("pw2Err").hidden) return;
                     const b = $("btnReset"); b.disabled = true; b.textContent = T("Please wait...", "يرجى الانتظار...");
                     /* the dashboard signs the user straight in after the reset */
                     setTimeout(() => { $("pwOk").hidden = false; setTimeout(() => (location.href = "login.html"), 1000); }, 600);
                 });
 
-                /* show / hide password (same eye as the login page) */
-                document.querySelectorAll("[data-eye]").forEach((eye) => (eye.onclick = () => { const i = $(eye.dataset.eye); i.type = i.type === "password" ? "text" : "password"; }));
+                /* show / hide password: AUTH.init() already wires every [data-eye]
+                   (same eye as the login page). The page used to add a second
+                   onclick toggle on top, which flipped the type straight back. */
             })();
         </script>
     </body>

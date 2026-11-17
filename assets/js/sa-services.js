@@ -6,51 +6,76 @@
    the summary's company line, exactly like the dashboard's profile variant).
    API: global GET /partner-service-lists · /partner-services?service_list_id=
         profile GET /partners/{id}/service-list · /partners/{id}/services?service_list_id=
+   Permissions (job keys — data-perm, demo ?perm=limited | ?perm=none): the pages / tab need
+   view_partner_services (PartnersServicesPage / PartnerServicesOutlet); every row action —
+   translation, approve, edit, delete, visibility — and Add service list / Add new need
+   update_partner_services (ServiceListsTable, PartnersServicesTable,
+   ServiceListServicesToolbarWrapper, ServicesPage). The callers tag their Add buttons.
    ========================================================================== */
 window.SV = (function () {
   "use strict";
   const { L, esc, ic, badge, iconBtn } = SA;
 
+  /* the rule chips of a list, each with its own explanation (tooltip):
+     [text, strong, tip label, tip text] — shared by the lists table and the services summary */
+  function RULES(r, long) {
+    const min = r.has_qty ? r.min_total_quantity : r.min_selection, max = r.has_qty ? r.max_total_quantity : r.max_selection;
+    const mm = `${min == null ? 0 : min} / ${max == null || max === "" ? L("Unlimited", "بدون حد أقصى") : max}`;
+    return [
+      r.is_required ? [L("Required", "مطلوب"), true, L("Requirement", "الإلزام"), L("Required — users must pick at least the minimum", "مطلوبة — يجب اختيار الحد الأدنى على الأقل")]
+        : [L("Optional", "اختياري"), false, L("Requirement", "الإلزام"), L("Optional — users may skip this list", "اختيارية — يمكن تخطي هذه القائمة")],
+      r.selection_type === "single" ? [long ? L("Single selection", "اختيار فردي") : L("Single", "فردي"), false, L("Selection type", "نوع الاختيار"), L("Single — one service only", "فردي — خدمة واحدة فقط")]
+        : [long ? L("Multiple selection", "اختيار متعدد") : L("Multiple", "متعدد"), false, L("Selection type", "نوع الاختيار"), L("Multiple — several services can be picked", "متعدد — يمكن اختيار أكثر من خدمة")],
+      [`${L("Min / max", "الأدنى / الأقصى")} ${mm}`, false, r.has_qty ? L("Min / max total quantity", "الحد الأدنى / الأقصى لإجمالي الكمية") : L("Min / max selection", "الحد الأدنى / الأقصى للاختيار"), mm],
+    ].concat(r.has_qty ? [[L("By quantity", "حسب الكمية"), false, L("Quantity mode", "وضع الكمية"), L("Limits count the total quantity across the selected services", "الحدود تحسب إجمالي الكمية عبر الخدمات المختارة")]] : []);
+  }
+  const tipChip = (t, strong, tipLabel, tip) => `<span class="chip" tabindex="0" data-tip-label="${esc(tipLabel)}" data-tip="${esc(tip)}" style="height:auto;padding:var(--space-1) var(--space-2);font-size:var(--text-xs);white-space:nowrap;cursor:help;${strong ? "font-weight:var(--weight-semibold)" : ""}">${t}</span>`;
+  const companyTip = (p) => `tabindex="0" data-tip-label="${esc(L("Company name", "اسم الشركة"))}" data-tip="${esc(p.company_name)} · ${esc(L("Partner ID", "رقم الشريك"))} ${p.id}" style="cursor:help"`;
+
   /* o: { data, partner?, servicesHref(list), translationHref(list) } */
   function lists(listMount, o) {
     const data = o.data;
     const TONE = { approved: "success", pending: "warning", not_approved: "danger" };
-    const STATUS_TXT = (s) => ({ approved: L("Approved", "موافق عليه"), pending: L("Pending", "معلق"), not_approved: L("Not Approved", "غير موافق عليه") }[s] || s);
-    const minmax = (r) => {
-      const min = r.has_qty ? r.min_total_quantity : r.min_selection;
-      const max = r.has_qty ? r.max_total_quantity : r.max_selection;
-      return `${min == null ? 0 : min} / ${max == null || max === "" ? L("Unlimited", "بدون حد أقصى") : max}`;
-    };
+    const STATUS_TXT = (s) => ({ approved: L("Approved", "موافق عليه"), pending: L("Pending", "معلق"), not_approved: L("Not approved", "غير موافق عليه") }[s] || s);
     const svcCount = (n) => L(`${n} ${n === 1 ? "Service" : "Services"}`, `${n} خدمات`);
-  
+    const rules = (r) => `<div class="row gap-1" style="flex-wrap:wrap">${RULES(r).map((x) => tipChip(...x)).join("")}</div>`;
+    /* live summary for the page head (global pages pass o.summary) */
+    const paintHead = () => {
+      if (!o.summary) return;
+      const pend = data.filter((r) => r.status === "pending").length, svc = data.reduce((a, r) => a + (r.services_count || 0), 0);
+      o.summary.textContent = L(`${data.length} lists · ${svc} services · ${pend} waiting for approval`, `${data.length} قائمة · ${svc} خدمة · ${pend} في انتظار الموافقة`);
+    };
+
     const ctl = SA.list({
       mount: listMount,
       data,
+      tiles: true,
       pills: [
-        { key: "", label: ["All", "الكل"] },
-        { key: "pending", label: ["Pending", "معلق"] },
-        { key: "approved", label: ["Approved", "موافق عليه"] },
-        { key: "not_approved", label: ["Not Approved", "غير موافق عليه"] },
+        { key: "", label: ["All", "الكل"], icon: "list" },
+        { key: "pending", label: ["Pending", "معلق"], icon: "clock", tone: "warning" },
+        { key: "approved", label: ["Approved", "موافق عليه"], icon: "check", tone: "primary" },
+        { key: "not_approved", label: ["Not Approved", "غير موافق عليه"], icon: "close", tone: "danger" },
       ],
       pillMatch: (r, k) => !k || r.status === k,
       search: o.partner ? ["Search by list name…", "البحث باسم القائمة…"] : ["Search by list name or company name…", "البحث باسم القائمة أو اسم الشركة…"],
       minSearch: 3,
       searchMatch: (r, q) => r.name.toLowerCase().includes(q) || r.partner.company_name.toLowerCase().includes(q),
       empty: ["No service lists found", "لم يتم العثور على قوائم خدمات"],
+      after: paintHead,
+      /* Redesign (2026-11-17): 9 → 6 columns, nothing dropped — company / id under
+         the list name (global pages), and required · selection type · min / max
+         as one "Rules" column of chips. */
       columns: [
-        o.partner ? null : { head: ["Company Name / ID", "اسم الشركة / المعرف"], cell: (r) => `<b>${esc(r.partner.company_name)}</b><div class="t-xs text-tertiary">${L("id", "الرقم")}: ${r.partner.id}</div>` },
-        { head: ["List name", "اسم القائمة"], cell: (r) => `<b>${esc(r.name)}</b>${r.is_default ? " " + badge("info", L("Default", "افتراضي")) : ""}` },
-        { head: ["Services", "الخدمات"], cell: (r) => `<a href="${o.servicesHref(r)}" style="color:var(--color-text-link);font-weight:var(--weight-semibold)">${svcCount(r.services_count)}</a>` },
+        { head: ["List", "القائمة"], cell: (r) => `<b>${esc(r.name)}</b>${r.is_default ? " " + badge("info", L("Default", "افتراضي")) : ""}${o.partner ? "" : `<div class="t-xs text-tertiary"><span ${companyTip(r.partner)}>${esc(r.partner.company_name)} · ${L("ID", "الرقم")} ${r.partner.id}</span></div>`}` },
+        { head: ["Services", "الخدمات"], cell: (r) => `<a href="${o.servicesHref(r)}" style="color:var(--color-text-link);font-weight:var(--weight-semibold);white-space:nowrap">${svcCount(r.services_count)}</a>` },
+        { head: ["Rules", "القواعد"], cell: (r) => rules(r) },
         { head: ["Status", "الحالة"], cell: (r) => badge(TONE[r.status] || "", STATUS_TXT(r.status)) },
-        { head: ["Required", "إلزامي"], cell: (r) => (r.is_required ? L("Required", "مطلوب") : L("Optional", "اختياري")) },
-        { head: ["Selection type", "نوع الاختيار"], cell: (r) => (r.selection_type === "single" ? L("Single", "فردي") : L("Multiple", "متعدد")) },
-        { head: ["Min / max", "الأدنى / الأقصى"], cell: (r) => minmax(r) },
         { head: ["Created Date", "تاريخ الإنشاء"], cell: (r) => `<span class="t-sm text-tertiary">${esc(r.created_at)}</span>` },
-        { head: ["Actions", "الإجراءات"], cell: (r) => `<div class="row gap-1">
-            <a class="icon-btn" href="${o.translationHref(r)}" aria-label="${L("translation", "ترجمة")}" title="${L("translation", "ترجمة")}">${ic("globe")}</a>
+        { head: ["Actions", "الإجراءات"], cell: (r) => `<div class="row gap-1" data-perm="update_partner_services">
+            <a class="icon-btn" href="${o.translationHref(r)}" aria-label="${L("Translation", "ترجمة")}" title="${L("Translation", "ترجمة")}">${ic("globe")}</a>
             ${iconBtn("check", L("Approve / reject list", "الموافقة / الرفض على القائمة"), `data-approve="${r.id}"`)}
-            ${iconBtn("edit", L("edit service", "تعديل الخدمة"), `data-edit="${r.id}"`)}
-            ${r.is_default ? "" : iconBtn("trash", L("delete", "حذف"), `data-del="${r.id}"`)}
+            ${iconBtn("edit", L("Edit service", "تعديل الخدمة"), `data-edit="${r.id}"`)}
+            ${r.is_default ? "" : iconBtn("trash", L("Delete", "حذف"), `data-del="${r.id}"`)}
           </div>` },
       ].filter(Boolean),
     });
@@ -61,10 +86,10 @@ window.SV = (function () {
         id: "approveModal",
         title: L("Approve / reject list", "الموافقة / الرفض على القائمة"),
         body: `<div class="stack gap-3">
-          ${SA.field(["New Status:", "الحالة الجديدة:"], SA.select([["", L("select", "اختر"), true], ["approved", L("Approved", "موافق عليه")], ["not_approved", L("Not Approved", "غير موافق عليه")]], 'id="newStatus"'))}
+          ${SA.field(["New Status:", "الحالة الجديدة:"], SA.select([["", L("Select", "اختر"), true], ["approved", L("Approved", "موافق عليه")], ["not_approved", L("Not approved", "غير موافق عليه")]], 'id="newStatus"'))}
           <p class="t-xs text-tertiary">${L("Approving or rejecting a list updates approval for all services in that list.", "الموافقة أو الرفض على مستوى القائمة يحدّث حالة جميع الخدمات ضمنها.")}</p>
           <div id="approveErr"></div></div>`,
-        foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" id="approveGo">${L("update", "تحديث")}</button>`,
+        foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" id="approveGo">${L("Update", "تحديث")}</button>`,
       });
       el.querySelector("#approveGo").onclick = () => {
         const s = el.querySelector("#newStatus").value;
@@ -156,7 +181,7 @@ window.SV = (function () {
         id: "delListModal",
         title: L("Delete service list", "حذف قائمة الخدمات"),
         body: `<p class="t-sm text-secondary">${L("Please confirm that you want to delete this service list.", "يرجى تأكيد حذف قائمة الخدمات هذه.")}</p>`,
-        foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn btn--danger" id="delGo">${L("delete", "حذف")}</button>`,
+        foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn btn--danger" id="delGo">${L("Delete", "حذف")}</button>`,
       });
       el.querySelector("#delGo").onclick = () => {
         /* DELETE /partners/{pid}/service-list/{id} */
@@ -180,50 +205,67 @@ window.SV = (function () {
   function services(listMount, o) {
     const list = o.list, data = o.data, summary = o.summary;
     const TONE = { approved: "success", pending: "warning", not_approved: "danger" };
-    const STATUS_TXT = (s) => ({ approved: L("Approved", "موافق عليه"), pending: L("Pending", "معلق"), not_approved: L("Not Approved", "غير موافق عليه") }[s] || s);
-    const min = list.has_qty ? list.min_total_quantity : list.min_selection;
-    const max = list.has_qty ? list.max_total_quantity : list.max_selection;
-    summary.innerHTML = `<section class="card card--pad animate-in stack gap-3" style="margin-bottom:var(--space-6)">
-      <div class="row gap-2" style="align-items:center"><h2 class="t-title">${esc(list.name)}</h2>${list.is_default ? badge("info", L("Default", "افتراضي")) : ""}</div>
-      ${o.partner ? "" : `<div class="t-sm">${L("Company Name / ID", "اسم الشركة / المعرف")}: <a href="#" style="color:var(--color-text-link);font-weight:var(--weight-semibold)">${esc(list.partner.company_name)}</a> <span class="text-tertiary">(${L("id", "الرقم")}: ${list.partner.id})</span></div>`}
-      <div class="row gap-5 t-sm text-secondary" style="flex-wrap:wrap;align-items:center">
-        ${badge(TONE[list.status] || "", STATUS_TXT(list.status))}
-        <span>${L("Selection type", "نوع الاختيار")}: <b>${list.selection_type === "single" ? L("Single", "فردي") : L("Multiple", "متعدد")}</b></span>
-        <span>${L("Required", "إلزامي")}: <b>${list.is_required ? L("Required", "مطلوب") : L("Optional", "اختياري")}</b></span>
-        <span>${L("Min / max", "الأدنى / الأقصى")}: <b>${min == null ? 0 : min} / ${max == null ? L("Unlimited", "بدون حد أقصى") : max}</b></span>
-      </div></section>`;
-  
+    const STATUS_TXT = (s) => ({ approved: L("Approved", "موافق عليه"), pending: L("Pending", "معلق"), not_approved: L("Not approved", "غير موافق عليه") }[s] || s);
+    /* Redesign (2026-11-17): the summary card is a small record header — list name,
+       default + status badges, company, the selection rules as chips and three
+       quick counts (services · visible · pending) — same facts as before, plus
+       counts derived from the same rows. */
+    const count = (label, n, tone) => `<div class="stack" style="gap:2px;min-width:0"><b style="font-size:var(--text-title);font-variant-numeric:tabular-nums${tone ? ";color:var(--color-" + tone + ")" : ""}">${n}</b><span class="t-xs text-tertiary" style="white-space:nowrap">${label}</span></div>`;
+    const paintSummary = () => {
+      summary.innerHTML = `<section class="card card--pad animate-in" style="margin-bottom:var(--space-5);display:flex;gap:var(--space-6);flex-wrap:wrap;align-items:center;justify-content:space-between">
+        <div class="stack gap-2" style="min-width:0;flex:1 1 320px">
+          <div class="row gap-2" style="align-items:center;flex-wrap:wrap"><h2 class="t-title">${esc(list.name)}</h2>${list.is_default ? badge("info", L("Default", "افتراضي")) : ""}${badge(TONE[list.status] || "", STATUS_TXT(list.status))}</div>
+          ${o.partner ? "" : `<div class="t-sm text-secondary"><a href="partner-profile.html?id=${list.partner.id}&tab=services" data-tip-label="${esc(L("Company name", "اسم الشركة"))}" data-tip="${esc(list.partner.company_name)} · ${esc(L("Partner ID", "رقم الشريك"))} ${list.partner.id}" style="color:var(--color-text-link);font-weight:var(--weight-semibold)">${esc(list.partner.company_name)}</a> <span class="text-tertiary">· ${L("ID", "الرقم")} ${list.partner.id}</span></div>`}
+          <div class="row gap-1" style="flex-wrap:wrap">${RULES(list, true).map((x) => tipChip(...x)).join("")}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,auto);gap:var(--space-6)">
+          ${count(L("Services", "الخدمات"), data.length)}${count(L("Visible", "ظاهرة"), data.filter((s) => s.visibility === "active").length, "success")}${count(L("Pending", "معلق"), data.filter((s) => s.status === "pending").length, "warning")}
+        </div></section>`;
+    };
+    paintSummary();
+
     const dash = (v) => (v == null || v === "" ? "—" : esc(v));
-    const vis = (r) => (r.visibility === "active" ? badge("success", L("active", "نشط")) : badge("", L("inactive", "غير نشط")));
+    const vis = (r) => (r.visibility === "active" ? badge("success", L("Active", "نشط")) : badge("", L("Inactive", "غير نشط")));
+    /* PartnersServicesTableWrapper.js: when the API sends visibility-based counts the
+       tiles become All / Active / Inactive and filter by visibility (not approval).
+       Sample: ?demo=vis-counts (or o.variant = "visibility"). */
+    const visVariant = o.variant === "visibility" || new URLSearchParams(location.search).get("demo") === "vis-counts";
     const ctl = SA.list({
       mount: listMount,
       data,
-      pills: [
-        { key: "", label: ["All", "الكل"] },
-        { key: "pending", label: ["Pending", "معلق"] },
-        { key: "approved", label: ["Approved", "موافق عليه"] },
-        { key: "not_approved", label: ["Not Approved", "غير موافق عليه"] },
+      tiles: true,
+      pills: visVariant ? [
+        { key: "", label: ["All", "الكل"], icon: "list" },
+        { key: "active", label: ["Active", "نشيط"], icon: "eye", tone: "primary" },
+        { key: "inactive", label: ["Inactive", "غير نشط"], icon: "eyeOff", tone: "danger" },
+      ] : [
+        { key: "", label: ["All", "الكل"], icon: "list" },
+        { key: "pending", label: ["Pending", "معلق"], icon: "clock", tone: "warning" },
+        { key: "approved", label: ["Approved", "موافق عليه"], icon: "check", tone: "primary" },
+        { key: "not_approved", label: ["Not Approved", "غير موافق عليه"], icon: "close", tone: "danger" },
       ],
-      pillMatch: (r, k) => !k || r.status === k,
+      pillMatch: visVariant ? (r, k) => !k || r.visibility === k : (r, k) => !k || r.status === k,
       search: ["Search by service name...", "البحث باسم الخدمة..."],
       minSearch: 3,
       searchMatch: (r, q) => r.name.toLowerCase().includes(q),
       empty: ["No services found", "لم يتم العثور على خدمات"],
+      /* Redesign (2026-11-17): 10 → 7 columns, nothing dropped — image + name +
+         description (two lines) in one Service column; max quantity + minimum
+         selection in one Quantity column. */
+      after: () => paintSummary(),
       columns: [
-        { head: ["Service image", "صورة الخدمة"], cell: (r) => `<span class="cell-thumb">${ic("camera")}</span>` },
-        { head: ["Service Name", "اسم الخدمة"], cell: (r) => `<b>${esc(r.name)}</b>` },
-        { head: ["Description", "الوصف"], cell: (r) => `<span class="t-sm text-secondary" style="display:block;max-width:360px">${dash(r.description)}</span>` },
+        { head: ["Service", "الخدمة"], cell: (r) => `<div class="cell-user" style="align-items:flex-start"><span class="cell-thumb"${r.image ? ` style="background:url('${esc(r.image)}') center/cover no-repeat"` : ""}>${r.image ? "" : ic("camera")}</span>
+            <div style="min-width:220px;max-width:380px;white-space:normal"><b>${esc(r.name)}</b><div class="t-xs text-tertiary" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden" title="${esc(r.description || "")}">${dash(r.description)}</div></div></div>` },
         { head: ["Duration", "المدة"], cell: (r) => (r.duration ? L(`${r.duration} min`, `${r.duration} دقيقة`) : "—") },
-        { head: ["Max Quantity", "الحد الأقصى للكمية"], cell: (r) => dash(r.max_quantity) },
-        { head: ["Minimum Selection", "الحد الأدنى للاختيار"], cell: (r) => dash(r.minimum_selection) },
+        { head: ["Quantity", "الكمية"], cell: (r) => `<div class="t-sm">${L("Max", "الأقصى")} <b>${dash(r.max_quantity)}</b></div><div class="t-xs text-tertiary">${L("Min selection", "أدنى اختيار")} ${dash(r.minimum_selection)}</div>` },
         { head: ["Price", "السعر"], cell: (r) => `<b>${r.price}</b> <span class="t-xs text-tertiary">${esc(r.currency.code)}</span>` },
         { head: ["Visibility", "الظهور"], cell: vis },
         { head: ["Created Date", "تاريخ الإنشاء"], cell: (r) => `<span class="t-sm text-tertiary">${esc(r.created_at)}</span>` },
-        { head: ["Actions", "الإجراءات"], cell: (r) => `<div class="row gap-1">
-            <a class="icon-btn" href="${o.translationHref(r)}" aria-label="${L("translation", "ترجمة")}" title="${L("translation", "ترجمة")}">${ic("globe")}</a>
-            ${iconBtn("edit", L("edit service", "تعديل الخدمة"), `data-edit="${r.id}"`)}
+        { head: ["Actions", "الإجراءات"], cell: (r) => `<div class="row gap-1" data-perm="update_partner_services">
+            <a class="icon-btn" href="${o.translationHref(r)}" aria-label="${L("Translation", "ترجمة")}" title="${L("Translation", "ترجمة")}">${ic("globe")}</a>
+            ${iconBtn("edit", L("Edit service", "تعديل الخدمة"), `data-edit="${r.id}"`)}
             ${iconBtn(r.visibility === "active" ? "eyeOff" : "eye", L("Enable / disable service visibility", "تفعيل / إلغاء ظهور الخدمة"), `data-vis="${r.id}"`)}
-            ${iconBtn("trash", L("delete", "حذف"), `data-del="${r.id}"`)}
+            ${iconBtn("trash", L("Delete", "حذف"), `data-del="${r.id}"`)}
           </div>` },
       ],
     });
@@ -237,41 +279,70 @@ window.SV = (function () {
     function svcForm(r) {
       const s = r || { name: "", description: "", visibility: "active", duration: "", price: "", max_quantity: "", minimum_selection: "" };
       const row = (label, control) => `<div class="sa-formrow"><label class="field__label">${label}</label><div>${control}</div></div>`;
-      const visSel = SA.select([["1", L("active", "نشط"), s.visibility === "active"], ["0", L("inactive", "غير نشط"), s.visibility !== "active"]], 'data-f="visibility"');
-      const img = `<div class="row gap-3" style="align-items:center;flex-wrap:wrap"><span class="cell-thumb">${ic("camera")}</span>
-          <span class="t-sm text-tertiary">${L("No image uploaded.", "لا توجد صورة.")}</span>
-          <label class="btn btn--sm btn--secondary">${ic("upload")}<span>${L("Service image", "صورة الخدمة")}</span><input type="file" accept=".jpg,.jpeg,.png" style="display:none"></label></div>
+      const visSel = SA.select([["1", L("Active", "نشط"), s.visibility === "active"], ["0", L("Inactive", "غير نشط"), s.visibility !== "active"]], 'data-f="visibility"');
+      /* partnerServiceImageUpload.js: JPG / PNG only, 1 MB, checked on pick; "Remove image" */
+      const img = `<div class="row gap-3" style="align-items:center;flex-wrap:wrap"><span class="cell-thumb" data-img-prev${s.image ? ` style="background:url('${esc(s.image)}') center/cover no-repeat"` : ""}>${s.image ? "" : ic("camera")}</span>
+          <span class="t-sm text-tertiary" data-img-none ${s.image ? "hidden" : ""}>${L("No image uploaded.", "لا توجد صورة.")}</span>
+          <label class="btn btn--sm btn--secondary">${ic("upload")}<span>${L("Service image", "صورة الخدمة")}</span><input type="file" accept="image/jpeg,image/jpg,image/png,.jpg,.jpeg,.png" style="display:none" data-img></label>
+          <button type="button" class="btn btn--sm btn--ghost" data-img-rm ${s.image ? "" : "hidden"}>${ic("trash")}<span>${L("Remove image", "إزالة الصورة")}</span></button></div>
+          <div data-err="image"></div>
           <span class="field__hint">${L("JPG or PNG only. Maximum file size 1 MB.", "صيغ JPG أو PNG فقط. الحد الأقصى لحجم الملف 1 ميجابايت.")}</span>`;
       const parts = {
-        name: row(L("name:", "الاسم"), `<input class="input" data-f="name" value="${esc(s.name)}" placeholder="${L("Enter type name", "أدخل اسم الخدمة")}"><div data-err="name"></div>`),
+        name: row(L("Name:", "الاسم"), `<input class="input" data-f="name" value="${esc(s.name)}" placeholder="${L("Enter type name", "أدخل اسم الخدمة")}"><div data-err="name"></div>`),
         vis: row(L("Visibility:", "الظهور"), visSel),
-        desc: row(L("Description:", "الوصف"), `<textarea class="input" rows="4" data-f="description" placeholder="${L("enter description", "أدخل الوصف")}">${esc(s.description)}</textarea>`),
+        desc: row(L("Description:", "الوصف"), `<textarea class="input" rows="4" data-f="description" placeholder="${L("Enter description", "أدخل الوصف")}">${esc(s.description)}</textarea>`),
         img: row(L("Service image", "صورة الخدمة"), img),
         dur: row(L("Duration:", "المدة"), SA.select([["", L("Select duration (optional)", "اختر المدة (اختياري)"), !s.duration]].concat(DUR.map((d) => [d[0], d[1], +s.duration === d[0]])), 'data-f="duration"')),
         price: row(L("Price:", "السعر"), `<input class="input" type="number" min="0" placeholder="0" data-f="price" value="${s.price === "" ? "" : esc(s.price)}"><div data-err="price"></div>`),
-        maxq: row(L("Max Quantity", "الحد الأقصى للكمية"), `<input class="input" type="number" min="0" placeholder="${L("Optional", "اختياري")}" data-f="max_quantity" value="${s.max_quantity == null ? "" : esc(s.max_quantity)}">`),
-        mins: row(L("Minimum Selection", "الحد الأدنى للاختيار"), `<input class="input" type="number" min="0" placeholder="${L("Enter minimum selection", "اختياري")}" data-f="minimum_selection" value="${s.minimum_selection == null ? "" : esc(s.minimum_selection)}">`),
+        maxq: row(L("Max quantity", "الحد الأقصى للكمية"), `<input class="input" type="number" min="0" placeholder="${L("Optional", "اختياري")}" data-f="max_quantity" value="${s.max_quantity == null ? "" : esc(s.max_quantity)}">`),
+        mins: row(L("Minimum selection", "الحد الأدنى للاختيار"), `<input class="input" type="number" min="0" placeholder="${L("Enter minimum selection", "اختياري")}" data-f="minimum_selection" value="${s.minimum_selection == null ? "" : esc(s.minimum_selection)}">`),
       };
       /* field order differs between the dashboard's create and edit modals */
-      return `<div class="stack gap-4">${(r ? ["name", "desc", "img", "dur", "maxq", "mins", "price", "vis"] : ["name", "vis", "desc", "img", "dur", "price", "maxq", "mins"]).map((k) => parts[k]).join("")}</div>`;
+      return `<div class="stack gap-4"><div data-err="form"></div>${(r ? ["name", "desc", "img", "dur", "maxq", "mins", "price", "vis"] : ["name", "vis", "desc", "img", "dur", "price", "maxq", "mins"]).map((k) => parts[k]).join("")}</div>`;
     }
     function openSvc(r) {
-      const el = SA.modal({ id: "svcModal", wide: true, title: r ? L("edit service", "تعديل الخدمة") : L("Add service", "إضافة خدمة"), body: svcForm(r),
-        foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" id="svcGo">${r ? L("update", "تحديث") : L("add new", "إضافة جديد")}</button>` });
+      const el = SA.modal({ id: "svcModal", wide: true, title: r ? L("Edit service", "تعديل الخدمة") : L("Add service", "إضافة خدمة"), body: svcForm(r),
+        foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" id="svcGo">${r ? L("Update", "تحديث") : L("Add new", "إضافة جديد")}</button>` });
+      const errAt = (k, msg) => (el.querySelector(`[data-err="${k}"]`).innerHTML = msg ? `<span class="field__error">${ic("warn")} ${msg}</span>` : "");
+      const formErr = (msg) => (el.querySelector('[data-err="form"]').innerHTML = msg ? `<div class="alert alert--danger"><span class="alert__icon">${ic("warn")}</span><div class="alert__body">${msg}</div></div>` : "");
+      let image = r ? r.image : null;
+      const showImg = () => {
+        const pv = el.querySelector("[data-img-prev]");
+        pv.style.background = image ? `url('${image}') center/cover no-repeat` : "";
+        pv.innerHTML = image ? "" : ic("camera");
+        el.querySelector("[data-img-none]").hidden = !!image;
+        el.querySelector("[data-img-rm]").hidden = !image;
+      };
+      el.querySelector("[data-img]").onchange = (ev) => {
+        const file = ev.target.files[0];
+        ev.target.value = "";
+        if (!file) return;
+        const extOk = /\.(jpe?g|png)$/i.test(file.name || ""), mimeOk = ["image/jpeg", "image/jpg", "image/png"].includes(file.type);
+        if (!mimeOk && !extOk) return errAt("image", L("Unsupported image format. Supported formats: JPG, PNG", "صيغة الصورة غير مدعومة. الصيغ المدعومة: JPG, PNG"));
+        if (file.size > 1048576) return errAt("image", L("Max size 1MB for images", "الحد الأقصى للصور 1 ميجابايت"));
+        errAt("image");
+        image = URL.createObjectURL(file);
+        showImg();
+      };
+      el.querySelector("[data-img-rm]").onclick = () => { image = null; errAt("image"); showImg(); };
       el.querySelector("#svcGo").onclick = () => {
         const get = (k) => el.querySelector(`[data-f="${k}"]`).value;
-        const errAt = (k, msg) => (el.querySelector(`[data-err="${k}"]`).innerHTML = msg ? `<span class="field__error">${ic("warn")} ${msg}</span>` : "");
-        errAt("name"); errAt("price");
+        errAt("name"); errAt("price"); formErr();
         let bad = false;
         if (get("name").trim().length < 3) { errAt("name", L("Minimum 3 symbols", "الحد الأدنى 3 رموز")); bad = true; }
         if (get("price") !== "" && +get("price") < 0) { errAt("price", L("Price must be 0 or greater", "يجب أن يكون السعر 0 أو أكثر")); bad = true; }
         if (bad) return;
+        /* EditServiceModal.js / CreatePartnerServiceModal.js: one message at the top */
+        const nonNeg = (v) => v === "" || (!isNaN(Number(v)) && Number(v) >= 0);
+        if (get("duration") !== "" && (isNaN(Number(get("duration"))) || Number(get("duration")) < 0)) return formErr(L("Enter a valid duration.", "يرجى إدخال مدة صحيحة."));
+        if (!nonNeg(get("max_quantity"))) return formErr(L("Max quantity must be 0 or greater", "يجب أن تكون الكمية القصوى 0 أو أكثر"));
+        if (!nonNeg(get("minimum_selection"))) return formErr(L("Minimum selection must be 0 or greater", "يجب أن يكون الحد الأدنى للاختيار 0 أو أكثر"));
         const vals = { name: get("name").trim(), description: get("description"), visibility: get("visibility") === "1" ? "active" : "inactive",
           duration: get("duration") ? +get("duration") : null, price: +get("price") || 0,
-          max_quantity: get("max_quantity") === "" ? null : +get("max_quantity"), minimum_selection: get("minimum_selection") === "" ? null : +get("minimum_selection") };
+          max_quantity: get("max_quantity") === "" ? null : +get("max_quantity"), minimum_selection: get("minimum_selection") === "" ? null : +get("minimum_selection"), image };
         /* create: POST /partners/{pid}/services · edit: POST /partners/{pid}/services/{id}/update-data (_method=PUT) */
         if (r) Object.assign(r, vals);
-        else data.unshift(Object.assign({ id: Date.now(), image: null, currency: data[0] ? data[0].currency : { code: "SAR" }, status: "pending", created_at: new Date().toISOString().slice(0, 19).replace("T", " "), service_list: { id: list.id, name: list.name } }, vals));
+        else data.unshift(Object.assign({ id: Date.now(), currency: data[0] ? data[0].currency : { code: "SAR" }, status: "pending", created_at: new Date().toISOString().slice(0, 19).replace("T", " "), service_list: { id: list.id, name: list.name } }, vals));
         SA.close(el);
         ctl.paint();
       };
@@ -289,13 +360,13 @@ window.SV = (function () {
       if (ed) openSvc(ctl.rowById(ed.dataset.edit));
       if (v) {
         const r = ctl.rowById(v.dataset.vis);
-        const next = r.visibility === "active" ? L("inactive", "غير نشط") : L("active", "نشط");
+        const next = r.visibility === "active" ? L("Inactive", "غير نشط") : L("Active", "نشط");
         confirmBox("visModal", L("Change service visibility", "تغيير ظهور الخدمة"), L(`Set visibility for "${esc(r.name)}" to ${next}?`, `تعيين ظهور "${esc(r.name)}" إلى ${next}؟`), L("Confirm", "تأكيد"), false,
           () => (r.visibility = r.visibility === "active" ? "inactive" : "active"));
       }
       if (d) {
         const r = ctl.rowById(d.dataset.del);
-        confirmBox("delSvcModal", L("Please confirm that you want to delete this service", "يرجى تأكيد أنك تريد حذف هذه الخدمة"), L("Please confirm that you want to delete this service.", "يرجى تأكيد حذف هذه الخدمة."), L("delete", "حذف"), true,
+        confirmBox("delSvcModal", L("Please confirm that you want to delete this service", "يرجى تأكيد أنك تريد حذف هذه الخدمة"), L("Please confirm that you want to delete this service.", "يرجى تأكيد حذف هذه الخدمة."), L("Delete", "حذف"), true,
           () => data.splice(data.indexOf(r), 1));
       }
     });
@@ -332,7 +403,7 @@ window.SV = (function () {
         <div data-e="rules"></div>`)}</div>`;
     };
     const el = SA.modal({ id: "svAddList", wide: true, title: L("Add service list", "إضافة قائمة خدمات"), body: body(),
-      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${L("add new", "إضافة جديد")}</button>` });
+      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn" data-ok>${L("Add new", "إضافة جديد")}</button>` });
     const b = el.querySelector(".modal__body");
     b.oninput = (e) => { const k = e.target.dataset.f; if (k === "name" || k === "note" || k === "min" || k === "max") f[k] = e.target.value; };
     b.onchange = (e) => { const k = e.target.dataset.f; if (k === "req" || k === "qty" || k === "unlimited") f[k] = e.target.checked; if (k === "sel") f.sel = e.target.value; if (["req", "qty", "sel", "unlimited"].includes(k)) b.innerHTML = body(); };

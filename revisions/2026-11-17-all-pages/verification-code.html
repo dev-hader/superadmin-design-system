@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <script>
+            try {
+                document.documentElement.setAttribute("data-theme", localStorage.getItem("rd-theme") === "1" ? "dark" : "light");
+                document.documentElement.dir = localStorage.getItem("rd-dir") === "1" ? "rtl" : "ltr";
+            } catch (e) {}
+        </script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Verification Code · High Five</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="assets/css/tokens.css" />
+        <link rel="stylesheet" href="assets/css/base.css" />
+        <link rel="stylesheet" href="assets/css/app.css" />
+        <link rel="stylesheet" href="assets/css/components.css" />
+        <link rel="stylesheet" href="assets/shell.css" />
+    </head>
+    <body>
+        <!-- Verification code — mirrors modules/auth/components/VerificationCode.tsx
+             (route auth/forgot-password/verification-code):
+             step 1  4-digit code sent to the masked phone (PHONE_VALIDATION) · auto-advance / backspace ·
+                     "Must be a digit" · Verify · resend after a 30 s countdown
+             step 2  New Password + Confirm Password (min 8 · max 50 · must match) → Reset Password -->
+        <div class="auth">
+            <aside class="auth-brand"></aside>
+            <main class="auth-main">
+                <!-- step 1 -->
+                <form class="auth-card" id="codeForm" novalidate>
+                    <a class="auth-card__logo" href="login.html"></a>
+                    <div class="auth-head" style="text-align:center">
+                        <h1 data-ar="هل نسيت كلمة المرور ؟">Forgot Password ?</h1>
+                        <p data-ar="أدخل بريدك الإلكتروني لإعادة تعيين كلمة المرور.">Enter your email to reset your password.</p>
+                        <p class="t-sm"><span data-ar="أدخل الرمز الذي تم إرساله إلى">Enter the code sent to</span> (<b dir="ltr" id="maskedPhone">+96*****67</b>)</p>
+                    </div>
+                    <div class="alert alert--success" id="okBox" hidden><div class="alert__body" data-ar="تم التحقق من الرمز بنجاح">Code verified successfully</div></div>
+                    <div class="alert alert--danger" id="errBox" hidden><div class="alert__body" id="errText"></div></div>
+
+                    <div class="auth-field">
+                        <label class="field__label" style="text-align:center" data-ar="أدخل الرمز">Enter Code</label>
+                        <div class="auth-otp" dir="ltr">
+                            <input class="input" inputmode="numeric" maxlength="1" data-d="0" aria-label="digit 1" />
+                            <input class="input" inputmode="numeric" maxlength="1" data-d="1" aria-label="digit 2" />
+                            <input class="input" inputmode="numeric" maxlength="1" data-d="2" aria-label="digit 3" />
+                            <input class="input" inputmode="numeric" maxlength="1" data-d="3" aria-label="digit 4" />
+                        </div>
+                        <span class="field__error" id="digitErr" hidden style="justify-content:center"></span>
+                    </div>
+
+                    <div class="auth-actions"><button class="btn" type="submit" id="btnVerify" data-ar="تحقق">Verify</button></div>
+                    <div class="row between" style="align-items:center;flex-wrap:wrap;gap:var(--space-2)">
+                        <a class="btn btn--sm btn--secondary" href="login.html"><span aria-hidden="true">←</span> <span data-ar="العودة لتسجيل الدخول">Back To Login</span></a>
+                        <button type="button" class="btn btn--sm btn--ghost" id="btnResend" disabled></button>
+                    </div>
+                    <p class="t-xs text-tertiary" style="text-align:center" data-ar="رمز تجريبي: 1234">Sample code: 1234</p>
+                </form>
+
+                <!-- step 2 -->
+                <form class="auth-card" id="pwForm" novalidate hidden>
+                    <a class="auth-card__logo" href="login.html"></a>
+                    <div class="auth-head" style="text-align:center">
+                        <h1 data-ar="إعادة تعيين كلمة المرور">Reset Password</h1>
+                    </div>
+                    <div class="alert alert--success" id="pwOk" hidden><div class="alert__body" data-ar="تم إعادة تعيين كلمة المرور بنجاح.. يرجى الانتظار">Password reset successfully.. Please wait</div></div>
+                    <div class="auth-field">
+                        <label class="field__label" data-ar="كلمة المرور الجديدة">New Password</label>
+                        <div class="auth-pw"><input class="input" id="pw" type="password" autocomplete="new-password" placeholder="Enter your new password" data-ar-placeholder="أدخل كلمة المرور الجديدة" /><span class="auth-pw__eye" data-eye="pw" aria-label="Show password"></span></div>
+                        <span class="field__error" id="pwErr" hidden></span>
+                    </div>
+                    <div class="auth-field">
+                        <label class="field__label" data-ar="تأكيد كلمة المرور">Confirm Password</label>
+                        <div class="auth-pw"><input class="input" id="pw2" type="password" autocomplete="new-password" placeholder="Confirm Password" data-ar-placeholder="تأكيد كلمة المرور" /><span class="auth-pw__eye" data-eye="pw2" aria-label="Show password"></span></div>
+                        <span class="field__error" id="pw2Err" hidden></span>
+                    </div>
+                    <div class="auth-actions"><button class="btn" type="submit" id="btnReset" data-ar="إعادة تعيين كلمة المرور">Reset Password</button></div>
+                </form>
+            </main>
+        </div>
+
+        <script src="assets/shell.js"></script>
+        <script src="assets/js/auth.js"></script>
+        <script>
+            (() => {
+                AUTH.init();
+                const ar = document.documentElement.dir === "rtl", T = (en, a) => (ar ? a : en);
+                const $ = (id) => document.getElementById(id);
+                document.querySelectorAll("[data-ar-placeholder]").forEach((i) => ar && (i.placeholder = i.dataset.arPlaceholder));
+                let phone = "+966501234567";
+                try { phone = localStorage.getItem("PHONE_VALIDATION") || phone; } catch (x) {}
+                $("maskedPhone").textContent = `${phone.slice(0, 3)}*****${phone.slice(-2)}`;
+                const digits = [...document.querySelectorAll("[data-d]")];
+                const fieldErr = (id, m) => { $(id).hidden = !m; $(id).textContent = m || ""; };
+
+                /* OTP boxes: one digit each, auto-advance, backspace goes back */
+                digits.forEach((inp, i) => {
+                    inp.addEventListener("input", () => { inp.value = inp.value.slice(-1); if (inp.value && digits[i + 1]) digits[i + 1].focus(); });
+                    inp.addEventListener("keydown", (e) => { if (e.key === "Backspace" && !inp.value && digits[i - 1]) digits[i - 1].focus(); });
+                });
+                digits[0].focus();
+
+                /* resend countdown (30 s) */
+                let left = 30, timer;
+                const tick = () => {
+                    const b = $("btnResend");
+                    b.disabled = left > 0;
+                    b.textContent = left > 0 ? `${T("Resend code in", "إعادة إرسال الرمز بعد")} ${left} ${T("Seconds", "ثانية")}` : T("Resend Code", "إعادة إرسال الرمز");
+                    if (left > 0) timer = setTimeout(() => { left--; tick(); }, 1000);
+                };
+                tick();
+                $("btnResend").onclick = () => { digits.forEach((d) => (d.value = "")); $("errBox").hidden = true; left = 30; clearTimeout(timer); tick(); digits[0].focus(); };
+
+                $("codeForm").addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    const bad = digits.find((d) => !/^[0-9]$/.test(d.value));
+                    if (bad) return fieldErr("digitErr", bad.value ? T("Must be a digit", "يجب أن يكون رقمًا") : T("this field is required", "هذا الحقل مطلوب"));
+                    fieldErr("digitErr", "");
+                    const b = $("btnVerify"); b.disabled = true; b.textContent = T("Please wait...", "يرجى الانتظار...");
+                    setTimeout(() => {
+                        b.disabled = false; b.textContent = T("Verify", "تحقق");
+                        if (digits.map((d) => d.value).join("") !== "1234") {
+                            /* wrong code: form resets, the API message (or this fallback) shows */
+                            digits.forEach((d) => (d.value = "")); digits[0].focus();
+                            $("errText").textContent = T("The login details are incorrect", "تفاصيل تسجيل الدخول غير صحيحة"); $("errBox").hidden = false; return;
+                        }
+                        $("errBox").hidden = true; $("okBox").hidden = false;
+                        setTimeout(() => { $("codeForm").hidden = true; $("pwForm").hidden = false; $("pw").focus(); }, 1000); /* step 2 after 1 s */
+                    }, 600);
+                });
+
+                $("pwForm").addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    const p = $("pw").value, c = $("pw2").value;
+                    fieldErr("pwErr", !p ? T("Password is required", "كلمة المرور مطلوبة") : p.length < 8 ? T("Minimum 8 symbols", "8 رموز كحد أدنى") : p.length > 50 ? T("Maximum 50 symbols", "50 رمزًا كحد أقصى") : "");
+                    fieldErr("pw2Err", !c ? T("Password confirmation is required", "تأكيد كلمة المرور مطلوب") : c !== p ? T("Passwords must match", "كلمات المرور يجب أن تتطابق") : "");
+                    if (!$("pwErr").hidden || !$("pw2Err").hidden) return;
+                    const b = $("btnReset"); b.disabled = true; b.textContent = T("Please wait...", "يرجى الانتظار...");
+                    /* the dashboard signs the user straight in after the reset */
+                    setTimeout(() => { $("pwOk").hidden = false; setTimeout(() => (location.href = "login.html"), 1000); }, 600);
+                });
+
+                /* show / hide password (same eye as the login page) */
+                document.querySelectorAll("[data-eye]").forEach((eye) => (eye.onclick = () => { const i = $(eye.dataset.eye); i.type = i.type === "password" ? "text" : "password"; }));
+            })();
+        </script>
+    </body>
+</html>

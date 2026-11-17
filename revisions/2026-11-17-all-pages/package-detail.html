@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Package details · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="kpHero"></div>
+      <div id="kpTabs"></div>
+      <div id="kpBody"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/sa-translation.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/kp/kp-info.js"></script>
+<script src="assets/js/kp/kp-ops.js"></script>
+<script src="assets/js/kp/kp-admin.js"></script>
+<script>
+(() => {
+  /* Package detail — mirrors pages/packages/package-detail (PackageDetailPage +
+     PackageHeader): breadcrumbs Packages › name + Back, header card (banner,
+     cover, #id, approval + status badges, hints, control pencil → Approval or
+     Package Status modal, translation, prev / next "n of total", partner ·
+     categories · rating, description, last action, rejection reason) and the
+     tab strip with counts. Tabs live in assets/js/kp/*.js.
+     URL: package-detail.html?id=<pkgId>&tab=<key>[&ref=<subscription>] */
+  RD.boot({ activeId: "packages", title: "Package details" });
+  if (!document.getElementById("kpBody")) return;
+  const { L, esc, ic, badge } = SA;
+  const qs = new URLSearchParams(location.search);
+  const ALL = HF.SA.packages;
+  const pkg = KP.extend(ALL.find((x) => String(x.id) === qs.get("id")) || ALL[0]);
+  KP.pkg = pkg;
+  const isRTL = () => document.documentElement.dir === "rtl";
+  let listUrl = "packages.html";
+  try { listUrl = sessionStorage.getItem("packages:listUrl") || listUrl; } catch (e) {}
+
+  function href(key, extra) {
+    const u = new URLSearchParams();
+    u.set("id", pkg.id); u.set("tab", key);
+    Object.entries(extra || {}).forEach(([k, v]) => u.set(k, v));
+    return "?" + u.toString();
+  }
+  KP.href = href;
+  PP.href = href;
+
+  /* ---------- toolbar ---------- */
+  const head = () => SA.head(document.getElementById("pageHead"), {
+    title: [pkg.name, pkg.name],
+    crumbs: [["Packages", "الباقات", listUrl]],
+    actions: `<a class="btn btn--sm btn--secondary" href="${listUrl}">${ic(isRTL() ? "chevronRight" : "chevronLeft")}<span>${L("Back", "رجوع")}</span></a>`,
+  });
+
+  /* ---------- header card ---------- */
+  const approvalBadge = KP.approvalBadge; /* Approved = success green (1.1.0 decision: amber already means Pending) */
+  function hero() {
+    const k = pkg, ap = k.approval_status.value, pos = ALL.indexOf(k), prev = ALL[pos - 1], next = ALL[pos + 1];
+    const navBtn = (p, icon, label) => (p ? `<a class="icon-btn" href="?id=${p.id}&tab=${curTab()}" data-nav aria-label="${label}" title="${label}">${ic(icon)}</a>` : `<button class="icon-btn" disabled aria-label="${label}">${ic(icon)}</button>`);
+    const stars = k.rating.average ? `<span style="color:var(--color-warning)">★</span> <b>${k.rating.average.toFixed(1)}</b> <span class="text-tertiary">${L(`(${k.rating.count} reviews)`, `(${k.rating.count} تقييم)`)}</span>` : `<span class="text-tertiary">${L("No reviews yet", "لا توجد تقييمات بعد")}</span>`;
+    const tone = { warning: "warning", danger: "danger", info: "info", success: "success" };
+    document.getElementById("kpHero").innerHTML = `${k.banner ? KP.notice(tone[k.banner.tone] || "warning", "warn", esc(k.banner.message)) : ""}
+      <section class="card card--pad animate-in sa-hero" style="margin-top:${k.banner ? "var(--space-4)" : "0"}">
+        <div class="cell-thumb" style="width:200px;height:112px;border-radius:var(--radius-lg);flex:none">${ic("package")}</div>
+        <div class="stack gap-2" style="flex:1;min-width:260px">
+          <div class="row between gap-3" style="align-items:flex-start;flex-wrap:wrap">
+            <div class="stack gap-1"><span class="t-xs text-tertiary">#${k.id}</span>
+              <div class="row gap-2" style="align-items:center;flex-wrap:wrap"><h2 class="t-h3">${esc(k.name)}</h2>${approvalBadge(ap)}
+                ${ap === "approved" ? KP.statusBadge(k.package_status) : ""}
+                ${ap === "approved" ? k.hints.map((h) => `<span class="badge badge--${h.tone}" title="${esc(h.message)}">${esc(h.label)}</span>`).join("") : ""}
+                ${SA.iconBtn("edit", ap === "pending" ? L("Review package", "مراجعة الباقة") : L("Package Status", "حالة الباقة"), "data-control")}
+                <a class="icon-btn" href="${href("translation")}" aria-label="${L("Translation", "الترجمة")}" title="${L("Translation", "الترجمة")}">${ic("globe")}</a></div></div>
+            <div class="row gap-2" style="align-items:center">${navBtn(prev, isRTL() ? "chevronRight" : "chevronLeft", L("Previous package", "الباقة السابقة"))}
+              <span class="t-sm text-tertiary">${L(`${pos + 1} of ${ALL.length}`, `${pos + 1} من ${ALL.length}`)}</span>${navBtn(next, isRTL() ? "chevronLeft" : "chevronRight", L("Next package", "الباقة التالية"))}</div>
+          </div>
+          <div class="row gap-3 t-sm" style="align-items:center;flex-wrap:wrap">
+            <a href="partner-profile.html?id=${k.partner.id}&tab=packages" style="color:var(--color-text-link);font-weight:var(--weight-semibold)">${esc(k.partner.name)}</a>
+            <span class="text-tertiary">·</span><span class="text-secondary">${k.categories.map(esc).join(" · ")}</span><span class="text-tertiary">·</span>${stars}</div>
+          <p class="t-sm text-secondary" style="max-width:720px">${esc(k.description)}</p>
+          <span class="t-xs text-tertiary">${KP.actionBy(k)}</span>
+          ${k.rejection_reason ? KP.notice("danger", "warn", `<b>${L("Rejection reason", "سبب الرفض")}:</b> ${esc(k.rejection_reason)}`) : ""}
+        </div></section>`;
+  }
+
+  /* ---------- control: Approval (pending) / Package Status (approved) ---------- */
+  function approval() {
+    const k = pkg;
+    let step = "review";
+    const rows = [[L("Partner", "الشريك"), esc(k.partner.name)], [L("Categories", "التصنيفات"), k.categories.map(esc).join(", ")], [L("Branches", "الفروع"), k.branchList.map((b) => esc(b.name)).join(", ")],
+      [L("Gender", "الجنس"), { male: L("Male", "ذكور"), female: L("Female", "إناث"), both: L("Both", "الكل") }[k.gender]], [L("Age Groups", "الفئات العمرية"), k.all_age_groups ? L("All age groups", "جميع الفئات العمرية") : k.age_groups.map((a) => a.name).join(", ")],
+      [L("Availability", "الإتاحة"), esc(k.availability.label)], [L("Subscription validity", "صلاحية الاشتراك"), esc(k.validity.label)], [L("Capacity", "السعة"), esc(k.capacity.label)], [L("Usage Rules", "قواعد الاستخدام"), esc(k.usage.label)]];
+    const body = () => step === "review" ? `<div class="stack gap-4">
+        <span class="t-sm text-tertiary">${L(`Submitted by ${esc(k.partner.name)} on ${k.action_on}`, `أرسلها ${esc(k.partner.name)} في ${k.action_on}`)}</span>
+        ${k.id % 2 ? KP.notice("warning", "info", `<b>${L("Previous rejection reason", "سبب الرفض السابق")}:</b> ${L("Cover image shows a third-party logo.", "صورة الغلاف تحتوي على شعار جهة أخرى.")}`) : ""}
+        <div class="row gap-3" style="align-items:flex-start"><div class="cell-thumb" style="width:120px;height:68px;border-radius:var(--radius-md);flex:none">${ic("package")}</div><p class="t-sm text-secondary">${esc(k.description)}</p></div>
+        ${PP.kv(rows)}
+        ${SA.table({ rows: k.planList, empty: [""], columns: [{ head: ["Plan", "الخطة"], cell: (p) => `<b>${esc(p.name)}</b>` }, { head: ["Duration", "المدة"], cell: (p) => (p.starts_on ? `${p.starts_on} → ${p.ends_on}` : KP.dur(p.duration_value, p.duration_unit)) }, { head: ["Price", "السعر"], cell: (p) => KP.money(p.total_price, k.currency) }] })}
+        ${SA.field(["Notes", "ملاحظات"], `<textarea class="input" rows="2" readonly>${L("Please review before the weekend promotion.", "يرجى المراجعة قبل عرض نهاية الأسبوع.")}</textarea>`)}
+      </div>` : `<div class="field"><label class="field__label">${L("Rejection reason", "سبب الرفض")} <span class="req">*</span></label><textarea class="input" rows="4" maxlength="500" data-reason autofocus></textarea>
+        <div class="row between"><span class="t-xs" style="color:var(--color-danger)" data-err></span><span class="t-xs text-tertiary" data-count>0 / 500</span></div></div>`;
+    const foot = () => step === "review"
+      ? `<button class="btn btn--danger" data-reject>${L("Reject", "رفض")}</button><button class="btn" data-approve>${L("Approve", "قبول")}</button>`
+      : `<button class="btn btn--ghost" data-backstep>${L("Back", "رجوع")}</button><button class="btn btn--danger" data-confirm>${L("Reject", "رفض")}</button>`;
+    const paint = () => SA.modal({ id: "kpApproval", wide: true, title: L("Package Approval", "اعتماد الباقة"), body: body(), foot: foot() });
+    const decide = (ok, reason) => {
+      k.approval_status = { value: ok ? "approved" : "not_approved" };
+      k.package_status = ok ? "active" : "inactive";
+      k.rejection_reason = ok ? null : reason;
+      k.action_by = "admin"; k.action_on = "2026-11-15 12:00";
+      SA.close("kpApproval");
+      RD.toast("success", ok ? L("Package approved", "تم قبول الباقة") : L("Package rejected", "تم رفض الباقة"));
+      HF.SA.pendingPackages = ALL.filter((x) => x.approval_status.value === "pending").length;
+      const nxt = ALL.find((x) => x.approval_status.value === "pending");
+      if (nxt) location.href = `?id=${nxt.id}&tab=details`; else { hero(); render(); }
+    };
+    const el = paint();
+    el.onclick = (e) => {
+      if (e.target.closest("[data-approve]")) return decide(true);
+      if (e.target.closest("[data-reject]")) { step = "reason"; return paint(); }
+      if (e.target.closest("[data-backstep]")) { step = "review"; return paint(); }
+      if (e.target.closest("[data-confirm]")) {
+        const v = el.querySelector("[data-reason]").value.trim();
+        if (v.length < 10) { el.querySelector("[data-err]").textContent = L("The reason must be at least 10 characters.", "يجب ألا يقل السبب عن 10 حرفاً"); return; }
+        decide(false, v);
+      }
+    };
+    el.oninput = (e) => { if (e.target.matches("[data-reason]")) el.querySelector("[data-count]").textContent = `${e.target.value.length} / 500`; };
+  }
+  function statusModal() {
+    const k = pkg;
+    if (k.approval_status.value !== "approved") return RD.toast("warning", L("A rejected package has to be resubmitted by the partner first.", "يجب أن يعيد الشريك إرسال الباقة المرفوضة أولاً."));
+    const on = k.package_status === "active";
+    const el = SA.modal({ id: "kpStatus", title: L("Package Status", "حالة الباقة"), body: `<div class="stack gap-3"><p class="t-sm text-secondary">${on ? L("Deactivating stops new sales. Current subscribers keep their access.", "الإيقاف يمنع المبيعات الجديدة. يحتفظ المشتركون الحاليون بوصولهم.") : L("Activating lets customers buy this package again.", "التفعيل يتيح للعملاء شراء هذه الباقة مجدداً.")}</p>
+        ${on ? `<div class="field"><label class="field__label">${L("Reason", "السبب")} <span class="req">*</span></label><textarea class="input" rows="3" maxlength="500" data-reason></textarea><span class="t-xs" style="color:var(--color-danger)" data-err></span></div>` : ""}</div>`,
+      foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn${on ? " btn--danger" : ""}" data-ok>${on ? L("Deactivate", "إيقاف") : L("Activate", "تفعيل")}</button>` });
+    el.querySelector("[data-ok]").onclick = () => {
+      const r = el.querySelector("[data-reason]");
+      if (r && !r.value.trim()) { el.querySelector("[data-err]").textContent = L("This field is required.", "هذا الحقل مطلوب."); return; }
+      k.package_status = on ? "inactive" : "active"; k.action_by = "admin"; k.action_on = "2026-11-15 12:00";
+      SA.close(el); RD.toast("success", on ? L("Package deactivated", "تم إيقاف الباقة") : L("Package activated", "تم تفعيل الباقة")); hero(); render();
+    };
+  }
+
+  /* ---------- tabs (counts as in the API tabs[]) ---------- */
+  const tabsList = () => {
+    const k = pkg, ok = k.approval_status.value === "approved";
+    return [["details", "Details", "التفاصيل"], ["plans", "Plans", "الخطط", k.planList.length], ["branches", "Branches", "الفروع", k.branchList.length], ["gallery", "Gallery", "المعرض", k.galleryList.length],
+      ["selling", "Selling", "البيع"], ["subscribers", "Subscribers", "المشتركون", ok ? KP.subs(k).length : 0], ["comments", "Comments", "التعليقات", ok ? KP.comments(k).length : 0], ["financial", "Financial", "المالية"],
+      ok ? ["qr_management", "QR Management", "إدارة QR"] : null, k.selling_methodology.value === "walk_in" ? null : ["policy", "Policy", "السياسة"], ["activity_log", "Activity Log", "سجل النشاط"]].filter(Boolean);
+  };
+  const curTab = () => new URLSearchParams(location.search).get("tab") || "details";
+  const tabsBar = (active) => (document.getElementById("kpTabs").innerHTML = `<nav class="sa-tabbar" aria-label="${L("Package sections", "أقسام الباقة")}"><div class="tabs">
+      ${tabsList().map((t) => `<a href="${href(t[0])}" class="${t[0] === active ? "is-active" : ""}" ${t[0] === active ? 'aria-current="page"' : ""}>${esc(L(t[1], t[2]))}${t[3] != null ? ` <span class="badge">${t[3]}</span>` : ""}</a>`).join("")}</div></nav>`);
+
+  /* ---------- router ---------- */
+  function render() {
+    const u = new URLSearchParams(location.search), tab = u.get("tab") || "details";
+    const solo = tab === "translation";
+    ["kpHero", "kpTabs", "pageHead"].forEach((id) => (document.getElementById(id).hidden = solo));
+    if (!solo) { tabsBar(tab); const a = document.querySelector("#kpTabs .is-active"); if (a) a.scrollIntoView({ block: "nearest", inline: "nearest" }); }
+    const body = document.createElement("div");
+    body.className = "stack gap-6";
+    document.getElementById("kpBody").replaceChildren(body);
+    const ctx = { pkg, params: u, rerender: render };
+    if (solo) SATR.render(body, { key: "package" + pkg.id, itemName: pkg.name, editTitle: L("edit translates", "تعديل الترجمات"), cols: [["name", L("name", "الاسم")], ["description", L("Description", "الوصف")]], src: { name: pkg.name, description: pkg.description }, backHref: href("details") });
+    else if (tab === "subscribers" && u.get("ref")) KP.subscriber(body, ctx, u.get("ref"));
+    else if (KP.tabs[tab] && tabsList().some((t) => t[0] === tab)) KP.tabs[tab](body, ctx);
+    else KP.tabs.details(body, ctx);
+    window.scrollTo({ top: 0 });
+  }
+  document.addEventListener("click", (e) => {
+    const c = e.target.closest("[data-control]");
+    if (c) return pkg.approval_status.value === "pending" ? approval() : statusModal();
+    const a = e.target.closest("a[href^='?']");
+    if (!a || e.metaKey || e.ctrlKey || e.button || a.hasAttribute("data-nav")) return;
+    e.preventDefault();
+    history.pushState(null, "", a.getAttribute("href"));
+    render();
+  });
+  window.addEventListener("popstate", render);
+  KP.go = (key, extra) => { history.pushState(null, "", href(key, extra)); render(); };
+  head();
+  hero();
+  render();
+})();
+</script>
+</body>
+</html>

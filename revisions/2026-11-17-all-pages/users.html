@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Users · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script>
+(() => {
+  /* Users — mirrors pages/users (UsersPage, UsersTable, FilterDropdown): status
+     pills with counts (all · available · blocked), search (3+ chars), Filter
+     Options (country · profile location · GPS country → state → city · gender ·
+     age min/max), 10 columns, eye → user profile. Page sizes 15/50/100.
+     API: GET /users. */
+  RD.boot({ activeId: "users", title: "Users" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic, badge } = SA;
+  const data = HF.SA.users;
+  const dash = (v) => (v == null || v === "" ? "---" : esc(v));
+
+  SA.head(document.getElementById("pageHead"), { title: ["Users", "المستخدمون"] });
+
+  const startPage = +(new URLSearchParams(location.search).get("page") || 1);
+  let ctl = null;
+  ctl = SA.list({
+    mount: document.getElementById("listMount"),
+    data, minSearch: 3,
+    pills: [{ key: "all", label: ["all", "الكل"] }, { key: "1", label: ["available", "متاح"] }, { key: "0", label: ["blocked", "محظور"] }],
+    pillMatch: (r, k) => k === "all" || String(r.status) === k,
+    search: ["search by name, username, phone, or email", "البحث بالاسم، اسم المستخدم، الهاتف، أو البريد الإلكتروني"],
+    searchMatch: (r, q) => [r.name, r.high_five_user_name, r.phone, r.email].some((v) => v && String(v).toLowerCase().replace(/\s/g, "").includes(q.replace(/\s/g, ""))),
+    toolbarExtra: PP.filterBtn(),
+    extraMatch: (r, f) => (!f.country_iso || r.country.iso === f.country_iso) && (!f.profile_country || r.profile_location.iso === f.profile_country)
+      && (!f.location_country || r.location.country === f.location_country) && (!f.location_state || r.location.state === f.location_state) && (!f.location_city || r.location.city === f.location_city)
+      && (!f.gender || r.gender === f.gender) && (!f.min_age || r.age >= +f.min_age) && (!f.max_age || r.age <= +f.max_age),
+    empty: ["there is no data to display", "لا توجد بيانات للعرض"],
+    columns: [
+      { head: ["user", "المستخدم"], cell: (r) => `<div class="cell-user">${PP.avatar(r.name, "")}<div><b>${esc(r.name)}</b><div class="t-xs text-tertiary">${dash(r.high_five_user_name)}</div>
+          <div class="t-xs text-tertiary row gap-1" style="align-items:center">${dash(r.email)} ${r.email ? `<span style="color:var(--color-${r.email_verified ? "success" : "danger"})" title="${r.email_verified ? L("verified", "موثق") : L("not verified", "غير موثق")}">${ic(r.email_verified ? "check" : "close")}</span>` : ""}</div></div></div>` },
+      { head: ["phone / country", "الهاتف / البلد"], align: "center", cell: (r) => `<span dir="ltr">${dash(r.phone)}</span><div class="t-xs text-tertiary">${dash(r.country.name)}</div>` },
+      { head: ["gender", "الجنس"], align: "center", cell: (r) => dash(r.gender) },
+      { head: ["birth date", "تاريخ الميلاد"], align: "center", cell: (r) => `${r.age || 0} <span class="t-xs">${L("years", "سنوات")}</span><div class="t-xs text-tertiary">${dash(r.date_of_birth)}</div>` },
+      { head: ["profile location", "موقع الملف الشخصي"], align: "center", cell: (r) => `${dash(r.profile_location.iso)}<div class="t-xs text-tertiary">${dash(r.profile_location.name)}</div>` },
+      { head: ["GPS location", "الموقع الجغرافي"], align: "center", cell: (r) => (r.location.country ? `${esc(r.location.country)}<div class="t-xs text-tertiary">${esc(r.location.state)}</div><div class="t-xs text-tertiary">${esc(r.location.city)}</div>` : "---") },
+      { head: ["wallet", "المحفظة"], align: "center", cell: (r) => `<b>${r.wallet_amount || 0}</b> <span class="t-xs">${esc(r.country.currency.code)}</span>` },
+      /* "statu activity" — the dashboard's own typo, kept 1:1 */
+      { head: ["statu activity", "حالة النشاط"], align: "center", cell: (r) => badge(r.active_status === "Inactive" ? "danger" : "primary", r.active_status) },
+      { head: ["status", "الحالة"], align: "center", cell: (r) => (r.status === 0 ? badge("danger", L("blocked", "محظور")) : badge("primary", L("available", "متاح"))) },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<a class="icon-btn" href="user-profile.html?id=${r.id}&tab=details&redirect_to_page=${ctl ? ctl.state.page : 1}" aria-label="${L("View", "عرض")} ${esc(r.name)}">${ic("eye")}</a>` },
+    ],
+  });
+  if (startPage > 1) { ctl.state.page = startPage; ctl.paint(); }
+
+  /* ---------------- Filter Options ---------------- */
+  const countries = [...new Map(HF.SA.GEO.map((g) => [g.country.iso, g.country.name])).entries()];
+  const gpsCountries = [...new Set(HF.SA.GEO.map((g) => g.country.name))];
+  document.getElementById("listMount").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-filter]");
+    if (!b) return;
+    PP.filterPop(b, {
+      width: 300, value: ctl.state.extra, cascade: { location_country: ["location_state", "location_city"], location_state: ["location_city"] },
+      fields: [
+        { key: "country_iso", label: ["country:", "البلد:"], placeholder: ["all", "الكل"], options: () => countries },
+        { key: "profile_country", label: ["profile location", "موقع الملف الشخصي"], options: () => countries },
+        { key: "location_country", label: ["location:", "الموقع:"], options: () => gpsCountries.map((c) => [c, c]) },
+        { key: "location_state", label: ["", ""], placeholder: ["Select state", "اختر المحافظة"], options: (d) => [...new Set(HF.SA.GEO.filter((g) => g.country.name === d.location_country).map((g) => g.state.name))].map((s) => [s, s]) },
+        { key: "location_city", label: ["", ""], placeholder: ["Select city", "اختر المدينة"], options: (d) => HF.SA.GEO.filter((g) => g.state.name === d.location_state).map((g) => [g.city.name, g.city.name]) },
+        { key: "gender", label: ["gender:", "الجنس:"], options: () => [["male", L("male", "ذكر")], ["female", L("female", "أنثى")]] },
+        { key: "age", label: ["age:", "العمر:"], type: "agerange" },
+      ],
+      /* the dashboard's Reset only clears the form (no re-query, menu stays open) */
+      onApply: (d) => { ctl.state.extra = d; ctl.state.page = 1; ctl.paint(); },
+    });
+  });
+})();
+</script>
+</body>
+</html>

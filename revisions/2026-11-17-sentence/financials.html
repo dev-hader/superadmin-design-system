@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Financials · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
+<style>
+  /* ---- redesign (2026-11-17): page head · one designed card per country · stat cards ---- */
+  .fin-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+  .fin-head__sub { margin-top: var(--space-1); display: inline-flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+  .fin-head__actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .fin-period { display: inline-flex; align-items: center; gap: var(--space-1); padding: 2px var(--space-2); border-radius: var(--radius-full); background: var(--color-surface-sunken); color: var(--color-text-secondary); font-size: var(--text-xs); font-weight: var(--weight-medium); font-variant-numeric: tabular-nums; }
+  .fin-period svg { width: 13px; height: 13px; }
+  .fin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: var(--space-4); }
+  .fin-card { display: flex; flex-direction: column; gap: var(--space-4); }
+  .fin-card__head { display: flex; align-items: center; gap: var(--space-3); }
+  .fin-card__head h2, .fin-card__head h3 { font-size: var(--text-lg); font-weight: var(--weight-semibold); line-height: 1.2; }
+  .fin-iso { width: 40px; height: 40px; flex: none; border-radius: var(--radius-md); display: grid; place-items: center; background: var(--color-primary-subtle); color: var(--color-primary-ink); font-size: var(--text-sm); font-weight: var(--weight-bold); letter-spacing: .02em; }
+  .fin-iso svg { width: 18px; height: 18px; }
+  .fin-totals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+  .fin-total { padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); background: var(--color-surface-sunken); min-width: 0; }
+  .fin-total__label { display: block; font-size: var(--text-xs); color: var(--color-text-tertiary); }
+  .fin-total__val { display: block; margin-top: 2px; font-size: var(--text-lg); font-weight: var(--weight-semibold); color: var(--color-text); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .fin-split { width: 100%; border-collapse: collapse; font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
+  .fin-split th { padding: 0 0 var(--space-2); font-size: var(--text-xs); font-weight: var(--weight-medium); color: var(--color-text-tertiary); text-align: end; }
+  .fin-split td { padding: var(--space-2) 0; border-top: 1px solid var(--color-border-subtle); text-align: end; color: var(--color-text); }
+  .fin-split th:first-child, .fin-split td:first-child { text-align: start; color: var(--color-text-secondary); }
+  .fin-split th + th, .fin-split td + td { padding-inline-start: var(--space-3); }
+  .fin-split tr.is-total td { font-weight: var(--weight-semibold); color: var(--color-text); }
+  .fin-split .fin-tip { display: inline-flex; vertical-align: -2px; margin-inline-start: 4px; color: var(--color-danger); cursor: help; }
+  .fin-split .fin-tip svg { width: 14px; height: 14px; }
+  .fin-card__foot { margin-top: auto; display: flex; justify-content: flex-end; }
+  .fin-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: var(--space-4); margin-bottom: var(--space-6); }
+  .fin-stats .fin-card { gap: var(--space-3); }
+  .fin-money { display: grid; grid-template-columns: auto auto; justify-content: start; gap: 2px var(--space-3); font-size: var(--text-sm); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .fin-money span:nth-child(odd) { color: var(--color-text-tertiary); font-size: var(--text-xs); align-self: center; }
+  .fin-money .is-total { font-weight: var(--weight-semibold); color: var(--color-text); }
+  .fin-loc b { display: block; font-weight: var(--weight-medium); }
+  @media (max-width: 640px) { .fin-head__actions { width: 100%; } .fin-head__actions .btn { flex: 1 1 auto; } }
+  #listMount .data-table-footer .pagination { flex-wrap: wrap; max-width: 100%; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script>
+(() => {
+  /* Financials — mirrors pages/financials:
+       overview  (/financials)                   financials.html — Export + Filter (year · month), one card per country
+       country   (/financials/:iso/transactions) ?iso=<ISO>       — statistics (booking · public event · [packages] · revenues)
+                                                 + partner rows, Filter (year · month · state → city), eye → partner financials.
+     API: GET /financials · GET /financials/{iso}. No charts, no row modals.
+     Redesign (2026-11-17): same numbers, filters and actions — re-composed. Each
+     country is a card with its two totals up front (revenue · collected) and the
+     online / cash split underneath; the country page leads with one stat card per
+     revenue group, then the partner rows (location in one column). Previous
+     layout: revisions/2026-11-17-all-pages/financials.html
+     Permissions (dashboard job keys — data-perm, demo ?perm=limited | ?perm=none):
+       overview page view_financials · Show (country card) view_financials_details
+       country page view_financials_details · partner eye view_partner_financials */
+  const qs = new URLSearchParams(location.search), iso = qs.get("iso");
+  RD.boot({ activeId: "financials", title: "Financials", perm: iso ? "view_financials_details" : "view_financials" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc, ic, fmt } = SA;
+  const mount = document.getElementById("listMount");
+  const rtl = () => document.documentElement.dir === "rtl";
+  /* display only: thousands separators + 2 decimals (the values are the same) */
+  const n2 = (v) => Number(v || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const f2 = (v) => Number(v || 0).toFixed(2);
+  const money = (v) => (v === undefined ? "---" : Number(v).toFixed(2));
+  const moneyN = (v) => (v === undefined ? "---" : n2(v));
+  const csv = (name, rows) => {
+    const blob = new Blob([rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  };
+  const countries = [...new Map(HF.SA.GEO.map((g) => [g.country.iso, g.country])).values()];
+  const CUR = { SA: "SAR", EG: "EGP", AE: "AED" };
+  const now = new Date(), mmYY = (f) => `${String(f.month || now.getMonth() + 1).padStart(2, "0")}/${f.year || now.getFullYear()}`;
+  const YEAR = { key: "year", label: ["Year", "السنة"], placeholder: ["Select year", "اختر السنة"], options: () => Array.from({ length: 16 }, (_, i) => String(now.getFullYear() + 1 - i)).map((y) => [y, y]) }; /* the dashboard uses an open year picker (react-datepicker showYearPicker) — a wide list stands in */
+  const MONTH = { key: "month", label: ["Month", "الشهر"], placeholder: ["Select month", "اختر الشهر"], options: () => Array.from({ length: 12 }, (_, i) => [String(i + 1), String(i + 1).padStart(2, "0")]) };
+  const filterCount = (f) => Object.values(f).filter(Boolean).length;
+
+  /* page head: title · breadcrumb · period line · actions (Export, Filter[, Back]) */
+  const pageHead = (o) => (document.getElementById("pageHead").innerHTML = `<div class="fin-head animate-in">
+      <div>
+        <h1 class="t-h3">${esc(o.title)}</h1>
+        <nav class="t-sm text-tertiary" aria-label="Breadcrumb" style="margin-top:var(--space-1)">${o.crumbs.map((c) => `<a href="${c[1]}" style="color:inherit">${esc(c[0])}</a> › `).join("")}<span>${esc(o.title)}</span></nav>
+        <p class="t-sm text-secondary fin-head__sub">${o.sub}</p>
+      </div>
+      <div class="fin-head__actions">${o.actions}</div>
+    </div>`);
+  const period = (f) => `<span class="fin-period">${ic("clock")}${mmYY(f)}</span>`;
+  const exportBtn = PP.btn(L("Export", "تصدير"), "upload", "data-export", "secondary");
+
+  /* revenue / collected split — rows online · cash · total */
+  const split = (s, o) => `<table class="fin-split">
+      <thead><tr><th scope="col"><span class="sr-only">${L("Payment", "الدفع")}</span></th><th scope="col">${L("Revenue", "الإيرادات")}</th><th scope="col">${L("Collected", "المحصل")}</th></tr></thead>
+      <tbody>
+        <tr><td>${L("Online", "عبر الإنترنت")}</td><td>${o.fmt(s.online_revenue)}</td><td>${o.fmt(s.online_collected)}${o.tips ? `<span class="fin-tip" tabindex="0" data-tip="${L("Collected by HighFive", "محصل من هاي فايف")}" aria-label="${L("Collected by HighFive", "محصل من هاي فايف")}">${ic("info")}</span>` : ""}</td></tr>
+        <tr><td>${L("Cash", "نقدي")}</td><td>${o.fmt(s.cash_revenue)}</td><td>${o.fmt(s.cash_collected)}${o.tips ? `<span class="fin-tip" tabindex="0" data-tip="${L("SAR to be collected", "ريال سعودي للتحصيل")}" aria-label="${L("SAR to be collected", "ريال سعودي للتحصيل")}">${ic("info")}</span>` : ""}</td></tr>
+        ${o.total ? `<tr class="is-total"><td>${o.total}</td><td>${o.fmt(s.online_revenue + s.cash_revenue)}</td><td>${o.fmt(s.online_collected + s.cash_collected)}</td></tr>` : ""}
+      </tbody></table>`;
+
+  /* ---- per-country totals from the partners' own transactions (sample) ---- */
+  const partnerRows = (c, f) => HF.SA.partners.filter((p) => p.country.iso === c.iso && (!f.state_id || String(p.state.id) === f.state_id) && (!f.city_id || String(p.city.id) === f.city_id)).map((p, i) => {
+    const seed = (p.id % 13) + 1 + (f.month ? +f.month % 3 : 0), grp = (a, b) => ({ cash: a, online: b, total: a + b });
+    const booking = grp(seed * 120, seed * 340), event = grp(seed * 45, seed * 160), pkg = grp(seed * 90, seed * 410);
+    return { id: p.id, partner_name: p.company_name, country: p.country.name, state: p.state.name, city: p.city.name, date: `${f.year || now.getFullYear()}-${String(f.month || now.getMonth() + 1).padStart(2, "0")}`,
+      booking, public_event: event, package: pkg, all_revenues: grp(booking.cash + event.cash + pkg.cash, booking.online + event.online + pkg.online) };
+  });
+  const sumG = (rows, k) => rows.reduce((a, r) => ({ online_revenue: a.online_revenue + r[k].online, cash_revenue: a.cash_revenue + r[k].cash, online_collected: a.online_collected + r[k].online * 0.85, cash_collected: a.cash_collected + r[k].cash * 0.15 }), { online_revenue: 0, cash_revenue: 0, online_collected: 0, cash_collected: 0 });
+
+  /* ================= country transactions ================= */
+  if (iso) {
+    const c = countries.find((x) => x.iso === iso) || countries[0];
+    /* the real page reads the TOP-LEVEL packages_visible flag of GET /financials/{iso}
+       (financialsReader.isCountryPackagesVisible): false → no Packages card or column. Sample: only SA. */
+    const pkgVisible = c.iso === "SA";
+    let f = {};
+    const head = () => pageHead({ title: c.name, crumbs: [[L("Dashboard", "لوحة القيادة"), "index.html"], [L("Financials", "المالية"), "financials.html"]],
+      sub: `${L(`${c.name} transactions of ${mmYY(f)} in all partners`, `معاملات ${c.name} لشهر ${mmYY(f)} في جميع الشركاء`)}`,
+      actions: `${exportBtn}${PP.filterBtn(filterCount(f))}<a class="btn btn--sm btn--secondary" href="financials.html">${ic(rtl() ? "chevronRight" : "chevronLeft")}<span>${L("Financials", "المالية")}</span></a>` });
+    const money3 = (o, fm) => `<div class="fin-money">${[["cash", L("Cash", "نقدي")], ["online", L("Online", "عبر الإنترنت")], ["total", L("Total", "المجموع")]].map(([k, t]) => `<span>${t}</span><span class="${k === "total" ? "is-total" : ""}">${fm(o[k])}</span>`).join("")}</div>`;
+    const statCard = (title, icon, s, fm) => `<section class="card card--pad fin-card animate-in">
+        <div class="fin-card__head"><span class="fin-iso" aria-hidden="true">${ic(icon)}</span><h2>${title}</h2></div>
+        ${split(s, { fmt: fm, tips: true, total: L("Total (SAR)", "المجموع (ريال سعودي)") })}</section>`;
+    const paint = () => {
+      head();
+      const rows = partnerRows(c, f);
+      const st = { booking: sumG(rows, "booking"), public_event: sumG(rows, "public_event"), package: sumG(rows, "package"), all: sumG(rows, "all_revenues") };
+      mount.innerHTML = `<div class="fin-stats">${statCard(L("Booking", "الحجز"), "clock", st.booking, n2)}${statCard(L("Public event", "الحدث العام"), "ticket", st.public_event, n2)}${pkgVisible ? statCard(L("Packages", "الباقات"), "box", st.package, n2) : ""}${statCard(L("Revenues", "الإيرادات"), "trendUp", st.all, moneyN)}</div><div data-l></div>`;
+      SA.list({ mount: mount.querySelector("[data-l]"), data: rows, empty: ["There is no data to display.", "لا توجد بيانات للعرض."],
+        after: (root) => { const bar = root.querySelector(".data-table-toolbar"); if (bar && !bar.querySelector("input,button,select")) bar.remove(); },
+        columns: [
+          { head: ["Partner", "الشريك"], cell: (r) => `<div class="cell-user">${PP.avatar(r.partner_name)}<div><b>${esc(r.partner_name)}</b><div class="t-xs text-tertiary">#${r.id}</div></div></div>` },
+          { head: ["Location", "الموقع"], cell: (r) => `<div class="fin-loc"><b>${esc(r.city)}</b><span class="t-xs text-tertiary">${esc(r.state)} · ${esc(r.country)}</span></div>` },
+          { head: ["Booking", "الحجز"], cell: (r) => money3(r.booking, n2) },
+          { head: ["Public event", "الحدث العام"], cell: (r) => money3(r.public_event, n2) },
+          { hidden: !pkgVisible, head: ["Packages", "الباقات"], cell: (r) => money3(r.package, n2) },
+          { head: ["All revenues", "جميع الإيرادات"], cell: (r) => money3(r.all_revenues, moneyN) },
+          { head: ["Date", "التاريخ"], align: "center", cell: (r) => `<span style="font-variant-numeric:tabular-nums">${r.date}</span>` },
+          { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<a class="icon-btn" href="partner-profile.html?id=${r.id}&tab=financials&from=transactions&iso=${c.iso}" data-perm="view_partner_financials" aria-label="${L("View", "عرض")} ${esc(r.partner_name)}" data-tip="${L("View partner financials", "عرض مالية الشريك")}">${ic("eye")}</a>` },
+        ] });
+      document.querySelector("[data-export]").onclick = () => csv("transactions.csv", [["id", "partner_name", "country", "state", "city", "date"].concat(pkgVisible ? ["package_cash", "package_online", "package_total"] : [], ["all_revenues_cash", "all_revenues_online", "all_revenues_total"])]
+        .concat(rows.map((r) => [r.id, r.partner_name, r.country, r.state, r.city, r.date].concat(pkgVisible ? [f2(r.package.cash), f2(r.package.online), f2(r.package.total)] : [], [money(r.all_revenues.cash), money(r.all_revenues.online), money(r.all_revenues.total)]))));
+    };
+    const states = () => [...new Map(HF.SA.GEO.filter((g) => g.country.iso === c.iso).map((g) => [String(g.state.id), g.state.name])).entries()];
+    document.getElementById("pageHead").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-filter]");
+      if (b) PP.filterPop(b, { width: 300, value: f, cascade: { state_id: ["city_id"] }, resetApplies: true, fields: [YEAR, MONTH,
+        { key: "state_id", label: ["State", "الولاية"], placeholder: ["All", "الكل"], options: states },
+        { key: "city_id", label: ["City", "المدينة"], placeholder: ["All", "الكل"], options: (d) => HF.SA.GEO.filter((g) => String(g.state.id) === d.state_id).map((g) => [String(g.city.id), g.city.name]) },
+      ], onApply: (d) => { f = d; paint(); } });
+    });
+    paint();
+    return;
+  }
+
+  /* ================= overview ================= */
+  let f = {};
+  const head = () => pageHead({ title: L("Financials", "المالية"), crumbs: [[L("Dashboard", "لوحة القيادة"), "index.html"]],
+    sub: `${L("Revenue and collected amounts per country", "الإيرادات والمبالغ المحصلة لكل بلد")} ${period(f)}`,
+    actions: `${exportBtn}${PP.filterBtn(filterCount(f))}` });
+  const items = () => countries.map((c, i) => { const rows = partnerRows(c, f), s = sumG(rows, "all_revenues"); return Object.assign({ id: i + 1, iso: c.iso, name: c.name, currency: { code: CUR[c.iso] } }, s); });
+  const paint = () => {
+    head();
+    const list = items();
+    mount.innerHTML = list.length ? `<div class="fin-grid">${list.map((c) => `<section class="card card--pad fin-card animate-in" aria-labelledby="fin-c${c.id}">
+        <div class="fin-card__head">
+          <span class="fin-iso" aria-hidden="true">${esc(c.iso)}</span>
+          <div style="flex:1;min-width:0"><h2 id="fin-c${c.id}">${esc(c.name || "---")}</h2><span class="t-xs text-tertiary">${L("Currency", "العملة")}: ${esc(c.currency.code || "---")}</span></div>
+        </div>
+        <div class="fin-totals">
+          <div class="fin-total"><span class="fin-total__label">${L("Total revenue", "إجمالي الإيرادات")}</span><span class="fin-total__val">${n2(c.online_revenue + c.cash_revenue)}</span></div>
+          <div class="fin-total"><span class="fin-total__label">${L("Total collected", "إجمالي المحصل")}</span><span class="fin-total__val">${n2(c.online_collected + c.cash_collected)}</span></div>
+        </div>
+        ${split(c, { fmt: n2 })}
+        <div class="fin-card__foot"><a class="btn btn--sm" href="financials.html?iso=${c.iso}" data-perm="view_financials_details" aria-label="${L("Show", "عرض")} ${esc(c.name)}"><span>${L("Show", "عرض")}</span>${ic(rtl() ? "chevronLeft" : "chevronRight")}</a></div>
+      </section>`).join("")}</div>`
+      : `<div class="card card--pad empty-state"><p class="text-tertiary">${L("There is no data to display.", "لا توجد بيانات للعرض.")}</p></div>`;
+  };
+  document.getElementById("pageHead").addEventListener("click", (e) => {
+    if (e.target.closest("[data-export]")) { const list = items(); if (list.length) csv("financials.csv", [Object.keys(list[0])].concat(list.map((c) => Object.values(Object.assign({}, c, { currency: c.currency.code }))))); return; }
+    const b = e.target.closest("[data-filter]");
+    if (b) PP.filterPop(b, { width: 300, value: f, resetApplies: true, fields: [YEAR, MONTH], onApply: (d) => { f = d; paint(); } });
+  });
+  paint();
+})();
+</script>
+</body>
+</html>

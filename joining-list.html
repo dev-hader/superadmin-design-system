@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
 <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
@@ -14,6 +15,8 @@
 <link rel="stylesheet" href="assets/css/app.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
 <style>
   .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
   .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
@@ -41,6 +44,18 @@
   .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
   .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
   @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+  /* ---- redesign 2026-11-17: global list layer (same composition as partners.html) ---- */
+  .ops-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+  #listMount .data-table-toolbar > .grow { display: none; }
+  #listMount .data-table-toolbar > .input-wrap { flex: 1 1 320px; min-width: 0 !important; }
+  .ops-chips { padding: 0 var(--space-5) var(--space-4); }
+  .ops-id { font: inherit; font-weight: var(--weight-semibold); color: var(--color-text); padding: 0; cursor: pointer; text-align: start; }
+  .ops-id:hover { color: var(--color-primary-ink); text-decoration: underline; text-underline-offset: 3px; }
+  .ops-two { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .ops-two > b { font-weight: var(--weight-medium); }
+  .ops-check { display: inline-flex; flex-direction: column; gap: var(--space-1); align-items: flex-start; }
+  #listMount tbody tr:has([data-peek]) { cursor: pointer; }
+  #listMount > .stat-strip { grid-template-columns: repeat(auto-fit, minmax(min(100%, 128px), 1fr)) !important; }
 </style>
 </head>
 <body>
@@ -73,54 +88,90 @@
      status, search (3+ chars) on joining id / user / company / unit, Filter
      Options (session date-time · joining date-time · category → activity · age
      group · gender · public event status · check-in status), 14 columns,
-     eye → public event view. API: GET /joining-list. */
-  RD.boot({ activeId: "pe-joining-list", title: "Joining List" });
+     eye → public event view; the user name is plain text (no link). API: GET /joining-list. */
+  /* Permissions (job keys): page view_joining_list (JoiningTableWrapper.js); row eye +
+     drawer link view_public_event_details (joining-list/PublicEventsTable.js). */
+  RD.boot({ activeId: "pe-joining-list", title: "Joining List", perm: "view_joining_list" });
   if (!document.getElementById("listMount")) return;
   const { L, esc, ic, badge } = SA;
   const D = OPS.all();
   const dash = (v) => (v == null || v === "" ? "---" : esc(v));
-  const METHOD = { qr: L("QR Scan", "مسح رمز QR"), manual: L("Manual", "يدوي"), auto: L("Automatic", "تلقائي") };
-  const JOIN = { joined: L("joined", "منضم"), left: L("left", "غادر"), removed: L("removed", "مُزال") };
+  const METHOD = { qr: L("QR scan", "مسح رمز QR"), manual: L("Manual", "يدوي"), auto: L("Automatic", "تلقائي") };
+  const JOIN = { joined: ["success", L("Joined", "منضم")], left: ["warning", L("Left", "غادر")], removed: ["danger", L("Removed", "مُزال")] };
+  const PE = () => [["coming", L("Coming", "قادم")], ["past", L("Past", "ماضي")], ["canceled", L("Cancelled", "ملغي")]];
+  const CHK = () => [["checked_in", L("Checked in", "تم تسجيل الحضور")], ["not_checked_in", L("Not checked in", "لم يسجّل الحضور")]];
+  const peBadge = (s) => badge(s === "coming" ? "success" : s === "past" ? "primary" : "danger", OPS.opt(PE(), s));
 
-  SA.head(document.getElementById("pageHead"), { title: ["Joining List", "قائمة الانضمام"], crumbs: [["public events", "الأحداث العامة", "public-events.html"]] });
+  /* Redesign (2026-11-17) — same data, filters, fields, actions and routes; laid
+     out like partners.html: head with a live summary, status tiles, search +
+     Filter bar with removable chips; the 14 columns are grouped into joining ·
+     user · venue (company, branch, unit) · public event (id, time, status) ·
+     activity (+ age group, gender) · joining status · check-in · price; row (or
+     the joining id) opens a summary drawer with the link to the event view. */
+  const by = (k) => D.joins.filter((r) => r.status === k).length;
+  OPS.head(document.getElementById("pageHead"), { title: ["Joining List", "قائمة الانضمام"], crumbs: [["Public events", "الأحداث العامة", "public-events.html"]],
+    sub: L(`${SA.fmt(D.joins.length)} joinings · ${by("joined")} joined · ${D.joins.filter((r) => r.check_in_at).length} checked in`, `${SA.fmt(D.joins.length)} انضمام · ${by("joined")} منضم · ${D.joins.filter((r) => r.check_in_at).length} سجّلوا الحضور`) });
+  const viewHref = (r) => `public-events.html?view=${r.public_event.id}&redirect_to_page=${ctl ? ctl.state.page : 1}`;
+  const checkin = (r) => (r.check_in_at ? `${badge("success", L("Checked in", "تم تسجيل الحضور"))}<div class="t-xs text-tertiary" style="margin-top:2px">${esc(r.check_in_at)}</div><div class="t-xs text-tertiary">${esc(r.checked_by || "—")} · ${METHOD[r.method] || esc(r.method || "—")}</div>` : badge("", L("Not checked in", "لم يسجّل الحضور")));
+  const joinCell = (r) => `${badge(JOIN[r.status][0], JOIN[r.status][1])}${r.status !== "joined" ? `<div class="t-xs text-tertiary" style="margin-top:2px">${esc(r.status_date)}</div>` : ""}`;
+  const fx = OPS.filters([
+    { keys: ["session_from", "session_to"], label: ["Session date", "تاريخ الجلسة"], value: (f) => OPS.range(f.session_from, f.session_to) },
+    { keys: ["joining_from", "joining_to"], label: ["Joining date", "تاريخ الانضمام"], value: (f) => OPS.range(f.joining_from, f.joining_to) },
+    { keys: ["category"], also: ["activity"], label: ["Category", "الفئة"], value: (f) => f.category },
+    { keys: ["activity"], label: ["Activity", "النشاط"], value: (f) => f.activity },
+    { keys: ["age"], label: ["Age group", "الفئة العمرية"], value: (f) => f.age },
+    { keys: ["gender"], label: ["Session gender", "جنس الجلسة"], value: (f) => PP.cap(f.gender) },
+    { keys: ["pe_status"], label: ["Public event status", "حالة الحدث العام"], value: (f) => OPS.opt(PE(), f.pe_status) },
+    { keys: ["check"], label: ["Check-in status", "حالة تسجيل الحضور"], value: (f) => OPS.opt(CHK(), f.check) },
+  ]);
   let ctl = null;
   ctl = SA.list({
     mount: document.getElementById("listMount"), data: D.joins, minSearch: 3,
-    pills: [["all", "all", "الكل"], ["joined", "joined", "منضم"], ["left", "left", "غادر"], ["removed", "removed", "مُزال"]].map((p) => ({ key: p[0], label: [p[1], p[2]] })),
+    pills: [["all", "All joinings", "كل الانضمامات", "users", ""], ["joined", "Joined", "منضم", "check", "success"], ["left", "Left", "غادر", "refresh", "warning"], ["removed", "Removed", "مُزال", "close", "danger"]]
+      .map((p) => ({ key: p[0], label: [p[1], p[2]], icon: p[3], tone: p[4] })),
     pillMatch: (r, k) => k === "all" || r.status === k,
-    search: ["Search by Joining ID , User name , Username , Company name , Unit name", "البحث برقم الانضمام، اسم المستخدم، اسم المستخدم، اسم الشركة، اسم الوحدة"],
+    search: ["Search by joining ID, user name, username, company name, unit name", "البحث برقم الانضمام أو الاسم أو اسم المستخدم أو اسم الشركة أو اسم الوحدة"],
     searchMatch: (r, q) => [String(r.id), r.user.name, r.user.username, r.company.name, r.unit.name].some((v) => v && v.toLowerCase().includes(q)),
-    toolbarExtra: PP.filterBtn(),
+    toolbarExtra: fx.toolbarExtra, after: fx.after,
     extraMatch: (r, f) => OPS.inRange(r.start_at, f.session_from, f.session_to) && OPS.inRange(r.joined_at, f.joining_from, f.joining_to) && (!f.category || r.category === f.category) && (!f.activity || r.activity === f.activity)
       && (!f.age || r.age_group === f.age) && (!f.gender || r.gender === f.gender) && (!f.pe_status || r.public_event.status === f.pe_status)
       && (!f.check || (f.check === "checked_in" ? !!r.check_in_at : !r.check_in_at)),
-    empty: ["there is no any Joining yet", "لا يوجد انضمام بعد"],
+    empty: ["There are no joinings yet", "لا يوجد انضمام بعد"],
     columns: [
-      { head: ["id", "الرقم"], cell: (r) => `<b>${r.id}</b><div class="t-xs text-tertiary">${esc(r.created_at)}</div>` },
-      { head: ["company", "الشركة"], cell: (r) => `${esc(r.company.name)}<div class="t-xs text-tertiary">ID #${r.company.id}</div>` },
-      { head: ["Branch / Unit", "الفرع / الوحدة"], align: "center", cell: (r) => `${esc(r.branch.name)}<div class="t-xs text-tertiary">${esc(r.unit.name)}</div>` },
-      { head: ["Category / Activity", "الفئة / النشاط"], align: "center", cell: (r) => `${esc(r.category)}<div class="t-xs text-tertiary">${esc(r.activity)}</div>` },
-      { head: ["Public Event Time", "وقت الحدث العام"], align: "center", cell: (r) => `${esc(r.start_at)}<div class="t-xs text-tertiary">${esc(r.end_at)}</div>` },
-      { head: ["age group", "الفئة العمرية"], align: "center", cell: (r) => dash(r.age_group) },
-      { head: ["session gender", "جنس الجلسة"], align: "center", cell: (r) => dash(r.gender) },
-      { head: ["Users", "المستخدمون"], align: "center", cell: (r) => `<a href="user-profile.html?id=${r.user.id}&tab=details" style="color:var(--color-text)">${esc(r.user.name)}</a><div class="t-xs text-tertiary">${dash(r.user.username)}</div>` },
-      { head: ["joining status", "حالة الانضمام"], align: "center", cell: (r) => `${JOIN[r.status]}${r.status !== "joined" ? `<div class="t-xs text-tertiary">${esc(r.status_date)}</div>` : ""}` },
-      { head: ["Check-in Status", "حالة تسجيل الحضور"], align: "center", cell: (r) => (r.check_in_at ? `${badge("success", L("Checked-in", "تم تسجيل الحضور"))}<div class="t-xs text-tertiary">${esc(r.check_in_at)} · ${esc(r.checked_by || "—")} · ${METHOD[r.method] || esc(r.method || "—")}</div>` : badge("", L("Not checked-in", "لم يسجّل الحضور"))) },
-      { head: ["Public event ID", "رقم الحدث العام"], cell: (r) => `<b>#${r.public_event.id}</b><div class="t-xs text-tertiary">${esc(r.public_event.created_at)}</div>` },
-      { head: ["Price Per User", "السعر لكل مستخدم"], align: "center", cell: (r) => `${r.price_per_user} ${esc(r.currency.code)}` },
+      { head: ["Joining", "الانضمام"], cell: (r) => `<div class="ops-two">${OPS.peekId(r.id, "#" + r.id)}<span class="t-xs text-tertiary">${esc(r.created_at)}</span></div>` },
+      { head: ["User", "المستخدم"], cell: (r) => `<div class="cell-user">${PP.avatar(r.user.name)}<div class="ops-two"><b>${dash(r.user.name)}</b><span class="t-xs text-tertiary">${dash(r.user.username)}</span></div></div>` },
+      { head: ["Company", "الشركة"], cell: (r) => OPS.two(esc(r.company.name), `${L("ID", "المعرف")} #${r.company.id}`) },
+      { head: ["Branch / unit", "الفرع / الوحدة"], cell: (r) => OPS.two(esc(r.branch.name), esc(r.unit.name)) },
+      { head: ["Public event", "الحدث العام"], cell: (r) => `<div class="ops-two"><b>#${r.public_event.id}</b><span class="t-xs text-tertiary">${esc(r.public_event.created_at)}</span></div>` },
+      { head: ["Public event time", "وقت الحدث العام"], cell: (r) => OPS.two(esc(r.start_at), esc(r.end_at)) },
+      { head: ["Category / activity", "الفئة / النشاط"], cell: (r) => OPS.two(esc(r.category), esc(r.activity)) },
+      { head: ["Age group", "الفئة العمرية"], align: "center", cell: (r) => dash(r.age_group) },
+      { head: ["Session gender", "جنس الجلسة"], align: "center", cell: (r) => OPS.dash(r.gender) },
+      { head: ["Joining status", "حالة الانضمام"], align: "center", cell: joinCell },
+      { head: ["Check-in status", "حالة تسجيل الحضور"], cell: checkin },
+      { head: ["Price per user", "السعر لكل مستخدم"], align: "end", cell: (r) => `<b style="font-variant-numeric:tabular-nums">${r.price_per_user}</b> <span class="t-xs">${esc(r.currency.code)}</span>` },
       /* tone: coming → success; "past" → primary; else danger (dashboard checks the joining's own status for "past" — data here keeps it on the event) */
-      { head: ["Public event status", "حالة الحدث العام"], align: "center", cell: (r) => badge(r.public_event.status === "coming" ? "success" : r.public_event.status === "past" ? "primary" : "danger", r.public_event.status) },
-      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<a class="icon-btn" href="public-events.html?view=${r.public_event.id}&redirect_to_page=${ctl ? ctl.state.page : 1}" aria-label="${L("View", "عرض")}" title="${L("View", "عرض")}">${ic("eye")}</a>` },
+      { head: ["Public event status", "حالة الحدث العام"], align: "center", cell: (r) => peBadge(r.public_event.status) },
+      { head: ["Actions", "الإجراءات"], align: "center", cell: (r) => `<a class="icon-btn" href="${viewHref(r)}" aria-label="${L("View public event", "عرض الحدث العام")} #${r.public_event.id}" data-tip="${L("View", "عرض")}" data-perm="view_public_event_details">${ic("eye")}</a>` },
     ],
   });
+  fx.bind(document.getElementById("listMount"), ctl);
+  OPS.peek(document.getElementById("listMount"), (id) => ctl.rowById(id), (r) => ({
+    title: `${L("Joining", "الانضمام")} #${r.id}`, href: viewHref(r), open: L("Open public event", "فتح الحدث العام"), perm: "view_public_event_details",
+    rows: [[L("Joining status", "حالة الانضمام"), joinCell(r)], [L("Joined at", "تاريخ الانضمام"), esc(r.joined_at)], [L("User", "المستخدم"), `${esc(r.user.name)} <span class="text-tertiary">${dash(r.user.username)}</span>`],
+      [L("Company", "الشركة"), `${esc(r.company.name)} <span class="text-tertiary">#${r.company.id}</span>`], [L("Branch", "الفرع"), esc(r.branch.name)], [L("Unit", "الوحدة"), esc(r.unit.name)],
+      [L("Public event", "الحدث العام"), `#${r.public_event.id} ${peBadge(r.public_event.status)}`], [L("Public event time", "وقت الحدث العام"), `<span dir="ltr">${esc(r.start_at)} – ${esc(r.end_at.slice(11))}</span>`],
+      [L("Category", "الفئة"), esc(r.category)], [L("Activity", "النشاط"), esc(r.activity)], [L("Age group", "الفئة العمرية"), dash(r.age_group)], [L("Session gender", "جنس الجلسة"), OPS.dash(r.gender)],
+      [L("Price per user", "السعر لكل مستخدم"), `${r.price_per_user} ${esc(r.currency.code)}`], [L("Check-in status", "حالة تسجيل الحضور"), checkin(r)]],
+  }));
   document.getElementById("listMount").addEventListener("click", (e) => {
     const b = e.target.closest("[data-filter]");
     if (!b) return;
     PP.filterPop(b, { width: 340, value: ctl.state.extra, cascade: { category: ["activity"] }, resetApplies: true,
-      fields: [{ key: "session", type: "range", input: "datetime-local", label: ["session date :", "تاريخ الجلسة :"] }, { key: "joining", type: "range", input: "datetime-local", label: ["Joining Date :", "تاريخ الانضمام :"] }]
+      fields: [{ key: "session", type: "range", input: "datetime-local", label: ["Session date", "تاريخ الجلسة"] }, { key: "joining", type: "range", input: "datetime-local", label: ["Joining date", "تاريخ الانضمام"] }]
         .concat(OPS.catFields(), [OPS.ageField(), OPS.genderField(),
-          { key: "pe_status", label: ["Public event status :", "حالة الحدث العام :"], placeholder: ["select status", "اختر الحالة"], options: () => [["coming", L("Coming", "قادم")], ["past", L("past", "ماضي")], ["canceled", L("canceled", "ملغي")]] },
-          { key: "check", label: ["Check-in Status :", "حالة تسجيل الحضور :"], options: () => [["checked_in", L("Checked-in", "تم تسجيل الحضور")], ["not_checked_in", L("Not checked-in", "لم يسجّل الحضور")]] }]),
+          { key: "pe_status", label: ["Public event status", "حالة الحدث العام"], placeholder: ["Select status", "اختر الحالة"], options: PE },
+          { key: "check", label: ["Check-in status", "حالة تسجيل الحضور"], options: CHK }]),
       /* Apply resets the page; Reset clears every filter and re-queries (menu stays open in the dashboard) */
       onApply: (d) => { ctl.state.extra = d; ctl.state.page = 1; ctl.paint(); } });
   });

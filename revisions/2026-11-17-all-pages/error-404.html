@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <script>
+            try {
+                document.documentElement.setAttribute("data-theme", localStorage.getItem("rd-theme") === "1" ? "dark" : "light");
+                document.documentElement.dir = localStorage.getItem("rd-dir") === "1" ? "rtl" : "ltr";
+            } catch (e) {}
+        </script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>404 · High Five</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="assets/css/tokens.css" />
+        <link rel="stylesheet" href="assets/css/base.css" />
+        <link rel="stylesheet" href="assets/css/app.css" />
+        <link rel="stylesheet" href="assets/css/components.css" />
+        <link rel="stylesheet" href="assets/shell.css" />
+        <style>
+            body { min-height: 100vh; display: grid; place-items: center; background: var(--color-bg); padding: var(--space-6) var(--space-4); }
+            .err { max-width: 560px; width: 100%; text-align: center; display: grid; gap: var(--space-4); justify-items: center; padding: var(--space-10) var(--space-6); }
+            .err__code { font-size: 96px; line-height: 1; font-weight: 800; letter-spacing: -0.04em; color: var(--color-primary); }
+            .err svg { width: min(100%, 300px); height: auto; }
+        </style>
+    </head>
+    <body>
+        <!-- Error 404 — mirrors modules/errors/components/Error404.tsx (route error/404):
+             title · text · illustration · Return Home (to the dashboard). The dashboard's copy is
+             English-only (hard-coded, no i18n keys); the Arabic below is this system's translation. -->
+        <main class="card err">
+            <span class="err__code" aria-hidden="true">404</span>
+            <h1 class="t-h2" data-ar="عذراً!">Oops!</h1>
+            <p class="text-tertiary" data-ar="لا يمكننا العثور على هذه الصفحة.">We can't find that page.</p>
+            <svg viewBox="0 0 300 170" aria-hidden="true"><ellipse cx="150" cy="155" rx="120" ry="10" fill="var(--color-surface-sunken)"/><rect x="70" y="30" width="160" height="110" rx="14" fill="var(--color-surface)" stroke="var(--color-border)" stroke-width="3"/><rect x="70" y="30" width="160" height="24" rx="12" fill="var(--color-primary-subtle)"/><circle cx="88" cy="42" r="4" fill="var(--color-primary)"/><circle cx="102" cy="42" r="4" fill="var(--color-warning)"/><circle cx="150" cy="95" r="24" fill="none" stroke="var(--color-primary)" stroke-width="6"/><path d="M168 113l20 20" stroke="var(--color-primary)" stroke-width="8" stroke-linecap="round"/><path d="M141 95h18" stroke="var(--color-text-tertiary)" stroke-width="5" stroke-linecap="round"/></svg>
+            <a class="btn btn--sm" href="index.html" data-ar="العودة للرئيسية">Return Home</a>
+        </main>
+        <script src="assets/shell.js"></script>
+        <script>
+            if (document.documentElement.dir === "rtl" && window.RD && RD.arInit) RD.arInit();
+        </script>
+    </body>
+</html>

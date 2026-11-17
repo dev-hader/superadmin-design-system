@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
+<title>Countries · HighFive Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
+  .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
+  @media (max-width: 768px) { .sa-hero__status { border: 0; padding: 0; flex-basis: 100%; } }
+  .sa-kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: var(--space-3) var(--space-5); margin: 0; }
+  .sa-kv dt { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+  .sa-kv dd { margin: 0; font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  @media (max-width: 560px) { .sa-kv { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } .sa-kv dd { margin-bottom: var(--space-2); } }
+  .sa-tabbar { margin-bottom: var(--space-6); overflow-x: auto; }
+  .sa-tabbar .tabs { flex-wrap: nowrap; white-space: nowrap; }
+  .sa-tabbar .tabs > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .sa-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+  .sa-tile { margin: 0; border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sa-tile.is-main { border-color: var(--color-warning); }
+  .sa-tile__media { height: 150px; display: grid; place-content: center; justify-items: center; gap: var(--space-1); background: var(--color-surface-sunken); color: var(--color-text-tertiary); }
+  .sa-tile figcaption { padding: var(--space-2); justify-content: center; }
+  .sa-side { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .sa-side__nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .sa-side__nav a, .sa-side__nav span { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sa-side__nav a.is-active { background: var(--color-primary-subtle); color: var(--color-primary-ink); font-weight: var(--weight-semibold); }
+  .sa-side__nav a:hover { background: var(--color-surface-hover); }
+  .sa-side__nav .is-locked { opacity: .5; cursor: not-allowed; }
+  @media (max-width: 900px) { .sa-side { grid-template-columns: minmax(0, 1fr); } .sa-side__nav { flex-direction: row; flex-wrap: wrap; } }
+  .sa-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim"></div>
+  <aside class="sidebar" id="sidebarMount"></aside>
+  <div class="main">
+    <header class="topbar" id="topbarMount"></header>
+    <nav id="topTabsMount"></nav>
+
+    <main class="content"><div class="content__inner" style="max-width:none">
+      <div id="pageHead"></div>
+      <div id="listMount"></div>
+    </div></main>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/shell.js"></script>
+<script src="assets/js/sa-data.js"></script>
+<script src="assets/js/sa-kit.js"></script>
+<script src="assets/js/sa-translation.js"></script>
+<script src="assets/js/pp/pp-core.js"></script>
+<script src="assets/js/sa-crud.js"></script>
+<script>
+(() => {
+  /* Locations — Countries · States · Cities (pages/locations), each with its
+     Documents and Taxes sub-pages (?docs=<key> · ?taxes=<key>) and a translation
+     view. One script picked by file name; every view is a CRUD.page config. The
+     dashboard's Google Places map is shown as a pick-a-point stand-in. */
+  const file = location.pathname.split("/").pop().replace(/^_preview-/, "").replace(".html", "");
+  const LV = { "locations-countries": "countries", "locations-states": "states", "locations-cities": "cities" }[file] || "countries";
+  RD.boot({ activeId: { countries: "loc-countries", states: "loc-states", cities: "loc-cities" }[LV], title: "locations" });
+  if (!document.getElementById("listMount")) return;
+  const { L, esc } = SA;
+  const R = CRUD.rules, S = HF.SA, qs = new URLSearchParams(location.search);
+  const MIN3 = ["Minimum 3 symbols", "3 رموز على الأقل"], MAX50 = ["Maximum 50 symbols", "50 رمز على الأكثر"], NUM = ["number is not valid", "الرقم غير صحيح"];
+  const statusField = { key: "active", label: ["status", "الحالة"], type: "select", placeholder: ["select status", "اختر الحالة"], default: "0", options: () => [["0", L("inactive", "غير نشط")], ["1", L("active", "نشط")]], rules: [R.req], get: (r) => String(r.active) };
+  const flag = (iso, name) => `<div class="cell-user"><span class="badge">${esc(iso)}</span><b>${esc(name)}</b></div>`;
+  const docs = (name) => [["Commercial Registration", 1], ["Tax Certificate", 1], ["Municipality License", 0]].map((d, i) => ({ id: i + 1, name: d[0], required: d[1] }));
+  const taxes = (vat) => [["VAT", vat, 1], ["Municipality fee", 2.5, 0]].map((t, i) => ({ id: i + 1, name: t[0], tax: t[1], active: t[2] }));
+
+  /* ---- data (from HF.SA.GEO, the same countries / states / cities the rest of the system uses) ---- */
+  if (!S._loc) {
+    const C = [...new Map(S.GEO.map((g) => [g.country.iso, g.country])).values()];
+    const META = { SA: ["966", "SAR", "Asia/Riyadh", 15], EG: ["20", "EGP", "Africa/Cairo", 14], AE: ["971", "AED", "Asia/Dubai", 5] };
+    S._loc = {
+      countries: C.map((c, i) => ({ id: i + 1, iso: c.iso, name: c.name, phone_code: META[c.iso][0], currency: { code: META[c.iso][1] }, timezone: META[c.iso][2], active: 1, map: "24.7136, 46.6753", docs: docs(), taxes: taxes(META[c.iso][3]) })),
+      states: [...new Map(S.GEO.map((g) => [g.state.id, g])).values()].map((g, i) => ({ id: g.state.id, name: g.state.name, country: g.country, active: i === 4 ? 0 : 1, map: "24.70, 46.70", docs: docs().slice(0, 2), taxes: taxes(0).slice(1) })),
+      cities: S.GEO.map((g, i) => ({ id: g.city.id, name: g.city.name, country: g.country, state: g.state, active: 1, map: "24.71, 46.67", docs: i % 2 ? [] : docs().slice(2), taxes: i % 3 ? [] : taxes(0).slice(1) })),
+    };
+  }
+  const D = S._loc;
+  D.countries.forEach((r) => (r.key = r.iso)); D.states.forEach((r) => (r.key = r.id)); D.cities.forEach((r) => (r.key = r.id));
+  const NAMES = { countries: ["Countries", "الدول"], states: ["States", "المحافظات"], cities: ["Cities", "المدن"] };
+  const countLink = (r, kind, n) => `<a href="${file}.html?${kind}=${r.key}" style="color:var(--color-text-link);font-weight:var(--weight-semibold)">${n || 0}<div class="t-xs">${kind === "docs" ? L("documents", "المستندات") : L("taxes", "الضرائب")}</div></a>`;
+
+  /* ================= documents / taxes of a country · state · city ================= */
+  const docKey = qs.get("docs"), taxKey = qs.get("taxes");
+  if (docKey || taxKey) {
+    const parent = D[LV].find((r) => String(r.key) === (docKey || taxKey)) || D[LV][0];
+    const crumbs = [["Countries", "الدول", "locations-countries.html"]]; /* same crumb at every level in the dashboard */
+    if (docKey) return CRUD.page({
+      title: [`${parent.name} Documents`, `مستندات ${parent.name}`], crumbs, baseQuery: "docs=" + parent.key, data: parent.docs, add: ["add new", "إضافة جديد"], search: ["search by name", "البحث بالاسم"], translation: { key: `${LV.slice(0, -1)}-document`, cols: [["name", ["name", "الاسم"]]] },
+      pills: [{ key: "all", label: ["all", "الكل"] }, { key: "1", label: ["required", "مطلوب"] }, { key: "0", label: ["not required", "غير مطلوب"] }], pillKey: "required",
+      empty: ["there is no data to display", "لا توجد بيانات لعرضها"],
+      columns: [{ head: ["name", "الاسم"], cell: (r) => esc(r.name) }, { head: ["required", "مطلوب"], align: "center", cell: (r) => (+r.required === 1 ? SA.badge("primary", L("yes", "نعم")) : SA.badge("danger", L("no", "لا"))) }],
+      form: { labelCols: true, createTitle: ["create new document", "إنشاء مستند جديد"], editTitle: ["edit", "تعديل"], creatingText: ["create ...", "جاري الإنشاء ..."], updatingText: ["update ...", "جاري التحديث ..."],
+        fields: [{ key: "name", label: ["name", "الاسم"], placeholder: ["Enter document name", "أدخل اسم المستند"], rules: [R.req, R.min(2, MIN3), R.max(50, MAX50)] },
+          { key: "required", label: ["required", "مطلوب"], type: "select", placeholder: ["select required", "اختر مطلوب"], default: "1", options: () => [["1", L("required", "مطلوب")], ["0", L("not required", "غير مطلوب")]], rules: [R.req], get: (r) => String(r.required) }] },
+      del: { body: ["Please confirm that you want to delete this document", "يرجى تأكيد أنك تريد حذف هذا المستند"] },
+    });
+    return CRUD.page({
+      title: [`${parent.name} Taxes`, `ضرائب ${parent.name}`], crumbs, baseQuery: "taxes=" + parent.key, data: parent.taxes, add: ["add new", "إضافة جديد"], search: ["search by name", "البحث بالاسم"], translation: { key: `${LV.slice(0, -1)}-tax`, cols: [["name", ["name", "الاسم"]]] },
+      pills: true, empty: ["there is no data to display", "لا توجد بيانات لعرضها"],
+      columns: [{ head: ["name", "الاسم"], cell: (r) => esc(r.name) }, { head: ["tax", "الضريبة"], align: "center", cell: (r) => `${r.tax}%` }, { head: ["states", "الحالات"], align: "center", cell: (r) => CRUD.statusBadge(r.active) }],
+      form: { labelCols: true, createTitle: ["create new tax", "إنشاء ضريبة جديدة"], editTitle: ["edit", "تعديل"], creatingText: ["create ...", "جاري الإنشاء ..."], updatingText: ["update ...", "جاري التحديث ..."],
+        fields: [{ key: "name", label: ["name", "الاسم"], placeholder: ["enter tax name", "أدخل اسم الضريبة"], rules: [R.req, R.max(50, MAX50)] },
+          { key: "tax", type: "number", label: ["tax", "الضريبة"], placeholder: ["enter tax percentage", "أدخل نسبة الضريبة"], rules: [R.req, R.max(5, MAX50)] }, statusField] },
+      del: { body: ["Please confirm that you want to delete this tax", "يرجى تأكيد أنك تريد حذف هذه الضريبة"] },
+    });
+  }
+
+  /* ================= countries · states · cities ================= */
+  const nameField = (ph) => ({ key: "name", label: ["name", "الاسم"], placeholder: ph, rules: [R.req, R.min(2, MIN3), R.max(50, MAX50)] });
+  const mapField = (rules) => ({ key: "map", label: ["map", "الخريطة"], type: "map", rules });
+  const countryOpts = () => D.countries.map((c) => [c.iso, c.name]);
+  const mapReq = (msg) => (v, vals, row) => (!v ? (row && row.map ? "" : T(msg)) : "");
+  const { T } = SA;
+  const PICK = ["Please Select the location on the Map", "الرجاء تحديد الموقع على الخريطة"];
+  const shared = (kind) => ({ data: D[LV], pills: true, search: ["search by name", "البحث بالاسم"], add: ["add new", "إضافة جديد"], idKey: "id", empty: ["there is no data to display", "لا توجد بيانات لعرضها"],
+    translation: { key: kind, cols: [["name", ["name", "الاسم"]]] } });
+  const CFG = {
+    countries: Object.assign(shared("country"), {
+      title: NAMES.countries,
+      columns: [
+        { head: ["name", "الاسم"], cell: (r) => flag(r.iso, r.name) },
+        { head: ["ISO", "الرمز"], align: "center", cell: (r) => esc(r.iso) },
+        { head: ["phone code", "كود الهاتف"], align: "center", cell: (r) => esc(r.phone_code || "---") },
+        { head: ["currency", "العملة"], align: "center", cell: (r) => esc((r.currency && r.currency.code) || "---") },
+        { head: ["time zone", "المنطقة الزمنية"], align: "center", cell: (r) => esc(r.timezone || "---") },
+        { head: ["required documents", "المستندات المطلوبة"], align: "center", cell: (r) => countLink(r, "docs", r.docs.length) },
+        { head: ["taxes", "الضرائب"], align: "center", cell: (r) => countLink(r, "taxes", r.taxes.length) },
+        { head: ["status", "الحالة"], align: "center", cell: (r) => CRUD.statusBadge(r.active) },
+      ],
+      form: { labelCols: true, wide: true, createTitle: ["create new country", "إنشاء دولة جديدة"], editTitle: ["edit country", "تعديل الدولة"], creatingText: ["create ...", "جاري الإنشاء ..."], updatingText: ["update ...", "جاري التحديث ..."],
+        fields: [nameField(["enter country name", "أدخل اسم الدولة"]),
+          { key: "phone_code", label: ["phone code", "كود الهاتف"], placeholder: ["enter phone code", "أدخل كود الهاتف"], rules: [R.req, R.min(2, MIN3), R.max(5, MAX50), (v) => (v && !/^[0-9]+$/.test(v) ? T(NUM) : "")] }, statusField,
+          { key: "currency", label: ["currency", "العملة"], type: "select", placeholder: ["select", "اختر"], options: () => [["SAR", "Saudi Riyal"], ["EGP", "Egyptian Pound"], ["AED", "UAE Dirham"], ["USD", "US Dollar"]], get: (r) => r.currency && r.currency.code },
+          { key: "timezone", label: ["time zone", "المنطقة الزمنية"], type: "select", placeholder: ["select", "اختر"], options: () => ["Asia/Riyadh", "Africa/Cairo", "Asia/Dubai", "Asia/Kuwait"].map((z) => [z, z]) },
+          mapField([mapReq(PICK)])] },
+      onSave: (v, r) => { const vals = Object.assign({}, v, { currency: { code: v.currency } }); if (r) Object.assign(r, vals); else D.countries.push(Object.assign({ id: D.countries.length + 1, iso: v.name.slice(0, 2).toUpperCase(), key: v.name.slice(0, 2).toUpperCase(), docs: [], taxes: [] }, vals)); },
+      del: { body: ["Please confirm that you want to delete this country?", "يرجى تأكيد أنك تريد حذف هذه الدولة؟"] },
+    }),
+    states: Object.assign(shared("state"), {
+      title: NAMES.states,
+      columns: [
+        { head: ["name", "الاسم"], cell: (r) => esc(r.name) },
+        { head: ["country", "الدولة"], cell: (r) => flag(r.country.iso, r.country.name) },
+        { head: ["required documents", "المستندات المطلوبة"], align: "center", cell: (r) => countLink(r, "docs", r.docs.length) },
+        { head: ["taxes", "الضرائب"], align: "center", cell: (r) => countLink(r, "taxes", r.taxes.length) },
+        { head: ["status", "الحالة"], align: "center", cell: (r) => CRUD.statusBadge(r.active) },
+      ],
+      form: { labelCols: true, wide: true, createTitle: ["create new state", "إنشاء محافظة جديدة"], editTitle: ["edit state", "تعديل المحافظة"], creatingText: ["create ...", "جاري الإنشاء ..."], updatingText: ["update ...", "جاري التحديث ..."],
+        fields: [nameField(["enter state name", "أدخل اسم المحافظة"]), { key: "country", label: ["Country", "الدولة"], type: "select", placeholder: ["select country", "اختر الدولة"], options: countryOpts, rules: [R.req], get: (r) => r.country.iso }, statusField, mapField([mapReq(PICK)])] },
+      onSave: (v, r) => { const c = D.countries.find((x) => x.iso === v.country), vals = Object.assign({}, v, { country: { iso: c.iso, name: c.name } }); if (r) Object.assign(r, vals); else D.states.push(Object.assign({ id: 100 + D.states.length, docs: [], taxes: [] }, vals)); },
+      /* the dashboard's English text says "city" here (i18n bug) — kept 1:1 */
+      del: { body: ["Please confirm that you want to delete this city", "يرجى تأكيد أنك تريد حذف هذه المحافظة"] },
+    }),
+    cities: Object.assign(shared("city"), {
+      title: NAMES.cities,
+      columns: [
+        { head: ["name", "الاسم"], cell: (r) => esc(r.name) },
+        { head: ["country", "الدولة"], cell: (r) => flag(r.country.iso, r.country.name) },
+        { head: ["state", "المحافظة"], align: "center", cell: (r) => esc((r.state && r.state.name) || "---") },
+        { head: ["required documents", "المستندات المطلوبة"], align: "center", cell: (r) => countLink(r, "docs", r.docs.length) },
+        { head: ["taxes", "الضرائب"], align: "center", cell: (r) => countLink(r, "taxes", r.taxes.length) },
+        { head: ["status", "الحالة"], align: "center", cell: (r) => CRUD.statusBadge(r.active) },
+      ],
+      form: { labelCols: true, wide: true, createTitle: ["create city", "إنشاء مدينة"], editTitle: ["edit city", "تعديل المدينة"], creatingText: ["create ...", "جاري الإنشاء ..."], updatingText: ["update ...", "جاري التحديث ..."],
+        fields: [nameField(["enter city name", "أدخل اسم المدينة"]), { key: "country", label: ["country", "الدولة"], type: "select", placeholder: ["select country", "اختر الدولة"], options: countryOpts, rules: [R.req], get: (r) => r.country.iso },
+          { key: "state", label: ["state", "المحافظة"], type: "select", placeholder: ["Select state", "اختر المحافظة"], options: () => D.states.map((s) => [s.id, s.name]), rules: [R.req], get: (r) => r.state && r.state.id }, statusField,
+          mapField([mapReq(["The selected area is not within the governorate boundaries", "المنطقة المختارة ليست ضمن حدود المحافظة"])])],
+        /* state cascades from country (GET /general/states?country_iso=) */
+        onOpen: (el) => { const c = el.querySelector('[data-f="country"]'), s = el.querySelector('[data-f="state"]'); const fill = () => { const cur = s.value; s.innerHTML = `<option value="">${L("Select state", "اختر المحافظة")}</option>` + D.states.filter((x) => x.country.iso === c.value).map((x) => `<option value="${x.id}" ${String(x.id) === cur ? "selected" : ""}>${esc(x.name)}</option>`).join(""); }; c.onchange = () => { s.value = ""; fill(); }; fill(); } },
+      onSave: (v, r) => { const c = D.countries.find((x) => x.iso === v.country), s = D.states.find((x) => String(x.id) === v.state), vals = Object.assign({}, v, { country: { iso: c.iso, name: c.name }, state: { id: s.id, name: s.name } }); if (r) Object.assign(r, vals); else D.cities.push(Object.assign({ id: 1000 + D.cities.length, docs: [], taxes: [] }, vals)); },
+      del: { body: ["Please confirm that you want to delete this city", "يرجى تأكيد أنك تريد حذف هذه المدينة"] },
+    }),
+  };
+  CRUD.page(CFG[LV]);
+})();
+</script>
+</body>
+</html>

@@ -62,13 +62,42 @@ window.PP = (function () {
       <div class="row between gap-3" style="align-items:center;flex-wrap:wrap"><h3 class="t-title">${title}</h3><div class="row gap-2">${actions || ""}</div></div>
       ${body}</section>`;
   }
-  /* label | value rows (the dashboard's two-column key/value tables) */
+  /* label | value pairs (redesign 2026-11-17): each pair is a compact field — a small
+     label over its value — laid out in a grid, so on a wide card the value sits right
+     under its label instead of a screen-width away from it. Labels lose a trailing ":". */
   function kv(rows) {
-    return `<dl class="sa-kv">${rows.filter(Boolean).map((r) => `<dt>${r[0]}</dt><dd>${r[1] == null || r[1] === "" ? "---" : r[1]}</dd>`).join("")}</dl>`;
+    return `<dl style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:var(--space-5) var(--space-6);margin:0">${rows.filter(Boolean).map((r) =>
+      `<div style="min-width:0"><dt class="t-xs text-tertiary" style="margin-bottom:var(--space-1)">${String(r[0]).replace(/\s*:\s*$/, "")}</dt><dd style="margin:0;font-size:var(--text-sm);font-weight:var(--weight-semibold);overflow-wrap:anywhere">${r[1] == null || r[1] === "" ? "---" : r[1]}</dd></div>`).join("")}</dl>`;
   }
+  /* Display a raw data word: known API values get their EN / AR label ("coming" →
+     "Coming" / "قادم"); anything else is just capitalised ("padel" → "Padel"). */
+  const WORDS = {
+    onsite: ["Onsite", "حضوري"], main: ["Main", "رئيسي"], part: ["Part", "جزء"], available: ["Available", "متاحة"], maintenance: ["Maintenance", "تحت الصيانة"],
+    completed: ["Completed", "مكتمل"], rejected: ["Rejected", "مرفوض"], booking: ["Booking", "حجز"], payment: ["Payment", "دفع"],
+    "wallet fund": ["Wallet fund", "إيداع في المحفظة"], "booking payment": ["Booking payment", "دفع حجز"], "booking refund": ["Booking refund", "استرداد حجز"],
+    "public event payment": ["Public event payment", "دفع حدث عام"], "multi booking payment": ["Multi-booking payment", "دفع حجز متعدد"], "cash out": ["Cash out", "سحب نقدي"],
+    coming: ["Coming", "قادم"], ended: ["Ended", "انتهى"], canceled: ["Cancelled", "ملغي"], cancelled: ["Cancelled", "ملغي"],
+    pending: ["Pending", "معلق"], active: ["Active", "نشط"], inactive: ["Inactive", "غير نشط"], requested: ["Requested", "مطلوب"],
+    expired: ["Expired", "منتهي"], frozen: ["Frozen", "مجمّد"], upgraded: ["Upgraded", "تمت ترقيته"],
+    male: ["Male", "ذكر"], female: ["Female", "أنثى"], both: ["Both", "كلاهما"],
+    online: ["Online", "عبر الإنترنت"], cash: ["Cash", "نقدي"], manual: ["Manual", "يدوي"], linked: ["Linked", "مرتبط"], normal: ["Normal", "عادي"],
+    partners: ["Partners", "شركاء"], geographic: ["Geographic", "جغرافي"], fixed: ["Fixed", "مبلغ ثابت"], percentage: ["Percentage", "نسبة مئوية"],
+    "online booking": ["Online booking", "حجز إلكتروني"], "manual booking": ["Manual booking", "حجز يدوي"], "linked booking": ["Linked booking", "حجز مرتبط"],
+    "public event": ["Public event", "حدث عام"], "walk-in sale": ["Walk-in sale", "بيع مباشر"], "package subscription": ["Package subscription", "اشتراك باقة"],
+    renewal: ["Renewal", "تجديد"], extension: ["Extension", "تمديد"],
+    created: ["Created", "تم الإنشاء"], updated: ["Updated", "تم التحديث"], deleted: ["Deleted", "تم الحذف"], blocked: ["Blocked", "محظور"],
+    bookings: ["Bookings", "الحجوزات"], units: ["Units", "الوحدات"], customers: ["Customers", "العملاء"], coupons: ["Coupons", "الكوبونات"],
+    operations: ["Operations", "التشغيل"], people: ["People", "الأشخاص"], marketing: ["Marketing", "التسويق"],
+    "fixed slots": ["Fixed slots", "مواعيد ثابتة"], "flexible schedule": ["Flexible schedule", "جدول مرن"], "multi booking": ["Multi booking", "حجز متعدد"],
+  };
+  const cap = (v) => {
+    if (v == null || v === "") return v;
+    const w = WORDS[String(v).trim().toLowerCase()];
+    return w ? L(w[0], w[1]) : String(v).charAt(0).toUpperCase() + String(v).slice(1);
+  };
   const btn = (label, icon, attrs, kind) => `<button type="button" class="btn btn--sm${kind ? " btn--" + kind : ""}" ${attrs || ""}>${icon ? ic(icon) : ""}<span>${label}</span></button>`;
-  const yesNo = (v) => (v ? L("yes", "نعم") : L("no", "لا"));
-  const onOff = (v) => (v ? `<span class="badge badge--success">${L("on", "مفعل")}</span>` : `<span class="badge">${L("off", "غير مفعل")}</span>`);
+  const yesNo = (v) => (v ? L("Yes", "نعم") : L("No", "لا"));
+  const onOff = (v) => (v ? `<span class="badge badge--success">${L("On", "مفعل")}</span>` : `<span class="badge">${L("Off", "غير مفعل")}</span>`);
   const initials = (s) => (s || "?").trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
   const avatar = (name, size) => `<span class="avatar${size ? " avatar--" + size : " avatar--sm"}">${esc(initials(name))}</span>`;
   const confirmDelete = (title, body, onOk) => {
@@ -76,10 +105,10 @@ window.PP = (function () {
       foot: `<button class="btn btn--ghost" data-close>${L("Cancel", "إلغاء")}</button><button class="btn btn--danger" data-ok>${L("Confirm", "تأكيد")}</button>` });
     el.querySelector("[data-ok]").onclick = () => { SA.close(el); onOk(); };
   };
-  const backBtn = (href) => `<a class="btn btn--sm btn--secondary" href="${href}">${ic(document.documentElement.dir === "rtl" ? "chevronRight" : "chevronLeft")}<span>${L("back", "رجوع")}</span></a>`;
+  const backBtn = (href) => `<a class="btn btn--sm btn--secondary" href="${href}">${ic(document.documentElement.dir === "rtl" ? "chevronRight" : "chevronLeft")}<span>${L("Back", "رجوع")}</span></a>`;
   /* Status badge shared by Public Events / Bookings / Multi-Bookings lists:
      coming → success, ended → primary, everything else → danger (raw text). */
-  const sessionStatus = (s) => `<span class="badge badge--${s === "coming" ? "success" : s === "ended" ? "primary" : "danger"}">${esc(s)}</span>`;
+  const sessionStatus = (s) => `<span class="badge badge--${s === "coming" ? "success" : s === "ended" ? "primary" : "danger"}">${esc(cap(s))}</span>`;
 
   /* Filter Options popover shared by every profile tab filter.
      fields: [{ key, label:[en,ar], type:"select"|"checks"|"date"|"month"|"year", options:(draft)=>[[value,label]] }]
@@ -90,20 +119,20 @@ window.PP = (function () {
     if (pop && pop.classList.contains("is-open") && pop._trigger === trigger) { pop.classList.remove("is-open"); return; }
     if (!pop) { pop = document.createElement("div"); pop.id = "ppFilterPop"; pop.className = "popover"; pop.setAttribute("role", "dialog"); document.body.appendChild(pop); }
     pop._trigger = trigger;
-    pop.style.cssText = "width:" + (o.width || 320) + "px;max-height:520px;overflow:auto";
+    pop.style.cssText = "width:min(" + (o.width || 320) + "px, calc(100vw - 16px));max-height:520px;overflow-x:hidden;overflow-y:auto";
     let draft = JSON.parse(JSON.stringify(o.value || {}));
-    const ALL = L("all", "الكل");
+    const ALL = L("All", "الكل");
     const control = (fl) => {
       const v = draft[fl.key];
       const opts = typeof fl.options === "function" ? fl.options(draft) : fl.options || [];
       if (fl.type === "checks") return `<div class="stack gap-1" style="max-height:132px;overflow:auto">${opts.map((x) => `<label class="check"><input type="checkbox" data-m="${fl.key}" value="${esc(x[0])}" ${(v || []).includes(String(x[0])) ? "checked" : ""}><span class="check__box">${ic("check")}</span>${esc(x[1])}</label>`).join("") || `<span class="t-xs text-tertiary">---</span>`}</div>`;
       if (fl.type === "date" || fl.type === "month") return `<input class="input" type="${fl.type}" data-f="${fl.key}" value="${esc(v || "")}">`;
-      if (fl.type === "agerange") return `<div class="grid grid-2"><input class="input" type="number" min="1" data-f="min_age" value="${esc(draft.min_age || "")}" placeholder="${L("min year", "الحد الأدنى للعمر")}"><input class="input" type="number" min="1" data-f="max_age" value="${esc(draft.max_age || "")}" placeholder="${L("max year", "الحد الأقصى للعمر")}"></div>`;
-      if (fl.type === "range") return `<div class="grid grid-2"><input class="input" type="${fl.input || "date"}" data-f="${fl.key}_from" value="${esc(draft[fl.key + "_from"] || "")}" aria-label="${L("From", "من")}"><input class="input" type="${fl.input || "date"}" data-f="${fl.key}_to" value="${esc(draft[fl.key + "_to"] || "")}" aria-label="${L("To", "إلى")}"></div>`;
-      return SA.select([["", fl.placeholder ? L(...fl.placeholder) : ALL, !v]].concat(opts.map((x) => [x[0], x[1], String(v || "") === String(x[0])])), `data-f="${fl.key}" ${fl.disabled && fl.disabled(draft) ? "disabled" : ""}`);
+      if (fl.type === "agerange") return `<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-2)"><input class="input" type="number" min="1" data-f="min_age" value="${esc(draft.min_age || "")}" placeholder="${L("Min year", "الحد الأدنى للعمر")}"><input class="input" type="number" min="1" data-f="max_age" value="${esc(draft.max_age || "")}" placeholder="${L("Max year", "الحد الأقصى للعمر")}"></div>`;
+      if (fl.type === "range") return `<div style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--space-2) var(--space-3);align-items:center"><span class="t-xs text-tertiary">${L("From", "من")}</span><input class="input" style="min-width:0;width:100%" type="${fl.input || "date"}" data-f="${fl.key}_from" value="${esc(draft[fl.key + "_from"] || "")}" ${draft[fl.key + "_to"] ? `max="${esc(draft[fl.key + "_to"])}"` : ""} aria-label="${L("From", "من")}"><span class="t-xs text-tertiary">${L("To", "إلى")}</span><input class="input" style="min-width:0;width:100%" type="${fl.input || "date"}" data-f="${fl.key}_to" value="${esc(draft[fl.key + "_to"] || "")}" ${draft[fl.key + "_from"] ? `min="${esc(draft[fl.key + "_from"])}"` : ""} aria-label="${L("To", "إلى")}"></div>`;
+      return SA.select([["", ALL, !v]] /* the dashboard's selects open on an explicit "All" */.concat(opts.map((x) => [x[0], x[1], String(v || "") === String(x[0])])), `data-f="${fl.key}" ${fl.disabled && fl.disabled(draft) ? "disabled" : ""}`);
     };
     const paint = () => {
-      pop.innerHTML = `<div class="popover__title">${L("Filter Options", "خيارات التصفية")}</div>
+      pop.innerHTML = `<div class="popover__title">${L("Filter options", "خيارات التصفية")}</div>
         <div class="popover__body stack gap-3">${o.fields.map((fl) => SA.field(fl.label, control(fl))).join("")}</div>
         <div class="popover__foot"><button type="button" class="btn btn--sm btn--secondary" data-reset>${L("Reset", "إعادة تعيين")}</button><button type="button" class="btn btn--sm" data-apply>${L("Apply", "تطبيق")}</button></div>`;
     };
@@ -124,5 +153,16 @@ window.PP = (function () {
   }
   const filterBtn = (count) => `<button type="button" class="btn btn--sm btn--secondary" data-filter aria-haspopup="dialog">${ic("sliders")}<span>${L("Filter", "تصفية")}</span>${count ? ` <span class="badge badge--primary">${count}</span>` : ""}</button>`;
 
-  return { filterPop, filterBtn, tabs, extend, card, kv, btn, yesNo, onOff, avatar, initials, confirmDelete, backBtn, sessionStatus, rng };
+  /* Status filter as registry stat-tiles (redesign 2026-11-17) — replaces a row of
+     status pills: [{ key, label:[en,ar], icon, count, tone }] → buttons with
+     data-tile + aria-pressed. Tones reuse the status tokens the badges use. */
+  const TONE = { warning: ["--color-warning-subtle", "--color-warning"], primary: ["--color-primary-subtle", "--color-primary-ink"], success: ["--color-success-subtle", "--color-success"], danger: ["--color-danger-subtle", "--color-danger"], info: ["--color-info-subtle", "--color-info"], "": ["--color-surface-sunken", "--color-text-secondary"] };
+  const tiles = (items, active) => `<div class="stat-strip" role="group" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">${items.map((t) => {
+    const on = t.key === active, tn = TONE[t.tone || ""];
+    return `<button type="button" class="stat-tile${on ? " is-active" : ""}" aria-pressed="${on}" data-tile="${esc(t.key)}">
+      <span class="kpi-ic" style="background:var(${tn[0]});color:var(${tn[1]});box-shadow:none">${ic(t.icon)}</span>
+      <span class="stat-tile__txt"><span class="stat-tile__val" style="font-variant-numeric:tabular-nums">${SA.fmt(t.count)}</span><span class="stat-tile__label">${esc(SA.T(t.label))}</span></span></button>`;
+  }).join("")}</div>`;
+
+  return { filterPop, filterBtn, tabs, extend, card, kv, btn, yesNo, onOff, avatar, initials, confirmDelete, backBtn, sessionStatus, rng, tiles, cap };
 })();

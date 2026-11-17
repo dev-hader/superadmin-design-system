@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>/* redesign trial — assets/css/skin-v2.css (+ skin-v2-looks.css); ?skin=classic shows the current look, ?look=swiss|bento|soft, ?look=glass the alternative looks */(function(){var q=new URLSearchParams(location.search),r=document.documentElement;if(q.get("skin")==="classic")return;r.setAttribute("data-skin","v2");/* partners: new layout, the dashboard's own colours (?palette=v2 shows the v2 colours) */if(q.get("palette")!=="v2")r.setAttribute("data-palette","classic");var l=q.get("look");if(["swiss","bento","soft","glass"].indexOf(l)>-1)r.setAttribute("data-look",l);})();</script>
 <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rd-theme")==="1"?"dark":"light");document.documentElement.dir=localStorage.getItem("rd-dir")==="1"?"rtl":"ltr";}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='fvg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FC6404'/><stop offset='1' stop-color='%23FF8536'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%23131313'/><g transform='translate(6 10.71) scale(0.7312)' fill='url(%23fvg)'><path d='M9.19 34.39C8.66 33.98 8.39 33.32 6.29 32.44 4.52 31.7 2 32.73 2.07 35.06 2.15 37.81 7.95 50.58 10.44 53.63 12.15 55.74 16.3 54.67 16.78 51.56 17.46 47.1 11.6 36.26 9.19 34.39'/><path d='M57.86 13.44C56.88 13.08 53.96 13.48 51.32 19.16 49.99 22.02 45.55 38.6 45.63 40.58 45.75 43.74 50.36 45.81 52.67 42.28 53.44 41.11 59.78 19.81 60.15 18.41 60.95 15.37 59.63 14.07 57.86 13.44'/><path d='M33.57 5.08C32.57 4.75 30.43 5.64 27.22 11.03 25.3 14.24 20.01 34.86 19.9 41.69 19.81 47.32 25.82 46.77 27.05 43.99 29.87 37.62 35.64 11.65 36.03 9.96 36.72 6.9 35.36 5.65 33.57 5.08'/><path d='M66.39 28.04C65.4 27.69 62.48 28.08 59.84 33.76 58.93 35.72 54.31 49.26 54.65 51.63 55.03 54.21 59.1 56.24 61.35 53.21 61.99 52.35 62.74 49.48 63.38 47.41 65.82 39.58 68.02 33.43 68.31 32.3 69.12 29.26 68.16 28.68 66.39 28.04'/><path d='M50.27 7.33C51.07 4.29 49.76 3 47.98 2.36 47 2 44.08 2.39 41.44 8.08 39.7 11.81 32.43 33.12 33.95 37.77 34.71 40.1 37.95 41.32 40.38 38.99 42.69 36.78 49.81 9.09 50.27 7.33'/></g></svg>">
@@ -14,6 +15,8 @@
 <link rel="stylesheet" href="assets/css/app.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="assets/css/skin-v2.css?v=7">
+<link rel="stylesheet" href="assets/css/skin-v2-looks.css?v=7">
 <style>
   .sa-hero { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; margin-bottom: var(--space-5); }
   .sa-hero__status { min-width: 260px; flex: 0 1 340px; border-inline-start: var(--border-thin) solid var(--color-border-subtle); padding-inline-start: var(--space-6); }
@@ -41,6 +44,10 @@
   .sa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
   .sa-formrow { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); align-items: start; }
   @media (max-width: 640px) { .sa-formrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+  /* redesign 2026-11-17 — sub-navigation between the pages of this sidebar group (same bar on every sibling page) */
+  .sa-tabbar { margin-top: calc(var(--space-2) * -1); margin-bottom: var(--space-5); scrollbar-width: none; }
+  .sa-tabbar .tabs > a { flex: none; }
+  .sa-tabbar .tabs svg { width: 16px; height: 16px; }
 </style>
 </head>
 <body>
@@ -74,10 +81,20 @@
      and feeds it:
        marketing-promo-codes.html       Super Admin coupons · "+ new" in the toolbar · create defaults to Geographic
        marketing-partner-promo-codes.html  coupons created by partners (GET /coupons/partners) · no "new"
-     Sub-views: ?view=<id> · ?usage=<id>[&ut=] · ?new=1 (same as the profile tab). */
+     Sub-views: ?view=<id> · ?usage=<id>[&ut=] · ?new=1 (same as the profile tab).
+     API: GET /coupons (Super Admin) · GET /coupons/partners (partner-created) · the rest in pp-people.js.
+     Permissions (job keys — data-perm, demo ?perm=limited | ?perm=none), as marketing/coupons +
+     marketing/partner-coupons: list + ?view= view_promo_code (PagesTableWrapper / ViewPage) ·
+     ?usage= view_coupon_usages (details/DetailsPage) · ?new=1 and "+ New" add_promo_code
+     (CreatePage / PagesToolbarWrapper) · row actions in pp-people.js (usage view_coupon_usages,
+     status update_promo_code, delete delete_promo_code, eye open; usage eyes
+     view_booking_details / view_multi_booking_details) · Marketing tab bar: promo-code tabs
+     view_promo_code, Advertisements view_advertisements. */
   const file = location.pathname.split("/").pop().replace(/^_preview-/, "").replace(".html", "");
   const isPartner = file === "marketing-partner-promo-codes";
-  RD.boot({ activeId: isPartner ? "mk-partner-promo-codes" : "mk-promo-codes", title: "Coupons" });
+  const q0 = new URLSearchParams(location.search);
+  RD.boot({ activeId: isPartner ? "mk-partner-promo-codes" : "mk-promo-codes", title: "Coupons",
+    perm: q0.get("new") ? "add_promo_code" : q0.get("usage") ? "view_coupon_usages" : "view_promo_code" });
   if (!document.getElementById("listMount")) return;
   const { L, ic } = SA;
   const S = HF.SA, qs = new URLSearchParams(location.search);
@@ -90,6 +107,10 @@
     const admin = ["HIGHFIVE20", "NEWUSER", "RIYADH15", "CAIRO10", "WEEKEND5", "FAMILY30", "VIP50"].map((code, i) => ({ id: 500 + i, code, description: i % 2 ? "" : "Super Admin campaign for HighFive users.", type: i === 5 ? "partners" : "geographic", discount_type: i % 2 ? "percentage" : "fixed",
       value: i % 2 ? [10, 15, 20][i % 3] : [20, 30, 50][i % 3], max_amount: i % 2 ? 100 : null, min_amount: i % 3 ? 50 : 0, usage_limit: i % 3 ? 500 : null, usage_limit_per_user: i % 2 ? 1 : null, start_at: `2026-${String(5 + i).padStart(2, "0")}-01 00:00`, end_at: `2026-${String(8 + i).padStart(2, "0")}-30 23:59`,
       total_discount: [4200, 1300, 880, 0, 260, 1720, 9400][i], status: i === 6 ? "expired" : i === 4 ? "inactive" : "active", country_name: i === 3 ? "Egypt" : "Saudi Arabia", _p: i === 5 ? S.partners[2] : null,
+      currency: i === 3 ? "EGP" : "SAR", /* follows the coupon's country / partner */
+      states: i === 2 ? [{ id: 1, name: "Riyadh Region" }] : [], cities: i === 2 ? [{ id: 11, name: "Riyadh" }] : [],
+      users: i === 1 ? S.users.slice(0, 2).map((u) => ({ name: u.name, username: u.high_five_user_name })) : [],
+      partner_name: i === 5 ? S.partners[2].company_name : null, branches: [], units: [],
       logs: [{ id: 1, admin: { name: "Super Admin" }, status: "active", created_at: `2026-0${1 + i}-02 10:00` }] }));
     S._coupons = { admin, partner: pcs };
   }
@@ -99,11 +120,18 @@
   PP.href = (tab, extra) => `${file}.html${extra ? "?" + new URLSearchParams(Object.entries(extra).filter(([, v]) => v != null)) : ""}`;
   PP.go = () => (location.href = `${file}.html`);
   const sub = qs.get("view") || qs.get("usage") || qs.get("new");
-  const title = isPartner ? ["Partner's Promo Codes", "رموز ترويج الشركاء"] : ["Coupons", "كوبونات"];
+  /* AR page names from ar.json: PROMO CODES "رموز الترويج" · PARTNERS_PROMO_CODES "رموز ترويج الشركاء" · COUPONS "كوبونات" */
+  const title = isPartner ? ["Partner's promo codes", "رموز ترويج الشركاء"] : ["Coupons", "كوبونات"];
   if (sub) document.getElementById("pageHead").hidden = true; /* sub-views render their own head + Back To Coupons */
   else SA.head(document.getElementById("pageHead"), { title, crumbs: [["Marketing", "التسويق", file + ".html"]],
-    actions: isPartner ? "" : `<a class="btn btn--sm" href="${file}.html?new=1">${ic("plus")}<span>${L("new", "جديد")}</span></a>` });
+    actions: isPartner ? "" : `<a class="btn btn--sm" href="${file}.html?new=1" data-perm="add_promo_code">${ic("plus")}<span>${L("New", "جديد")}</span></a>` });
   const mount = document.getElementById("listMount");
+  /* redesign 2026-11-17: tab bar between the Marketing pages (sidebar group order) on the lists */
+  if (!sub) {
+    const TABS = [["marketing-promo-codes", "ticket", "Promo codes", "رموز الترويج", "view_promo_code"], ["marketing-partner-promo-codes", "hotel", "Partner's promo codes", "رموز ترويج الشركاء", "view_promo_code"], ["marketing-advertisements", "flash", "Advertisements", "الإعلانات", "view_advertisements"]];
+    mount.insertAdjacentHTML("beforebegin", `<nav class="sa-tabbar" aria-label="${L("Marketing", "التسويق")}"><div class="tabs">${TABS.map((t) => `<a href="${t[0]}.html" data-perm="${t[4]}" class="${t[0] === file ? "is-active" : ""}"${t[0] === file ? ' aria-current="page"' : ""}>${ic(t[1])}<span>${L(t[2], t[3])}</span></a>`).join("")}</div></nav>`);
+    const on = document.querySelector(".sa-tabbar .is-active"); if (on) on.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }
   mount.className = "stack gap-6";
   PP.tabs.coupons(mount, { partner: host, params: qs, coupons: data, newBtn: true, global: !isPartner });
 })();
