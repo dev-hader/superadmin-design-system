@@ -4848,8 +4848,12 @@
     } else if (el.hasAttribute("title")) el.removeAttribute("title");
     return el.dataset.tip ? el : null;
   }
-  document.addEventListener("mouseover", (e) => { const el = target(e); if (el && el !== cur) show(el); else if (!el && cur && cur !== document.activeElement) hide(); });
-  document.addEventListener("focusin", (e) => { const el = target(e); if (el) show(el); });
+  /* touch screens emulate mouseover on tap — a tip would then stay on top of whatever
+     the tap opened (a modal, a drawer). Only real mouse hover and keyboard focus show it. */
+  let touchAt = 0;
+  document.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") touchAt = Date.now(); hide(); }, true);
+  document.addEventListener("mouseover", (e) => { if (Date.now() - touchAt < 900) return; const el = target(e); if (el && el !== cur) show(el); else if (!el && cur && cur !== document.activeElement) hide(); });
+  document.addEventListener("focusin", (e) => { if (Date.now() - touchAt < 900) return; const el = target(e); if (el && (!el.matches || el.matches(":focus-visible"))) show(el); });
   document.addEventListener("focusout", (e) => { if (cur && e.target === cur) hide(); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") hide(); });
   /* a focused element keeps its tip (keyboard focus scrolls it into view); hover tips hide */

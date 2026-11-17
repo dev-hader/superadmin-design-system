@@ -1072,6 +1072,10 @@ textarea.input {
     .data-table td:not([data-label]) {
         justify-content: flex-start;
         padding-block: var(--space-3);
+        text-align: start; /* a title / detail cell is content, not a value — no end alignment */
+    }
+    .data-table td[colspan] {
+        display: block;
     }
     .data-table td:has(> label.check:only-child) {
         display: none;
@@ -5707,3 +5711,14 @@ html[lang="ar"] .lg-eyebrow {
    a disabled switch reads as unavailable (permission-gated controls) */
 .switch { position: relative; }
 .switch:has(input:disabled) { opacity: var(--opacity-disabled, .55); cursor: not-allowed; }
+
+/* stat tiles — a long label ("All notifications") wraps inside its tile; up to tablet width (768px) two per row */
+.stat-tile__txt { min-width: 0; }
+.stat-tile__label { overflow-wrap: break-word; } /* wrap between words; never split one mid-word */
+@media (max-width: 768px) {
+    .stat-strip { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+/* small phones: one tile per row, so the label never has to break mid-word */
+@media (max-width: 420px) {
+    .stat-strip { grid-template-columns: minmax(0, 1fr) !important; }
+}

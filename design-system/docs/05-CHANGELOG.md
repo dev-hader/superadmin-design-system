@@ -2,6 +2,13 @@
 
 Semver per [03-governance-workflow.md](03-governance-workflow.md) §6.
 
+## 1.24.1-trial — 2026-11-17 · Mobile fixes
+
+- **Tooltips:** a tap no longer opens a hover tip, since touch screens emulate mouseover. Before, the tip stayed on top of the modal the tap had opened. Focus shows a tip only on keyboard focus (`:focus-visible`), and any press hides it.
+- **Card view (tables under 640px):** unlabelled cells (titles, details) align to the start, and `td[colspan]` is a block.
+- **Notifications (users/partners):** the facts row merges with its card, with one column of facts.
+- **Stat tiles:** long labels wrap inside the tile, screens up to 768px get two tiles per row, and up to 420px one per row. The 128px auto-fit rule on 10 list pages now applies above 768px only.
+
 ## 1.24.0-trial — 2026-11-17 · Parity with the real dashboard (latest dev) + job permissions
 
 Pre-change copies of the shared files are in `revisions/2026-11-17-parity/`.
