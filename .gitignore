@@ -34,3 +34,7 @@ base_id/
 Thumbs.db
 desktop.ini
 *.log
+
+# Python bytecode caches (regenerated automatically; they also embed local paths)
+__pycache__/
+*.pyc
